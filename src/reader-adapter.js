@@ -1,4 +1,12 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
+import { readSelection, queryFromText } from './selection-query.js';
+export function readerInput(Zotero, reader, view, win, text = '') {
+  const selected = text ? null : readSelection(win, view);
+  const query = text ? queryFromText(text, 'manual') : selected.query || { text: '', candidates: [], source: 'manual' };
+  const range = view?._selectionRanges?.find(range => !range.collapsed && range.anchorOffset !== range.headOffset);
+  const annotation = selected?.query ? { text: selected.query.text, position: { pageIndex: range?.position?.pageIndex ?? range?.pageIndex } } : undefined;
+  return { query, context: readerContext(Zotero, reader, view, annotation) };
+}
 // Internal reader fields are inspected here and are optional. Callers can keep
 // the native selection menu and manual query when a capability is unavailable.
 export function readerViews(reader, Cu) {

@@ -8,7 +8,8 @@ import { appearanceSettings, nativeAppearanceCSS, preferredAudio } from '../src/
 import { folderList, scanDirectories, orderedDictionaries } from '../src/directory-library.js';
 import { validateSettings, settingsBackup, relocateSettings } from '../src/settings-backup.js';
 import { editDistance, spellingSuggestions } from '../src/word-search.js';
-import { readerContext } from '../src/reader-adapter.js';
+import { readerContext, readerInput } from '../src/reader-adapter.js';
+import { ResourcePool } from '../src/resource-pool.js';
 import { api, makeDictionary, source } from './fixtures.mjs';
 test('Word forms cover regular, irregular and ambiguous spellings without altering phrases', () => {
   assert.ok(wordForms('studies').includes('study')); assert.ok(wordForms('running').includes('run'));
@@ -46,6 +47,49 @@ test('Moving dictionary folders updates related paths while preserving paper ide
   assert.deepEqual(JSON.parse(moved.dictionaryOrder), ['/new/A.mdx', '/oldish/B.mdx']);
   assert.deepEqual(JSON.parse(moved.resources)['/new/A.mdx'], { folder: '/new/media', extraArchives: ['/new/A.2.mdd', '/external/C.mdd'] });
   assert.equal(moved.vocabulary, settings.vocabulary); assert.equal(settings.path, '/old/A.mdx');
+});
+test('Folder relocation preserves Unix and Windows roots and trailing separators', () => {
+  assert.equal(relocateSettings({ path: '/S.ifo', folder: '/' }, [['/', '/new']]).path, '/new/S.ifo');
+  assert.equal(relocateSettings({ folder: '/' }, [['/', '/new']]).folder, '/new');
+  assert.equal(relocateSettings({ path: 'D:\\S.ifo', folder: 'D:\\' }, [['D:\\', 'E:\\']]).path, 'E:\\S.ifo');
+  assert.equal(relocateSettings({ path: '/old/S.ifo' }, [['/old/', '/new/']]).path, '/new/S.ifo');
+});
+test('Malformed vocabulary context is rejected before backup import or preference display', () => {
+  const row = { id: 'one', word: 'word', definition: 'meaning', headwords: ['word'], dictionaries: ['A'] };
+  for (const context of [{ sourceURL: 42 }, { title: {} }, { sentence: [] }, { itemID: '9' }, { pageIndex: -1 }]) {
+    const vocabulary = JSON.stringify([{ ...row, context }]);
+    assert.throws(() => validateSettings({ format: 'local-dictionary-settings', version: 1, settings: { vocabulary } }), /生词/);
+    assert.throws(() => new VocabularyStore({ read: () => vocabulary, write() {} }).list(), /生词/);
+  }
+});
+test('Resource sources retain active leases and evict excess idle dictionaries', async () => {
+  const closed = new Set(); let opens = 0;
+  const pool = new ResourcePool(async path => ({ id: ++opens, close: () => closed.add(path) }));
+  const active = await pool.acquire('active');
+  for (const path of ['A', 'B', 'C', 'D']) await pool.load(path);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(pool.entries.size, 4); assert.ok(closed.has('A')); assert.ok(!closed.has('active'));
+  const same = await pool.acquire('active'); assert.equal(same.resources, active.resources); same.release(); active.release();
+  await new Promise(resolve => setImmediate(resolve)); assert.equal(pool.entries.size, 3);
+  pool.clear(); await new Promise(resolve => setImmediate(resolve)); assert.ok(closed.has('active'));
+});
+test('A source opening after pool cleanup is closed and its cancelled lease fails', async () => {
+  let resume, closed = false;
+  const pool = new ResourcePool(() => new Promise(resolve => { resume = () => resolve({ close: () => { closed = true; } }); }));
+  const pending = pool.acquire('A'); await new Promise(resolve => setImmediate(resolve)); pool.clear(); resume();
+  await assert.rejects(pending, /结束/); assert.equal(closed, true); assert.equal(pool.entries.size, 0);
+});
+test('Combined dictionary scopes share the popup byte and URL budgets without merging same-name resources', async () => {
+  const bytes = new Uint8Array(48 * 1024 * 1024), resources = { read: async key => ({ key, bytes, mime: 'image/png' }) };
+  const budget = { bytes: 0, count: 0 };
+  const first = new api.ResourceScope(resources, null, () => 'blob:A', budget), second = new api.ResourceScope(resources, null, () => 'blob:B', budget);
+  assert.equal(await first.url('same.png'), 'blob:A'); assert.equal(await second.url('same.png'), 'blob:B');
+  assert.equal(await second.url('extra.png'), ''); assert.equal(budget.bytes, 96 * 1024 * 1024);
+  first.close(); first.close(); second.close(); assert.deepEqual(budget, { bytes: 0, count: 0 });
+  const tiny = { read: async key => ({ key, bytes: new Uint8Array(1), mime: 'image/png' }) };
+  const third = new api.ResourceScope(tiny, null, () => 'blob:C', budget), fourth = new api.ResourceScope(tiny, null, () => 'blob:D', budget);
+  for (let at = 0; at < 256; at++) assert.ok(await (at % 2 ? third : fourth).url(at + '.png'));
+  assert.equal(await fourth.url('one-too-many.png'), ''); third.close(); fourth.close(); assert.equal(budget.count, 0);
 });
 test('Word browsing is paginated; spelling suggestions are bounded and never replace the query', async () => {
   const dictionary = await api.MDXDictionary.open(source(makeDictionary([['network', 'meaning'], ['neural', 'meaning'], ['study', 'meaning']])));
@@ -90,6 +134,16 @@ test('Reader context keeps the PDF identity, parent title, current page and grou
   const manual = readerContext(Zotero, { itemID: 9 }, view); assert.equal(manual.pageIndex, 3); assert.equal(manual.title, 'Paper title'); assert.ok(manual.sourceURL.includes('groups/123/items/PDFKEY?page=4'));
   const click = readerContext(Zotero, { itemID: 9 }, view, undefined, { pageIndex: 0, start: 0, end: 8 }); assert.equal(click.sentence, 'research sample');
   const selection = readerContext(Zotero, { itemID: 9 }, view, { text: 'selected text', position: { pageIndex: 2 } }); assert.equal(selection.pageIndex, 2); assert.equal(selection.sentence, 'selected text');
+});
+test('Toolbar and shortcut input retain selection context; typed queries use the current page without an old sentence', () => {
+  const item = { id: 9, key: 'PDFKEY', libraryID: 1, getField: () => 'Paper' };
+  const Zotero = { Items: { get: () => item }, Libraries: { get: () => ({ libraryType: 'user' }) } };
+  const view = { _iframeWindow: { PDFViewerApplication: { pdfViewer: { currentPageNumber: 4 } } },
+    _selectionRanges: [{ text: 'research', pageIndex: 1, anchorOffset: 0, headOffset: 8, collapsed: false }] };
+  const selected = readerInput(Zotero, { itemID: 9 }, view, {});
+  assert.equal(selected.query.text, 'research'); assert.equal(selected.context.sentence, 'research'); assert.equal(selected.context.pageIndex, 1);
+  const typed = readerInput(Zotero, { itemID: 9 }, view, {}, 'network');
+  assert.equal(typed.query.text, 'network'); assert.equal(typed.context.sentence, ''); assert.equal(typed.context.pageIndex, 3);
 });
 test('History restores independent snapshots, truncates forward navigation and stays bounded', () => {
   const history = new QueryHistory(2); const entry = { query: { text: 'one' }, annotation: { position: { pageIndex: 0 } } };

@@ -1,5 +1,16 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 import { parseFragment } from 'parse5';
+export function validVocabulary(rows) {
+  const string = (value, limit) => typeof value === 'string' && value.length <= limit;
+  const strings = (values, limit) => Array.isArray(values) && values.length <= 5000 && values.every(value => string(value, limit));
+  const contextValid = context => context == null || (typeof context === 'object' && !Array.isArray(context)
+    && ['title', 'sentence', 'sourceURL', 'itemKey'].every(key => context[key] == null || string(context[key], key === 'sentence' ? 2000 : 4096))
+    && ['itemID', 'libraryID', 'parentID', 'pageIndex'].every(key => context[key] == null || (Number.isSafeInteger(context[key]) && context[key] >= (key === 'pageIndex' ? 0 : 1))));
+  return Array.isArray(rows) && rows.length <= 1000 && rows.every(row => row && typeof row === 'object'
+    && string(row.id, 4096) && string(row.word, 256) && string(row.definition, 4000)
+    && strings(row.headwords, 256) && strings(row.dictionaries, 2048) && contextValid(row.context)
+    && (row.createdAt == null || string(row.createdAt, 64)));
+}
 export function plainDefinition(html, limit = 4000) {
   const stack = [...parseFragment(String(html).slice(0, 4_000_000)).childNodes].reverse(); let text = '';
   while (stack.length && text.length < limit) {
@@ -13,10 +24,11 @@ export class VocabularyStore {
   constructor({ read, write, limit = 1000 }) { this.read = read; this.write = write; this.limit = limit; }
   list() {
     const value = JSON.parse(this.read() || '[]');
-    if (!Array.isArray(value) || value.some(row => !row || typeof row.id !== 'string' || typeof row.word !== 'string' || typeof row.definition !== 'string' || !Array.isArray(row.headwords) || row.headwords.some(word => typeof word !== 'string') || !Array.isArray(row.dictionaries) || row.dictionaries.some(name => typeof name !== 'string') || (row.context != null && (typeof row.context !== 'object' || Array.isArray(row.context))))) throw new Error('生词记录格式损坏，请先备份设置。');
+    if (!validVocabulary(value)) throw new Error('生词记录格式损坏，请先备份设置。');
     return value;
   }
   save(rows) {
+    if (!validVocabulary(rows)) throw new Error('生词记录无效。');
     const text = JSON.stringify(rows); if (text.length > 2_000_000) throw new Error('生词记录超过存储限额，请先导出或删除部分记录。');
     this.write(text);
   }

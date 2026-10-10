@@ -12,7 +12,7 @@ const files = {};
 async function walk(dir, prefix = '') {
   for (const item of await readdir(dir, { withFileTypes: true })) {
     const name = prefix + item.name;
-    if (omit.has(item.name) || generated.has(name) || name.startsWith('addon/licenses/') || /\.(?:mdx|mdd|xpi|zip)$/i.test(name)) continue;
+    if (omit.has(item.name) || generated.has(name) || name.startsWith('addon/licenses/') || /\.(?:mdx|mdd|ifo|idx(?:\.gz)?|dict(?:\.dz)?|syn|dsl(?:\.dz|\.files)?|xpi|zip)$/i.test(name)) continue;
     if (item.isDirectory()) await walk(path.join(dir, item.name), name + '/');
     else if (item.isFile()) files['zotero-local-dictionary/' + name] = new Uint8Array(await readFile(path.join(dir, item.name)));
   }

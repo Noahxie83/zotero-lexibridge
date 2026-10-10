@@ -60,21 +60,25 @@ export async function gzipSource(source) {
   const offsets = []; for (const length of table.lengths) { check(length > 0, 'Dictzip 压缩块长度无效。'); offsets.push(at); at += length; }
   // dictzip may leave a small final DEFLATE terminator after its last chunk.
   check(at <= source.size - 8 && source.size - 8 - at <= 16, 'Dictzip 分块偏移无效。');
-  const cache = new Map(), pending = new Map();
+  const cache = new Map(), pending = new Map(); let epoch = 0;
   const block = async index => {
     if (cache.has(index)) { const value = cache.get(index); cache.delete(index); cache.set(index, value); return value; }
-    if (!pending.has(index)) pending.set(index, (async () => {
+    if (!pending.has(index)) {
+      const token = epoch;
+      pending.set(index, (async () => {
       const packed = await source.read(offsets[index], table.lengths[index]);
       // Full-flush boundaries make chunks independent. A final empty block
       // terminates non-final chunks for a fresh bounded raw inflater.
       const complete = new Uint8Array(packed.length + 5); complete.set(packed); complete.set([1, 0, 0, 255, 255], packed.length);
       const bytes = inflateBounded(complete, table.chunkLength, true);
       check(bytes.length === Math.min(table.chunkLength, size - index * table.chunkLength), 'Dictzip 分块解压长度不匹配。');
-      cache.set(index, bytes); if (cache.size > 32) cache.delete(cache.keys().next().value); return bytes;
-    })());
-    try { return await pending.get(index); } finally { pending.delete(index); }
+      if (token === epoch) { cache.set(index, bytes); if (cache.size > 32) cache.delete(cache.keys().next().value); } return bytes;
+      })());
+    }
+    const job = pending.get(index);
+    try { return await job; } finally { if (pending.get(index) === job) pending.delete(index); }
   };
-  return { size, clearCache: () => cache.clear(), read: async (offset, length) => {
+  return { size, clearCache: () => { epoch++; cache.clear(); pending.clear(); }, read: async (offset, length) => {
     check(Number.isSafeInteger(offset) && Number.isSafeInteger(length) && offset >= 0 && length >= 0 && offset + length <= size && length <= MAX_TEXT_FILE, 'Dictzip 读取范围无效。');
     const result = new Uint8Array(length); let written = 0;
     while (written < length) { const index = Math.floor((offset + written) / table.chunkLength), start = (offset + written) % table.chunkLength;

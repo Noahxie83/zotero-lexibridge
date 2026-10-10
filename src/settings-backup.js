@@ -1,4 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
+import { validVocabulary } from './vocabulary.js';
+import { relocatePath } from './local-path.js';
 export const SETTING_KEYS = ['enabled', 'selectionEnabled', 'selectionMenu', 'annotationColor', 'path', 'folder', 'directories', 'dictionaryOrder', 'recursive', 'displayMode', 'resources', 'wordForms', 'queryMode', 'vocabulary', 'theme', 'fontSize', 'popupWidth', 'popupHeight', 'pronunciation'];
 const enumValues = { selectionMenu: ['integrated', 'native'], displayMode: ['original', 'text'], queryMode: ['single', 'fallback', 'all'], theme: ['original', 'light', 'dark'], pronunciation: ['first', 'uk', 'us'] };
 export function validateSettings(backup) {
@@ -26,7 +28,7 @@ export function validateSettings(backup) {
       }
     }
     if (key === 'vocabulary') {
-      const rows = JSON.parse(value); if (!Array.isArray(rows) || rows.length > 1000 || rows.some(row => !row || typeof row.id !== 'string' || typeof row.word !== 'string' || row.word.length > 256 || typeof row.definition !== 'string' || !Array.isArray(row.headwords) || row.headwords.some(word => typeof word !== 'string') || !Array.isArray(row.dictionaries) || row.dictionaries.some(name => typeof name !== 'string') || (row.context != null && (typeof row.context !== 'object' || Array.isArray(row.context))))) throw new Error('生词记录无效。');
+      if (!validVocabulary(JSON.parse(value))) throw new Error('生词记录无效。');
     }
     result[key] = value;
   }
@@ -39,12 +41,7 @@ export function settingsBackup(get) {
 // Only dictionary/resource paths move. Saved literature identities must remain
 // unchanged: a similarly numbered item in another library is not the source.
 export function relocateSettings(settings, replacements) {
-  const roots = [...replacements].sort((a, b) => b[0].length - a[0].length);
-  const move = path => {
-    if (!path) return path;
-    const match = roots.find(([from]) => path === from || (path.startsWith(from) && /[\\/]/.test(path[from.length])));
-    return match ? match[1].replace(/[\\/]$/, '') + path.slice(match[0].length) : path;
-  };
+  const move = path => relocatePath(path, replacements);
   const result = { ...settings };
   for (const key of ['path', 'folder']) if (result[key]) result[key] = move(result[key]);
   for (const key of ['directories', 'dictionaryOrder']) if (result[key]) result[key] = JSON.stringify(JSON.parse(result[key]).map(move));

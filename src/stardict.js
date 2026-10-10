@@ -3,6 +3,7 @@ import { parseFragment, serialize } from 'parse5';
 import { fileSource, gzipSource, readWhole, check } from './compressed-source.js';
 import { IndexedDictionary } from './indexed-dictionary.js';
 import { escapeHTML } from './vocabulary.js';
+import { dirname } from './local-path.js';
 const utf8 = new TextDecoder('utf-8', { fatal: true });
 const plain = text => '<p>' + escapeHTML(text).replace(/\n/g, '<br>') + '</p>';
 function xmlMeaning(text) {
@@ -51,7 +52,7 @@ export class StarDictDictionary extends IndexedDictionary {
     const count = Number(info.wordcount), indexSize = Number(info.idxfilesize), bits = info.idxoffsetbits || '32';
     check(Number.isInteger(count) && count >= 0 && count <= 2000000 && Number.isInteger(indexSize) && indexSize >= 0 && ['32', '64'].includes(bits) && (bits !== '64' || info.version === '3.0.0'), 'StarDict 索引参数无效。');
     check(!info.sametypesequence || /^[a-zA-Z]{1,128}$/.test(info.sametypesequence), 'StarDict 数据类型序列无效。');
-    const stem = path.slice(0, -4), directory = path.slice(0, Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'))), children = await fs.getChildren(directory); guard();
+    const stem = path.slice(0, -4), children = await fs.getChildren(dirname(path)); guard();
     const locate = endings => endings.map(ending => children.find(file => file.toLowerCase() === (stem + ending).toLowerCase())).find(Boolean);
     const indexPath = locate(['.idx', '.idx.gz']), dataPath = locate(['.dict.dz', '.dict']); check(indexPath && dataPath, 'StarDict 缺少同名 .idx/.idx.gz 或 .dict/.dict.dz 文件。');
     let index = await fileSource(fs, indexPath, guard); if (/\.gz$/i.test(indexPath)) index = await gzipSource(index);

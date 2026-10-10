@@ -89,6 +89,19 @@ test('A corrupt backup dictionary cannot overwrite existing appearance, vocabula
   assert.equal(app.getPath(), '/good/A.mdx'); assert.equal(prefs.get('localMDXClick.theme'), 'light');
   assert.equal(prefs.get('localMDXClick.vocabulary'), 'original'); assert.equal(prefs.get('localMDXClick.enabled'), false);
 });
+test('A partial appearance backup preserves the working library and does not reindex it', async () => {
+  const { env, prefs } = backupEnvironment({ '/good/A.mdx': makeDictionary([['word', 'good']]) }, { theme: 'dark' });
+  const app = api.createApp(env, 'test'); await app.scanFolder('/good'); const dictionary = await app.loadDictionary();
+  await app.importSettings({}); assert.equal(prefs.get('localMDXClick.theme'), 'dark');
+  assert.equal(app.getPath(), '/good/A.mdx'); assert.equal(prefs.get('localMDXClick.folder'), '/good');
+  assert.equal(prefs.get('localMDXClick.directories'), '["/good"]'); assert.equal(await app.loadDictionary(), dictionary);
+});
+test('A partial library backup preserves omitted appearance and vocabulary preferences', async () => {
+  const files = { '/good/A.mdx': makeDictionary([['word', 'good']]), '/new/B.mdx': makeDictionary([['word', 'new']]) };
+  const { env, prefs } = backupEnvironment(files, { directories: '["/new"]' });
+  const app = api.createApp(env, 'test'); await app.scanFolder('/good'); prefs.set('localMDXClick.theme', 'light'); prefs.set('localMDXClick.vocabulary', '[]');
+  await app.importSettings({}); assert.equal(app.getPath(), '/new/B.mdx'); assert.equal(prefs.get('localMDXClick.theme'), 'light'); assert.equal(prefs.get('localMDXClick.vocabulary'), '[]');
+});
 test('Backup import relocates missing directories and cancellation leaves the current setup unchanged', async () => {
   const files = { '/good/A.mdx': makeDictionary([['word', 'good']]), '/new/B.mdx': makeDictionary([['word', 'new']]) };
   for (const cancelled of [true, false]) {

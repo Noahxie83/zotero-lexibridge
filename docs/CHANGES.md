@@ -1,6 +1,6 @@
 # 功能与版本变更
 
-Local Dictionary 原名 Local MDX。本页汇总 0.1.0 至本地 1.2.0 构建的变化。1.2.0 尚未发布到 GitHub；恢复和回退步骤见 [复原教程](RESTORE.md)。
+Local Dictionary 原名 Local MDX。本页汇总 0.1.0 至 1.2.0 的变化；恢复和回退步骤见 [复原教程](RESTORE.md)。
 
 ## 现在提供的全部功能
 
@@ -43,6 +43,6 @@ Local Dictionary 原名 Local MDX。本页汇总 0.1.0 至本地 1.2.0 构建的
 | 1.1.1 | 修复 `Missing 'color' property`，完整批注数据复制到 Zotero 阅读器窗口 |
 | 1.1.2 | 修复 LZO 精确边界、合法别名、失败目录切换、资源来源错误回退、Speex 累计时长；普通音频单次读取、MDD 定位/缺失缓存与统计、独立资源失效；33 项回归与独立 Zotero 保存验收 |
 | 1.1.3 | 插件管理器和设置页采用 Local MDX 的“书本＋放大镜”SVG 图标 |
-| 1.2.0（本地构建） | 更名 Local Dictionary；修复不可见字符、坏词典切换、MDD 缺失查找与依赖；加入九项查询/阅读扩展、StarDict/DSL 及设置迁移；验证详见 [升级说明](UPGRADE_1.2.0.md) |
+| 1.2.0 | 更名 Local Dictionary；修复不可见字符、坏词典切换、MDD 缺失查找与依赖；加入九项查询/阅读扩展、StarDict/DSL 及设置迁移；验证详见 [升级说明](UPGRADE_1.2.0.md) 与 [审查整改](REVIEW_FIXES_1.2.0.md) |
 
 各版对应的源代码快照、安装包与原说明见 [Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases)。历史快照保持原样，详细当时记录见 [发布说明](../RELEASE_NOTES.md)；1.1.2 验证证据见 [审查整改](REVIEW_FIXES_1.1.2.md)。

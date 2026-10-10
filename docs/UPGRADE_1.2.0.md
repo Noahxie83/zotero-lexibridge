@@ -1,6 +1,6 @@
 # Local Dictionary 1.2.0 · 本次改进与验证
 
-本地构建，尚未发布到 GitHub。产品原名 Local MDX，现因支持 MDX、StarDict 和 DSL 更名为 **Local Dictionary · 本地词典**。插件 ID、更新地址、原偏好命名空间和旧 API 别名保留，以便覆盖安装沿用设置。新安装包和源码 ZIP 使用 `local-dictionary` 名称；仓库地址、历史资产和自动更新文件暂未改动。
+产品原名 Local MDX，现因支持 MDX、StarDict 和 DSL 更名为 **Local Dictionary · 本地词典**。插件 ID、更新地址、原偏好命名空间和旧 API 别名保留，以便覆盖安装沿用设置。新安装包和源码 ZIP 使用 `local-dictionary` 名称；仓库地址与历史资产保留。安装包见 [1.2.0 Release](https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.0)。
 
 ## 修复与改进
 
@@ -31,7 +31,7 @@
 
 Windows Zotero **10.0.6** 使用新建的独立配置和数据目录运行测试：两种批注保存并重开验证、多词典、链接/历史、固定、生词/笔记、设置控件、词形、手动查询/拼写、字体、可信鼠标发音、选中文字上下文、三格式联合查询、压缩 StarDict 同义词、DSL 外置 WAV/引用、只读/分栏、原菜单和停用清理。测试不会加载日常文献库。
 
-2026-10-10 最终验证：**67 项自动测试通过、30 项 Zotero 隔离检查通过、完整依赖审计 0 告警、安装包构建成功**。Zotero 为 Windows 10.0.6，测试目录为 `verification-local-dictionary-1.2.0-final`，证据位于该目录的 `report.json`。安装包不包含测试启动脚本。
+首次验证为 67 项自动测试、30 项 Zotero 隔离检查。发布前再次按 Standards/Spec 两路审查并整改；最新结果与复现范围见 [1.2.0 审查整改](REVIEW_FIXES_1.2.0.md)。安装包不包含测试启动脚本。
 
 复现隔离检查：先构建，再运行 `node scripts/prepare-zotero-verification.mjs <一个新建的验证目录>`，按输出路径使用 Zotero 的 `-no-remote -profile` 参数启动。脚本拒绝已有 SQLite 文献库，超时或结束会退出隔离实例。
 

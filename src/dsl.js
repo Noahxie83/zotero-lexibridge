@@ -14,10 +14,16 @@ function expandTilde(text, heading) {
   return text.replace(/\\[\s\S]|\^?~/g, value => value.startsWith('\\') ? value : value === '^~' ? (heading[0]?.toUpperCase() === heading[0] ? heading[0]?.toLowerCase() : heading[0]?.toUpperCase()) + heading.slice(1) : heading);
 }
 export function dslMeaning(body, heading, warnings = new Set()) {
+  const escaped = [];
+  // Protect escaped characters before recognizing resource/link tags. Also
+  // protect literal placeholder characters so source text cannot mimic a token.
+  const protect = value => { escaped.push(value); return '\uE004' + (escaped.length - 1) + '\uE005'; };
   const insertions = [];
   const insert = html => { insertions.push(html); return '\uE002' + (insertions.length - 1) + '\uE003'; };
-  const unescape = text => expandTilde(text, heading).replace(/\\(.)/g, '$1').trim();
-  let text = body.replace(/^[ \t]+/gm, '').replace(/^@\s*(.*)$/gm, (_, value) => value ? '[b]' + value + '[/b]' : '');
+  const restore = text => text.replace(/\uE004(\d+)\uE005/g, (_, index) => escaped[Number(index)]);
+  const unescape = text => restore(expandTilde(text, heading)).trim();
+  let text = body.replace(/\\([\s\S])|([\uE002-\uE005])/g, (_, char, literal) => protect(char ?? literal))
+    .replace(/^[ \t]+/gm, '').replace(/^@\s*(.*)$/gm, (_, value) => value ? '[b]' + value + '[/b]' : '');
   text = text.replace(/\[s\]([\s\S]*?)\[\/s\]/gi, (_, value) => {
     const file = unescape(value);
     if (/\.(?:png|jpe?g|gif|webp|bmp|svg)$/i.test(file)) return insert('<img src="' + escapeHTML(file) + '" alt="' + escapeHTML(file) + '">');
@@ -25,17 +31,17 @@ export function dslMeaning(body, heading, warnings = new Set()) {
     warnings.add('DSL 资源暂不显示：' + file); return insert('<span>' + escapeHTML(file) + '</span>');
   });
   text = text.replace(/\[ref([^\]]*)\]([\s\S]*?)\[\/ref\]|<<([^<>\n]+)>>/gi, (_, attributes, value, shorthand) => {
-    const target = unescape(value || shorthand || '').replace(/\[[^\]]*\]/g, '');
+    const target = unescape((value || shorthand || '').replace(/\[[^\]]*\]/g, ''));
     if (attributes && /\bdict\s*=/i.test(attributes)) { warnings.add('DSL 跨词典引用仅显示文字：' + target); return insert(escapeHTML(target)); }
     return insert('<a href="entry://' + encodeURIComponent(target) + '">' + escapeHTML(target) + '</a>');
   });
   const html = [], stack = [], tags = { b: 'b', i: 'i', u: 'u', sub: 'sub', sup: 'sup', trn: 'span', ex: 'i', com: 'span', t: 'span', p: 'span', lang: 'span', '*': 'span' };
-  const tokens = /\uE002(\d+)\uE003|\\([\s\S])|\[([^\]\n]{1,512})\]|\^?~/g; let at = 0, match;
+  const tokens = /\uE002(\d+)\uE003|\uE004(\d+)\uE005|\[([^\]\n]{1,512})\]|\^?~/g; let at = 0, match;
   const appendText = value => html.push(escapeHTML(value).replace(/\n/g, '<br>'));
   while ((match = tokens.exec(text))) {
     appendText(text.slice(at, match.index)); at = tokens.lastIndex;
     if (match[1] != null) { html.push(insertions[Number(match[1])] || ''); continue; }
-    if (match[2] != null) { appendText(match[2]); continue; }
+    if (match[2] != null) { appendText(escaped[Number(match[2])]); continue; }
     if (match[3] == null) { appendText(expandTilde(match[0], heading)); continue; }
     const token = match[3].trim(), closing = token.startsWith('/'), name = token.replace(/^\//, '').split(/\s/)[0].toLowerCase().replace(/^m\d$/, 'm');
     if (closing) {

@@ -6,6 +6,15 @@ addon/LICENSE
 addon/THIRD_PARTY.md
 *.mdx
 *.mdd
+*.ifo
+*.idx
+*.idx.gz
+*.dict
+*.dict.dz
+*.syn
+*.dsl
+*.dsl.dz
+*.dsl.files/
 *.xpi
 .DS_Store
 Thumbs.db

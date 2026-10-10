@@ -2,7 +2,7 @@
 
 在 Zotero 10.0 系列 PDF 阅读器中点击、划选或输入文字，查询本地 MDX、StarDict 和 DSL 词典。原名 Local MDX；插件标识与旧设置保持兼容。
 
-**当前本地构建为 1.2.0，尚未发布到 GitHub。** 安装包为 `dist/local-dictionary-1.2.0.xpi`，历史版本仍从 [Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases) 下载。[本次改进与验证](UPGRADE_1.2.0.md) · [格式支持](FORMAT_SUPPORT.md)。
+从 [1.2.0 Release](https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.0) 下载 `local-dictionary-1.2.0.xpi`。[本次改进与验证](UPGRADE_1.2.0.md) · [格式支持](FORMAT_SUPPORT.md) · [审查整改](REVIEW_FIXES_1.2.0.md)。
 
 ## 新增的查询与阅读操作
 
@@ -114,7 +114,7 @@ SPX 输入限额 8 MB，整个文件的累计音频最长 30 秒（包括连接�
 
 从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases) 下载 `.xpi` 安装包、源码 ZIP 和校验和。词典需另行准备，可在 [PDAWiki · MDict 专区](https://www.pdawiki.com/forum/forum.php?gid=7) 搜索，并按作者授权获取文件。安装后选择词典目录即可使用。
 
-历史版本保留对应安装包、源码和说明。1.2.0 当前为本地构建，自动更新配置仍指向 1.1.3，尚未发布新资产。详情见 [版本变更](CHANGES.md)。HTML 演示使用自制 MDX，覆盖部分功能。
+历史版本保留对应安装包、源码和说明。新版本继续使用原插件 ID 与更新地址，覆盖升级保留设置。详情见 [版本变更](CHANGES.md)。HTML 演示使用自制 MDX，覆盖部分功能。
 
 ## 开发
 

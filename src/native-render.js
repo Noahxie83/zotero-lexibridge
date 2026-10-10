@@ -85,10 +85,11 @@ function normalizeListNumbers(doc) {
 // Every popup owns its URLs. Closing it revokes images/fonts/audio and stops
 // pending preparation from allocating more URLs.
 export class ResourceScope {
-  constructor(resources, win, makeURL) {
+  constructor(resources, win, makeURL, budget = { bytes: 0, count: 0 }) {
     this.resources = resources;
     this.win = win;
     this.makeURL = makeURL;
+    this.budget = budget;
     this.urls = new Map(); this.pending = new Map(); this.missing = new Set();
     this.optionalMissing = new Set();
     this.audioPending = new Map();
@@ -100,11 +101,11 @@ export class ResourceScope {
     if (this.closed) throw new Error('查词窗口已关闭。');
     const speex = isOggSpeex(resource.bytes);
     if (this.urls.has(normalized)) return { url: this.urls.get(normalized), speex };
-    if (this.urls.size >= 256 || this.bytes + resource.bytes.length > 96 * 1024 * 1024) {
+    if (this.budget.count >= 256 || this.budget.bytes + resource.bytes.length > 96 * 1024 * 1024) {
       return { url: '', reason: resource.key + '（超过窗口资源限额）' };
     }
-    this.bytes += resource.bytes.length;
     const url = this.makeURL ? this.makeURL(resource) : this.win.URL.createObjectURL(new this.win.Blob([resource.bytes], { type: resource.mime }));
+    this.bytes += resource.bytes.length; this.budget.bytes += resource.bytes.length; this.budget.count++;
     this.urls.set(normalized, url); return { url, speex };
   }
 
@@ -179,8 +180,10 @@ export class ResourceScope {
     return this.audioPending.get(normalized);
   }
   close() {
+    if (this.closed) return;
     this.closed = true;
     if (!this.makeURL) for (const url of this.urls.values()) { try { this.win.URL.revokeObjectURL(url); } catch {} }
+    this.budget.bytes -= this.bytes; this.budget.count -= this.urls.size; this.bytes = 0;
     this.urls.clear(); this.pending.clear(); this.audioPending.clear(); this.readPending.clear();
   }
 }

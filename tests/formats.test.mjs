@@ -29,6 +29,14 @@ test('StarDict rejects incomplete companions, wrong metadata and out-of-bounds o
   const wrong = { ...files, '/dict/S.ifo': Buffer.from(files['/dict/S.ifo'].toString().replace('wordcount=1', 'wordcount=2')) }; await assert.rejects(StarDictDictionary.open(formatFS(wrong), '/dict/S.ifo'), /wordcount/);
   const index = Buffer.from(files['/dict/S.idx']); index.writeUInt32BE(999, 5); await assert.rejects(StarDictDictionary.open(formatFS({ ...files, '/dict/S.idx': index }), '/dict/S.ifo'), /偏移/);
 });
+test('StarDict locates companion files in Unix and Windows root directories', async () => {
+  for (const root of ['/', 'D:\\']) {
+    const files = makeStarDict(root + 'S', [['word', 'meaning']]); let observed;
+    const fs = { ...formatFS(files), getChildren: async path => { observed = path; return path === root ? Object.keys(files) : []; } };
+    const dictionary = await StarDictDictionary.open(fs, root + 'S.ifo');
+    assert.equal(observed, root); assert.ok((await dictionary.lookup('word'))[0].html.includes('meaning'));
+  }
+});
 test('Dictzip reads only required chunks, reuses its bounded cache and detects malformed tables', async () => {
   const plain = Buffer.from('0123456789'.repeat(60)), packed = dictzip(plain, 64); let reads = 0;
   const input = { size: packed.length, read: async (offset, length) => { reads++; return packed.subarray(offset, offset + length); } };
@@ -38,6 +46,21 @@ test('Dictzip reads only required chunks, reuses its bounded cache and detects m
   const corrupt = Buffer.from(packed); corrupt.writeUInt16LE(0, 18); await assert.rejects(gzipSource(source(corrupt)), /分块表/);
   assert.throws(() => inflateBounded(gzipSync(Buffer.alloc(10000)), 100), /限额/);
   await assert.rejects(gzipSource(source(packed.subarray(0, 15))));
+});
+test('Dictzip clearing cancels cache population and keeps newer pending reads deduplicated', async () => {
+  const packed = dictzip(Buffer.from('word'.repeat(80))); let gates = [], reads = 0, blockReads = false;
+  const input = { size: packed.length, read: async (offset, length) => {
+    if (blockReads) { reads++; await new Promise(resolve => gates.push(resolve)); }
+    return packed.subarray(offset, offset + length);
+  } };
+  const data = await gzipSource(input); blockReads = true;
+  const old = data.read(0, 4); while (!gates.length) await new Promise(resolve => setImmediate(resolve));
+  data.clearCache(); const newer = data.read(0, 4);
+  while (gates.length < 2) await new Promise(resolve => setImmediate(resolve));
+  gates[0](); await old;
+  const same = data.read(0, 4); gates[1](); await Promise.all([newer, same]); assert.equal(reads, 2);
+  data.clearCache(); const final = data.read(0, 4);
+  while (gates.length < 3) await new Promise(resolve => setImmediate(resolve)); gates[2](); await final; assert.equal(reads, 3);
 });
 for (const encoding of ['utf8', 'utf16le']) test('DSL loads aliases, optional headings, markup and local links: ' + encoding, async () => {
   const bytes = Buffer.from((encoding === 'utf16le' ? '\uFEFF' : '') + dsl, encoding), dictionary = await DSLDictionary.open(formatFS({ '/dict/T.dsl': bytes }), '/dict/T.dsl');
@@ -54,6 +77,15 @@ test('DSL gzip/dictzip files, subentries, multiline comments and safe escaped te
   assert.deepEqual(dslHeadwords('word(s)'), ['words', 'word']); assert.deepEqual(dslHeadwords('a\\(b\\)'), ['a(b)']);
   const html = dslMeaning('<script>alert(1)</script> \\[b]literal[/b] <<network>>', 'word'); assert.ok(!html.includes('<script>')); assert.ok(html.includes('[b]literal')); assert.ok(html.includes('entry://network'));
   await assert.rejects(DSLDictionary.open(formatFS({ '/dict/T.dsl': Buffer.from('word\n meaning') }), '/dict/T.dsl'), /NAME/);
+});
+test('DSL escaped links and resources remain literal text without leaked private placeholders', () => {
+  for (const text of ['\\[ref]word\\[/ref]', '\\[s]voice.wav\\[/s]', '\\<<word>>']) {
+    const html = dslMeaning(text, 'head'); assert.ok(html.includes('word') || html.includes('voice.wav'));
+    assert.ok(!html.includes('href=') && !/[\uE002-\uE005]/.test(html));
+  }
+  assert.equal(dslMeaning('\\~ ~', 'head'), '~ head');
+  assert.equal(dslMeaning('\uE0020\uE003 [ref]word[/ref]', 'head').slice(0, 3), '\uE0020\uE003');
+  assert.ok(dslMeaning('[ref]a\\[b\\][/ref]', 'head').includes('entry://a%5Bb%5D'));
 });
 test('MDX, StarDict and DSL scan, switch and combine through the same application', async () => {
   const files = { '/dict/A.mdx': makeDictionary([['research', 'MDX meaning']]), ...makeStarDict('/dict/S', [['research', 'StarDict meaning']]), '/dict/T.dsl': Buffer.from(dsl) };

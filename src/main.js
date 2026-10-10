@@ -9,7 +9,9 @@ import { queryDictionaries } from './query-engine.js';
 import { displayResults } from './definition-view.js';
 import { QueryHistory } from './history.js';
 import { queryControls } from './query-controls.js';
-import { readerViews, readerContext } from './reader-adapter.js';
+import { readerViews, readerContext, readerInput } from './reader-adapter.js';
+import { basename, dirname } from './local-path.js';
+import { ResourcePool } from './resource-pool.js';
 import { VocabularyStore, exportVocabulary, saveVocabularyNote } from './vocabulary.js';
 import { appearanceSettings, applyAppearance, preferredAudio } from './appearance-settings.js';
 import { mountEnhancements } from './preferences-panel.js';
@@ -17,12 +19,6 @@ import { folderList, scanDirectories, orderedDictionaries } from './directory-li
 import { settingsBackup, validateSettings, relocateSettings } from './settings-backup.js';
 import { spellingSuggestions } from './word-search.js';
 import { dictionaryFormat } from './dictionary-formats.js';
-
-const basename = path => path.split(/[\\/]/).pop();
-const dirname = path => {
-  const at = Math.max(path.lastIndexOf('\\'), path.lastIndexOf('/'));
-  return path.slice(0, at === 0 || (at === 2 && /^[a-z]:/i.test(path)) ? at + 1 : at);
-};
 
 export function createApp(env, pluginID) {
   const { Zotero, IOUtils, ChromeUtils, Cu } = env;
@@ -32,7 +28,7 @@ export function createApp(env, pluginID) {
   let status = '尚未选择词典。';
   let selectionEpoch = 0;
   const dictionaryPool = new DictionaryPool(IOUtils);
-  const resourcePools = new Map();
+  const resourcePool = new ResourcePool(openResources);
   const extraToolbar = new Set();
   const preferencePanels = new Map();
   const vocabulary = new VocabularyStore({ read: () => Zotero.Prefs.get(pref + 'vocabulary'), write: value => Zotero.Prefs.set(pref + 'vocabulary', value) });
@@ -106,8 +102,8 @@ export function createApp(env, pluginID) {
     }
   }
 
-  async function loadResources(path = getPath()) {
-    if (resourcePools.has(path)) return resourcePools.get(path);
+  function loadResources(path = getPath()) { return resourcePool.load(path); }
+  async function openResources(path) {
     const token = resourceGeneration;
     const guard = () => { if (stopped || token !== resourceGeneration) throw new ResourceCancelledError('词典或资源配置已变更。'); };
     const fs = {
@@ -126,14 +122,13 @@ export function createApp(env, pluginID) {
       },
     };
     const pending = LocalResources.open({ mdxPath: path, ...(configurations()[path] || {}), fs });
-    resourcePools.set(path, pending);
     if (path === getPath()) resourcesPromise = pending;
     try {
       const resources = await pending;
       if (stopped || token !== resourceGeneration) { resources.close(); throw new ResourceCancelledError('词典或资源配置已变更。'); }
       if (path === getPath()) loadedResources = resources;
       updateUI(); return resources;
-    } catch (e) { if (resourcePools.get(path) === pending) resourcePools.delete(path); if (resourcesPromise === pending) resourcesPromise = undefined; throw e; }
+    } catch (e) { if (resourcesPromise === pending) resourcesPromise = undefined; throw e; }
   }
 
   async function loadDictionary() {
@@ -201,8 +196,7 @@ export function createApp(env, pluginID) {
 
   function invalidateResources() {
     resourceGeneration++;
-    for (const pending of resourcePools.values()) pending.then(resources => resources.close()).catch(() => {});
-    resourcePools.clear();
+    resourcePool.clear();
     loadedResources?.close(); loadedResources = undefined; resourcesPromise = undefined;
   }
 
@@ -293,6 +287,13 @@ export function createApp(env, pluginID) {
     const path = await pick(parent, '导入 Local Dictionary 备份', 'json', false); if (!path || stopped) return;
     if ((await IOUtils.stat(path)).size > 4 * 1024 * 1024) throw new Error('备份文件超过 4 MB。');
     let settings = validateSettings(JSON.parse(await IOUtils.readUTF8(path)));
+    const libraryKeys = ['path', 'folder', 'directories', 'dictionaryOrder', 'recursive'];
+    if (!libraryKeys.some(key => Object.hasOwn(settings, key))) {
+      for (const [key, value] of Object.entries(settings)) Zotero.Prefs.set(pref + key, value);
+      for (const session of sessions.values()) session.menu?.refresh();
+      refreshResources(); updateUI(); return;
+    }
+    settings = { ...JSON.parse(settingsBackup(key => Zotero.Prefs.get(pref + key))).settings, ...settings };
     const operation = ++selectionEpoch, scan = ++folderEpoch;
     const cancelled = () => stopped || operation !== selectionEpoch || scan !== folderEpoch;
     const replacements = [];
@@ -351,7 +352,7 @@ export function createApp(env, pluginID) {
       const makeRecord = () => vocabulary.add({ word, results: current.results, context });
       queryControls(doc, current, {
         query, history,
-        onQuery: text => { const next = queryFromText(text, 'manual'); if (next) void show(next, x, y, undefined, { context }).catch(log); else current.footer.textContent = '请输入最多 256 字符、16 个词的查询。'; },
+        onQuery: text => { const next = queryFromText(text, 'manual'); if (next) void show(next, x, y, undefined, { context: readerContext(Zotero, reader, view) }).catch(log); else current.footer.textContent = '请输入最多 256 字符、16 个词的查询。'; },
         onHistory: delta => { const entry = history.move(delta); if (entry) void show(entry.query, x, y, entry.annotation, { record: false, preferredPath: entry.preferredPath, context: entry.context }).catch(log); },
         onCollect: () => { try { makeRecord(); current.collectButton.textContent = '已收藏'; current.footer.textContent = '已保存生词与文献上下文；可在设置中导出。'; } catch (error) { current.footer.textContent = errorText(error); } },
         onNote: async () => {
@@ -439,7 +440,7 @@ export function createApp(env, pluginID) {
         current.footer.textContent = found.groups.map(group => group.name).join(' / ') + ' · ' + found.results.length + ' 条释义';
         updateDiagnostics([]);
         display = displayResults({
-          doc, current, results: found.results, win, original: getMode() === 'original', loadResources, isCurrent,
+          doc, current, results: found.results, win, original: getMode() === 'original', acquireResources: path => resourcePool.acquire(path), isCurrent,
           onEntry: (entry, path) => { void show(queryFromText(entry, 'entry'), x, y, undefined, { preferredPath: path, context }).catch(log); },
           onStatus: message => { if (isCurrent()) current.footer.textContent = message; },
           onDiagnostics: updateDiagnostics, appearance,
@@ -535,8 +536,8 @@ export function createApp(env, pluginID) {
       if (event.key === 'Escape' && card) { close(); event.stopPropagation(); }
       else if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === 'd' && enabled()) {
         event.preventDefault(); event.stopPropagation();
-        const selected = readSelection(win, view);
-        void show(selected.query || { text: '', candidates: [], source: 'manual' }, 30, 30, undefined, { focus: true }).catch(log);
+        const input = readerInput(Zotero, reader, view, win);
+        void show(input.query, 30, 30, undefined, { focus: true, context: input.context }).catch(log);
       }
     }, true);
     on(win, 'scroll', event => { if (!inside(event) && !card?.pinned) close(); }, true);
@@ -563,9 +564,11 @@ export function createApp(env, pluginID) {
   }
   async function queryReader(reader, text = '') {
     if (!enabled()) throw new Error('本地查词已暂停。');
-    scanReaders(); const primary = readerViews(reader, Cu)[0];
+    scanReaders(); const views = readerViews(reader, Cu);
+    const primary = (!text && views.find(entry => readSelection(entry.win, entry.view).query)) || views[0];
     const session = primary && sessions.get(primary.win); if (!session) throw new Error('阅读器尚未准备好，请重新打开 PDF。');
-    return session.show(text ? queryFromText(text, 'manual') : { text: '', candidates: [], source: 'manual' }, 30, 30, undefined, { focus: !text });
+    const input = readerInput(Zotero, reader, primary.view, primary.win, text);
+    return session.show(input.query, 30, 30, undefined, { focus: !text, context: input.context });
   }
   function toolbar(event) {
     if (event.reader.type !== 'pdf' || stopped) return;
