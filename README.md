@@ -1,3 +1,5 @@
+<p align="right"><a href="https://github.com/Noahxie83"><sub>Noah Xie · Personal profile</sub></a></p>
+
 <p align="center">
   <img src="docs/assets/cover.jpg" alt="Local Dictionary：本地词典，跟着论文走。支持 MDX、StarDict 和 DSL。" width="100%">
 </p>
