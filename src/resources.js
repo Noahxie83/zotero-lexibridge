@@ -58,7 +58,9 @@ export class LocalResources {
     this.fs = fs;
     this.mdxPath = mdxPath;
     this.root = fs.dirname(mdxPath);
-    this.folders = [...new Set([folder, this.root].filter(Boolean))];
+    const extraRoots = /\.ifo$/i.test(mdxPath) ? [this.root + '/res'] : /\.dsl(?:\.dz)?$/i.test(mdxPath) ? [mdxPath.replace(/\.dz$/i, '') + '.files'] : [];
+    this.optionalFolders = extraRoots;
+    this.folders = [...new Set([folder, ...extraRoots, this.root].filter(Boolean))];
     this.extraArchives = extraArchives;
     this.archives = [];
     this.archivePromises = new Map();
@@ -82,6 +84,14 @@ export class LocalResources {
   }
 
   async discover() {
+    if (!/\.mdx$/i.test(this.mdxPath)) {
+      for (const folder of this.optionalFolders) {
+        let exists = false; try { this._checkActive(); exists = (await this.fs.stat(folder)).type === 'directory'; this._checkActive(); }
+        catch (error) { this._checkActive(); if (error.name === 'AbortError') throw error; }
+        if (!exists) this.folders = this.folders.filter(path => path !== folder);
+      }
+      this.archives = [...new Set(this.extraArchives)]; return;
+    }
     const stem = this.fs.basename(this.mdxPath).replace(/\.mdx$/i, '');
     const escaped = stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const pattern = new RegExp('^' + escaped + '(?:\\.(\\d+))?\\.mdd$', 'i');

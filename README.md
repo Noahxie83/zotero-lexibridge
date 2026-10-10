@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/assets/cover.svg" alt="Local MDX：Zotero 本地词典插件，支持点击与划选查词。" width="100%">
+  <img src="docs/assets/cover.svg" alt="Local Dictionary：Zotero 本地词典，支持 MDX、StarDict 和 DSL。" width="100%">
 </p>
 
-<h1 align="center">Local MDX</h1>
+<h1 align="center">Local Dictionary · 本地词典</h1>
 
 <p align="center"><b>Zotero 本地词典插件 · 点击与划选查词</b></p>
 <p align="center">在文献阅读中查询单词与词组，使用本地词典的释义、排版和发音。</p>
@@ -24,7 +24,11 @@
 
 ---
 
-**Local MDX** 在 Zotero PDF 阅读器中提供离线词典查询。单击英文单词，或划选完整的单词与词组，即可查看所选 MDX 词典的释义。插件支持多词典切换、配套 MDD 分卷和外置资源，并提供内置 SPX/Speex 解码器。
+**Local Dictionary** 原名 Local MDX，在 Zotero PDF 阅读器中提供 MDX、StarDict 和 DSL 离线词典查询。插件标识和已有设置保持兼容，支持覆盖升级。
+
+**当前源码与本地构建为 1.2.0，尚未上传 GitHub Release；上方下载链接和自动更新配置仍指向旧版 1.1.3。** 运行 `npm run build` 可生成 `dist/local-dictionary-1.2.0.xpi`。
+
+[1.2.0 新功能与验证](docs/UPGRADE_1.2.0.md) · [词典格式支持](docs/FORMAT_SUPPORT.md)。工具栏“查询”或 Ctrl/⌘+Alt+D 打开手动查询，词形还原、多词典联合查询、生词与笔记已加入。
 
 **使用流程：** 选择词典目录 → 打开 PDF → 点击或划选文字 → 查看释义与发音
 
@@ -34,7 +38,11 @@
 | --- | --- |
 | **点击与划选查词** | 在阅读器内查询单词或词组；划选后可同时使用高亮、下划线和颜色选择。 |
 | **断行单词识别** | 对 `transfor-` 换行 `mation`，分别查询 `transfor-mation` 与 `transformation`，合并相同词条；复合词保留连字符候选。 |
-| **多词典管理** | 选择词典目录，导入当前层的全部 MDX，在下拉框中切换查询词典；也可直接选择单个 MDX 文件。 |
+| **多格式与多目录** | 识别 MDX、StarDict .ifo、DSL/.dsl.dz；管理多个目录，可选递归扫描及查询顺序。 |
+| **词形与多词典查询** | 原词未命中时尝试常见英语词形；支持单词典、未命中回退和联合查询，释义标注来源。 |
+| **手动查询与历史** | 输入框、Ctrl/⌘+Alt+D、返回/前进、固定弹窗、分页词目浏览与拼写建议。 |
+| **生词与文献上下文** | 主动收藏单词、释义、原句和页码；写入 Zotero 笔记，导出 CSV/Anki TSV。 |
+| **阅读与迁移** | 字号/尺寸/主题、英美发音偏好和重播、展开诊断、MDD 顺序管理、设置备份与路径重新定位。 |
 | **MDD 分卷与配套资源** | 自动关联同名 MDD 和数字分卷，按引用读取 CSS、图片、图标、字体与音频；支持手动关联资源包和外置资源目录。 |
 | **词典原有排版** | 加载词条引用的 HTML/CSS 和本地资源，呈现各词典的样式；可切换为简洁文字排版。 |
 | **内置离线发音解码** | 标准 Ogg/SPX 音频通过内置 Speex 解码器转换为 WAV，无需安装额外解码程序。 |
@@ -57,7 +65,7 @@
 
 ### 1. 安装插件
 
-下载 **[最新稳定版 XPI](https://github.com/Noahxie83/zotero-local-mdx-click/releases/latest)**，在 Zotero 中依次选择：
+本地 1.2.0 安装包为 `dist/local-dictionary-1.2.0.xpi`；历史已发布版本从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases) 下载。在 Zotero 中依次选择：
 
 **工具 → 插件 → 齿轮 → 从文件安装插件**
 
@@ -65,7 +73,7 @@
 
 ### 2. 添加词典
 
-打开 **设置 → 本地 MDX 点击查词**，选择词典文件夹或 MDX 文件，再从下拉框选择当前词典。默认采用“词典原有排版”；如需简洁显示，可切换为“简洁文字排版”。
+打开 **设置 → 本地词典**，选择词典目录或 `.mdx`、`.ifo`、`.dsl`、`.dsl.dz` 入口文件，从下拉框选择当前词典。StarDict 需保留同名索引与数据文件；详情见 [格式支持](docs/FORMAT_SUPPORT.md)。默认采用“词典原有排版”；也可切换为文字模式。
 
 ### 3. 开始查询
 
@@ -73,7 +81,7 @@
 
 - 点击词条发音图标播放本地音频，点击内部词条链接继续查询。
 - 划选后选择颜色，再点击高亮或下划线保存批注。
-- 使用 ×、Esc、点击外部或滚动 PDF 关闭弹窗。
+- 使用 ×、Esc 关闭弹窗；未固定时点击外部或滚动 PDF 也会关闭。
 - 工具栏“本地词典 ✓”可切换启用状态；安装前已打开的 PDF 可重新打开标签。
 
 更多设置见 [完整使用指南](docs/USER_GUIDE.md)。
@@ -124,7 +132,7 @@ Dictionaries/
 | --- | --- |
 | 阅读器 | Zotero **10.0 系列** PDF 阅读器；扫描文献需要 OCR 文字层 |
 | MDX / MDD | 1.x、2.x；raw/zlib/LZO；2.x `Encrypted=2` 索引混淆 |
-| 查询 | 大小写配置、内部别名、重复词目与跨块内容 |
+| 查询 | MDX、StarDict、DSL；大小写、内部链接、英语词形、单词典/回退/联合查询 |
 | 划选 | 规范化后最多 256 字符、16 个词；最多 3 个连字符候选 |
 | 资源 | 本地 HTML/CSS、导入样式、图片、字体、背景与音频 |
 | Speex | 标准 Ogg/SPX；单/双声道、多帧；单文件累计最多 30 秒，输入限额 8 MB |
@@ -135,7 +143,7 @@ Dictionaries/
 - 词组查询需要词典收录对应词目或跳转项；长句翻译不属于当前功能。
 - 断行单词需要划选完整的两部分；普通单击取词不跨行扩展。
 - 词典 JavaScript 与远程资源不运行或加载，依赖脚本的折叠、统计和特殊控件可能无法呈现。
-- 暂不支持 MDX/MDD 3、密码解密、StyleSheet 反引号宏与词形自动还原；词形查询依赖词典自带跳转。
+- 暂不支持 MDX/MDD 3、密码解密、StyleSheet 反引号宏、StarDict res.rdic 资源数据库和 DSL .files.zip/.lsd。词形还原使用有限英语规则。
 - 音频播放受文件格式与 Zotero/系统解码能力影响，第三方私有格式的兼容性需按实际文件确认。
 
 编码、资源查找顺序和读取限额见 [使用指南](docs/USER_GUIDE.md)、[资源支持](docs/RESOURCE_SUPPORT.md)、[Speex 说明](docs/SPEEX_AUDIO.md)。

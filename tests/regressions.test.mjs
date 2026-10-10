@@ -30,6 +30,7 @@ test('Alias real cycles, independent branches and shared records', async () => {
   assert.deepEqual(await branches.lookup('alias'), [{ headword: 'target', html: '<p>shared</p>' }]);
 });
 function appEnvironment(overrides = {}) {
+  const defaultBytes = makeDictionary([['word', 'definition']]);
   const prefs = new Map([['localMDXClick.enabled', false]]);
   return {
     prefs,
@@ -37,7 +38,8 @@ function appEnvironment(overrides = {}) {
       Zotero: { Prefs: { get: key => prefs.get(key), set: (key, value) => prefs.set(key, value) }, logError() {} },
       IOUtils: {
         stat: async path => { if (path === '/unreadable') throw new Error('EACCES'); return { type: path.endsWith('.mdx') ? 'regular' : 'directory', size: 4096 }; },
-        getChildren: async path => path === '/empty' ? [] : [`${path}/dictionary.mdx`], ...overrides,
+        getChildren: async path => path === '/empty' ? [] : [`${path}/dictionary.mdx`],
+        read: async (path, { offset, maxBytes }) => defaultBytes.subarray(offset, offset + maxBytes), ...overrides,
       },
     },
   };

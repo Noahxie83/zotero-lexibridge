@@ -14,12 +14,12 @@ async function walk(dir, prefix = '') {
     const name = prefix + item.name;
     if (omit.has(item.name) || generated.has(name) || name.startsWith('addon/licenses/') || /\.(?:mdx|mdd|xpi|zip)$/i.test(name)) continue;
     if (item.isDirectory()) await walk(path.join(dir, item.name), name + '/');
-    else if (item.isFile()) files['zotero-local-mdx-click/' + name] = new Uint8Array(await readFile(path.join(dir, item.name)));
+    else if (item.isFile()) files['zotero-local-dictionary/' + name] = new Uint8Array(await readFile(path.join(dir, item.name)));
   }
 }
 await walk(root);
 await mkdir(path.join(root, 'dist'), { recursive: true });
 const suffix = process.argv.includes('--docs') ? '-docs' : '';
-const out = path.join(root, 'dist', `local-mdx-click-source-${manifest.version}${suffix}.zip`);
+const out = path.join(root, 'dist', `local-dictionary-source-${manifest.version}${suffix}.zip`);
 await writeFile(out, zipSync(files, { level: 6 }));
 console.log(out);

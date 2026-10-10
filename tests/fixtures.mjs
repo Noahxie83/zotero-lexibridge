@@ -10,6 +10,7 @@ export const api = await (async () => {
     stdin: { contents: [
       "export { MDXDictionary, MDDArchive } from './src/mdx.js';",
       "export { createApp } from './src/main.js';",
+      "export { DictionaryPool } from './src/dictionary-pool.js';",
       "export { ResourceScope, prepareNativeDefinition } from './src/native-render.js';",
       "export { LocalResources } from './src/resources.js';",
       "export { queryFromText } from './src/selection-query.js';",

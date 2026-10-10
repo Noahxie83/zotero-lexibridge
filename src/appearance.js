@@ -3,6 +3,15 @@
 // Popup chrome and the optional text fallback. Original dictionary CSS is
 // loaded only inside its own sandboxed iframe by native-render.js.
 export const popupCSS = `
+  .query-form, .query-actions { display:flex; gap:6px; flex-wrap:wrap; padding:6px 12px; flex:0 0 auto; }
+  .query-form input { flex:1; min-width:100px; color:var(--ink); background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:5px; font:inherit; font-size:14px; }
+  .query-form button, .query-actions button, .load-more { width:auto; height:28px; font:12px/1.4 sans-serif; padding:3px 7px; border:1px solid var(--border); background:var(--surface); color:var(--ink); }
+  .query-actions button:disabled { opacity:.45; cursor:default; }
+  .query-diagnostics { font-size:12px; padding:4px 12px; flex:0 0 auto; }
+  .query-diagnostics summary { cursor:pointer; }
+  .query-diagnostics pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:120px; overflow:auto; margin:5px 0; }
+  .result-section { margin-bottom:12px; }
+  .load-more { display:block; margin:8px auto; cursor:pointer; }
   :host { color-scheme: light dark; }
   * { box-sizing: border-box; }
   .card {

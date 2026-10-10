@@ -7,6 +7,7 @@ import { localReference, decodeStyle } from './resources.js';
 import { resourceKey } from './mdx.js';
 import { element } from './render.js';
 import { decodeSpeex, isOggSpeex } from './speex.js';
+import { nativeAppearanceCSS } from './appearance-settings.js';
 
 const BLOCKED = new Set('script meta base iframe frame frameset object embed applet template noscript svg math form input button select textarea portal'.split(' '));
 const VOID = new Set('area br col hr img source track wbr'.split(' '));
@@ -368,7 +369,7 @@ export function appendNativeNodes(doc, target, plans) {
   }
 }
 
-export function mountNativeDefinition(doc, container, plan, scope, { onEntry, onStatus, onResize, onClose, onError }) {
+export function mountNativeDefinition(doc, container, plan, scope, { onEntry, onStatus, onResize, onClose, onError, appearance, onAudio, onShortcut, onResourceStatus }) {
   const iframe = element(doc, 'iframe');
   iframe.setAttribute('title', '词典原有排版');
   iframe.setAttribute('sandbox', 'allow-same-origin');
@@ -387,7 +388,7 @@ export function mountNativeDefinition(doc, container, plan, scope, { onEntry, on
       const frameDoc = iframe.contentDocument;
       if (!frameDoc?.body) throw new Error('无法创建词典显示区域。');
       const style = element(frameDoc, 'style');
-      style.textContent = BASE_STYLE + '\n' + plan.css.join('\n') + '\n' + CONTROLS_STYLE; frameDoc.head.append(style);
+      style.textContent = BASE_STYLE + '\n' + plan.css.join('\n') + '\n' + CONTROLS_STYLE + '\n' + nativeAppearanceCSS(appearance); frameDoc.head.append(style);
       appendNativeNodes(frameDoc, frameDoc.body, plan.nodes);
       normalizeListNumbers(frameDoc);
       const resize = () => {
@@ -407,27 +408,34 @@ export function mountNativeDefinition(doc, container, plan, scope, { onEntry, on
           const url = await scope.audioURL(key);
           if (disposed || ticket !== audioRequest) return;
           if (!url) throw new Error('未找到音频：' + key);
-          audio = element(frameDoc, 'audio'); audio.src = url;
+          // Reader controls live outside this iframe. User activation flows to
+          // ancestor documents, so the reader owns playback for both controls
+          // and dictionary links; a child iframe cannot inherit that activation.
+          audio = element(doc, 'audio'); audio.src = url;
+          audio.addEventListener('ended', () => { if (!disposed && ticket === audioRequest) onStatus?.('发音播放结束'); });
           audio.addEventListener('error', () => {
             if (!disposed && ticket === audioRequest) onStatus?.('音频播放失败：可能是文件损坏或当前环境不支持此格式。');
           });
           await audio.play();
-          if (!disposed && ticket === audioRequest) onStatus?.('正在播放发音');
+          if (!disposed && ticket === audioRequest) { onStatus?.('正在播放发音'); onAudio?.({ played: key, play }); }
         } catch (e) {
-          if (!disposed && ticket === audioRequest) onStatus?.('发音播放失败：' + e.message);
+          if (!disposed && ticket === audioRequest) { scope.missing.add(key + '（' + e.message + '）'); onStatus?.('发音播放失败：' + (e.name === 'NotAllowedError' ? '播放权限被阻止，请再次点击发音按钮或词条发音图标。' : e.message)); }
         }
+        if (!disposed) onResourceStatus?.();
       };
+      onAudio?.({ keys: [...new Set([...frameDoc.querySelectorAll('[data-mdx-audio]')].map(anchor => anchor.dataset.mdxAudio))], play });
       const activate = event => {
         const anchor = event.target.closest?.('[data-mdx-audio],[data-mdx-entry],[data-mdx-anchor]');
         if (!anchor) return;
         event.preventDefault(); event.stopPropagation();
         if (anchor.dataset.mdxAudio) void play(anchor.dataset.mdxAudio);
         else if (anchor.dataset.mdxEntry) onEntry?.(anchor.dataset.mdxEntry);
-        else frameDoc.getElementById(anchor.dataset.mdxAnchor)?.scrollIntoView();
+        else { let id = anchor.dataset.mdxAnchor; try { id = decodeURIComponent(id); } catch {} frameDoc.getElementById(id)?.scrollIntoView(); }
       };
       frameDoc.addEventListener('click', activate);
       frameDoc.addEventListener('keydown', event => {
         if (event.key === 'Escape') { event.preventDefault(); onClose?.(); }
+        else if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === 'd') { event.preventDefault(); onShortcut?.(); }
         else if (event.key === 'Enter' || event.key === ' ') activate(event);
       });
       resize();

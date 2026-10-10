@@ -5,8 +5,9 @@
  * No selection, annotation, page state, or DOM style is changed.
  */
 
-const WORD = /[\p{L}\p{M}\p{N}]+(?:['’\u2010\u2011-][\p{L}\p{M}\p{N}]+)*/gu;
-const TOKEN_CHARACTER = /^[\p{L}\p{M}\p{N}'’\u2010\u2011-]+$/u;
+const WORD = /[\p{L}\p{M}\p{N}\u00ad\u200b]+(?:['’\u2010\u2011-][\p{L}\p{M}\p{N}\u00ad\u200b]+)*/gu;
+const TOKEN_CHARACTER = /^[\p{L}\p{M}\p{N}'’\u2010\u2011\u00ad\u200b-]+$/u;
+const INVISIBLE = /^[\u00ad\u200b]+$/u;
 
 function normalizeWord(value) {
   const word = value.normalize("NFKC")
@@ -64,7 +65,7 @@ function fromCaret(doc, page, x, y) {
 }
 
 function validCharacter(char) {
-  return char && !char.ignorable && typeof char.c === "string"
+  return char && (!char.ignorable || INVISIBLE.test(char.c || '')) && typeof char.c === "string"
     && TOKEN_CHARACTER.test(char.c) && Array.isArray(char.rect)
     && char.rect.length >= 4 && char.rect.slice(0, 4).every(Number.isFinite);
 }
@@ -96,7 +97,7 @@ function adjacent(left, right) {
     || (horizontalOverlap >= minWidth * 0.3 && verticalGap <= minWidth * 0.5);
 }
 
-function fromCharacterGeometry(win, page, view, x, y) {
+function fromCharacterGeometry(win, page, view, x, y, onContext) {
   const pageIndex = Number(page.dataset.pageNumber) - 1;
   if (!Number.isInteger(pageIndex) || pageIndex < 0) return "";
   const chars = view?._pdfPages?.[pageIndex]?.chars;
@@ -121,7 +122,7 @@ function fromCharacterGeometry(win, page, view, x, y) {
   let bestDistance = Infinity;
   for (let index = 0; index < chars.length; index++) {
     const char = chars[index];
-    if (!validCharacter(char)) continue;
+    if (!validCharacter(char) || INVISIBLE.test(char.c)) continue;
     const r = box(char.rect);
     if (pdfX < r.left || pdfX > r.right || pdfY < r.bottom || pdfY > r.top) continue;
     const distance = Math.hypot(pdfX - (r.left + r.right) / 2, pdfY - (r.bottom + r.top) / 2);
@@ -136,7 +137,9 @@ function fromCharacterGeometry(win, page, view, x, y) {
   let end = hit + 1;
   while (start > 0 && hit - start < 128 && adjacent(chars[start - 1], chars[start])) start--;
   while (end < chars.length && end - start < 128 && adjacent(chars[end - 1], chars[end])) end++;
-  return normalizeWord(chars.slice(start, end).map(char => char.c).join(""));
+  const word = normalizeWord(chars.slice(start, end).map(char => char.c).join(""));
+  if (word) onContext?.({ pageIndex, start, end });
+  return word;
 }
 
 /**
@@ -148,7 +151,7 @@ function fromCharacterGeometry(win, page, view, x, y) {
  * @param {object} [view] The corresponding Zotero PDF view, if accessible.
  * @returns {string} A normalized word, or an empty string for a non-word hit.
  */
-export function wordAtPoint(win, x, y, view) {
+export function wordAtPoint(win, x, y, view, onContext) {
   if (!win || !Number.isFinite(x) || !Number.isFinite(y)) return "";
   try {
     const page = pageAtPoint(win.document, x, y);
@@ -156,7 +159,7 @@ export function wordAtPoint(win, x, y, view) {
     // Cached character geometry can join a word fragmented across font spans
     // and still works when an annotation overlay blocks the DOM caret API.
     try {
-      const geometricWord = fromCharacterGeometry(win, page, view, x, y);
+      const geometricWord = fromCharacterGeometry(win, page, view, x, y, onContext);
       if (geometricWord) return geometricWord;
     } catch {
       // Internal reader fields can disappear while a tab is being closed.

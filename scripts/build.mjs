@@ -9,7 +9,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 await build({
   entryPoints: [path.join(root, 'src/main.js')],
   outfile: path.join(root, 'addon/content/plugin.js'),
-  bundle: true, format: 'iife', globalName: 'LocalMDXModule',
+  bundle: true, format: 'iife', globalName: 'LocalDictionaryModule',
   platform: 'browser', target: ['firefox140'], legalComments: 'inline',
   loader: { '.wasm': 'binary' },
 });
@@ -47,7 +47,7 @@ async function walk(dir, prefix = '') {
 await walk(path.join(root, 'addon'));
 const manifest = JSON.parse(await readFile(path.join(root, 'addon/manifest.json'), 'utf8'));
 await mkdir(path.join(root, 'dist'), { recursive: true });
-const name = `local-mdx-click-${manifest.version}.xpi`;
+const name = `local-dictionary-${manifest.version}.xpi`;
 const out = path.join(root, 'dist', name);
 const xpi = zipSync(files, { level: 6 });
 await writeFile(out, xpi);

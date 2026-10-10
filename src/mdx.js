@@ -3,6 +3,7 @@
 import { Inflate } from "pako";
 import lzo from "./vendor/lzo1x.ts";
 import { ripemd128 } from "./vendor/ripemd128.ts";
+import { createBlockFilter, blockMayContain } from './block-filter.js';
 
 const MAX_HEADER = 16 * 1024 * 1024;
 const MAX_BLOCK = 128 * 1024 * 1024;
@@ -335,6 +336,16 @@ class MDictContainer {
   async lookup(word) {
     return this._lookup(String(word).trim(), new Set(), 0);
   }
+  browseWords(prefix = '', offset = 0, limit = 30) {
+    if (this._binary) return { words: [], more: false };
+    if (!this._sortedKeys) this._sortedKeys = [...this._keys.keys()].sort();
+    const keys = this._sortedKeys, normalized = this._normalize(String(prefix).slice(0, 256));
+    let lo = 0, hi = keys.length;
+    while (lo < hi) { const mid = (lo + hi) >>> 1; if (keys[mid] < normalized) lo = mid + 1; else hi = mid; }
+    const words = [], size = Math.min(8000, Math.max(1, Math.floor(Number(limit)) || 30)); let at = lo + Math.max(0, Math.floor(Number(offset)) || 0);
+    for (; at < keys.length && keys[at].startsWith(normalized) && words.length < size; at++) words.push(this._keys.get(keys[at])[0].headword);
+    return { words, more: at < keys.length && keys[at].startsWith(normalized) };
+  }
 
   async _lookup(word, visited, depth) {
     if (!word) return [];
@@ -393,6 +404,7 @@ export class MDDArchive extends MDictContainer {
     this._keyPending = new Map();
     this._keyCacheBytes = 0;
     this._lookupCache = new Map(); this._lookupCacheBytes = 0;
+    this._filters = new Map(); this._filterBytes = 0;
     this.lookupStats = { lookups: 0, cacheHits: 0, blocksInspected: 0, keyBlocksDecompressed: 0, keyBytesUnpacked: 0, sourceReads: 0, bytesRead: 0, totalLookupMs: 0 };
   }
 
@@ -418,6 +430,14 @@ export class MDDArchive extends MDictContainer {
         entries.push({ headword, key: resourceKey(headword), start, end: 0 });
       }
       ensure(cur.at === cur.bytes.length, 'MDD 资源索引含未识别数据');
+      if (epoch === this._cacheEpoch && !this._filters.has(index)) {
+        const filter = createBlockFilter(entries);
+        this._filters.set(index, filter); this._filterBytes += filter.byteLength;
+        while (this._filterBytes > 4 * 1024 * 1024) {
+          const oldest = this._filters.keys().next().value;
+          this._filterBytes -= this._filters.get(oldest).byteLength; this._filters.delete(oldest);
+        }
+      }
       const cost = block.unpacked * 4; // Account for decoded strings and objects.
       if (cost <= MAX_CACHE_BYTES && epoch === this._cacheEpoch) {
         this._keyCache.set(index, { entries, cost }); this._keyCacheBytes += cost;
@@ -456,6 +476,9 @@ export class MDDArchive extends MDictContainer {
       (key >= resourceKey(block.first) && key <= resourceKey(block.last) ? candidates : remaining).push(i);
     }
     for (const index of [...candidates, ...remaining]) {
+      if (this._filters.has(index) && !blockMayContain(this._filters.get(index), key)) {
+        this.lookupStats.filterSkips = (this.lookupStats.filterSkips || 0) + 1; continue;
+      }
       this.lookupStats.blocksInspected++;
       const entries = await this._resourceKeys(index);
       const entry = entries.find(item => item.key === key);
@@ -487,5 +510,6 @@ export class MDDArchive extends MDictContainer {
   clearCache() {
     super.clearCache(); this._keyCache.clear(); this._keyPending.clear(); this._keyCacheBytes = 0;
     this._lookupCache.clear(); this._lookupCacheBytes = 0;
+    this._filters.clear(); this._filterBytes = 0;
   }
 }

@@ -32,10 +32,11 @@ for (const [index, item] of dictionaries.entries()) {
 }
 const bundle = await build({ entryPoints:[path.join(root,'examples/showcase.js')],bundle:true,platform:'browser',format:'iife',target:'es2022',minify:true,write:false,loader:{'.wasm':'binary'},legalComments:'none' });
 const esc = text => text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-let licenses = 'Local MDX — GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
+let licenses = 'Local Dictionary — GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
 for(const name of await readdir(path.join(root,'addon/licenses'))) licenses += '\n\n--- '+name+' ---\n'+await readFile(path.join(root,'addon/licenses',name),'utf8');
 const logo = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'docs/assets/wordmark.svg'))).toString('base64');
 const template = await readFile(path.join(root,'examples/template.html'),'utf8');
 const html = template.replace('__WORDMARK__',()=>logo).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__BUNDLE__',()=>bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'));
 await writeFile(path.join(root,'docs/index.html'),html);await writeFile(path.join(root,'docs/.nojekyll'),'');await mkdir(path.join(root,'dist'),{recursive:true});
-await writeFile(path.join(root,'dist/local-mdx-click-demo-1.1.2.html'),html);console.log('Built standalone showcase: '+Buffer.byteLength(html)+' bytes');
+const manifest = JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+await writeFile(path.join(root,`dist/local-dictionary-demo-${manifest.version}.html`),html);console.log('Built standalone showcase: '+Buffer.byteLength(html)+' bytes');

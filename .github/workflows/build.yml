@@ -20,5 +20,5 @@ jobs:
       - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
-          name: local-mdx-click
+          name: local-dictionary
           path: dist/*

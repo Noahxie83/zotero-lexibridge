@@ -110,7 +110,7 @@ export function createCard(doc, x, y, word, close) {
   header.append(button);
   const body = element(doc, 'div', '正在查询本地词典…'); body.className = 'body';
   body.setAttribute('aria-live', 'polite');
-  const footer = element(doc, 'div', '本地 MDX'); footer.className = 'source';
+  const footer = element(doc, 'div', 'Local Dictionary'); footer.className = 'source';
   const choice = element(doc, 'div'); choice.className = 'dictionary-choice';
   const selector = element(doc, 'select'); selector.setAttribute('aria-label', '选择查询词典');
   const choiceLabel = element(doc, 'span', '词典'); choiceLabel.className = 'dictionary-label';
@@ -125,5 +125,5 @@ export function createCard(doc, x, y, word, close) {
     host.style.left = left + 'px'; host.style.top = top + 'px';
   };
   position();
-  return { host, body, footer, selector, choice, queries, selectionTools, position };
+  return { host, body, footer, selector, choice, queries, selectionTools, position, close };
 }
