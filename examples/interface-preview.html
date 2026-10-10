@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>本地词典 · 界面预览</title>
+  <style>
+    :root{color-scheme:light;--bg:#eef2f5;--fg:#26343e;--sub:#536572;--line:#c8d2da;--panel:#fbfcfd}
+    :root[data-theme="dark"]{color-scheme:dark;--bg:#171e25;--fg:#e5ecf1;--sub:#adbdc9;--line:#465764;--panel:#222d36}
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#171e25;--fg:#e5ecf1;--sub:#adbdc9;--line:#465764;--panel:#222d36}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.6 'Segoe UI','Microsoft YaHei',sans-serif}
+    .preview-top{padding:24px 32px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .preview-top h1{margin:0;font-size:19px;letter-spacing:-.02em}.preview-top p{margin:3px 0 0;color:var(--sub);font-size:12px}
+    .preview-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-left:auto}
+    .preview-controls label{display:grid;gap:4px;font-size:12px;color:var(--sub)}
+    .preview-controls select,.preview-controls button{height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:var(--panel);color:var(--fg);font:inherit;white-space:nowrap}
+    .preview-controls button{cursor:pointer}.preview-controls :focus-visible{outline:2px solid #2774a5;outline-offset:3px}
+    main{padding:32px;min-height:calc(100vh - 112px)}#popup-preview{width:min(540px,100%);margin:0 auto}
+    #settings-preview{max-width:820px;margin:auto;padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+    [hidden]{display:none!important}.preview-note{max-width:540px;margin:18px auto;color:var(--sub);font-size:12px}vbox{display:block}
+    @media(max-width:600px){.preview-top{padding:16px;gap:12px}.preview-controls{margin-left:0;gap:8px}main{padding:20px 12px}#settings-preview{padding:18px 12px}.preview-note{padding:0 4px}}
+  </style>
+</head>
+<body>
+  <div class="preview-top">
+    <div><h1>本地词典 · 界面预览</h1><p>使用插件的实际组件，自制示例词条。预览操作只影响此页面。</p></div>
+    <div class="preview-controls">
+      <label>界面<select id="preview-view"><option value="popup">查词弹窗</option><option value="settings">设置页</option></select></label>
+      <label>主题<select id="preview-theme"><option value="light">浅色</option><option value="dark">深色</option><option value="original">跟随系统</option></select></label>
+      <label id="preview-state-label">查询状态<select id="preview-state"><option value="ready">释义</option><option value="selection">划选与批注</option><option value="loading">加载中</option><option value="empty">未命中</option><option value="error">读取失败</option></select></label>
+      <button id="preview-reopen" type="button">重新显示</button>
+    </div>
+  </div>
+  <main>
+    <div id="popup-preview"></div>
+    <div id="settings-preview" hidden><!-- PREFERENCES --></div>
+    <p class="preview-note" id="preview-notice">可查询 research、network 或 neural network，体验历史、固定和收藏。发音使用自制提示音。</p>
+  </main>
+  <!-- SCRIPT -->
+</body>
+</html>

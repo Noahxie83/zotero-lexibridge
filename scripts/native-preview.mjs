@@ -64,7 +64,7 @@ const client = await build({
       examples.forEach((sample,i) => {const option=element(document,'option',sample.name); option.value=String(i);card.selector.append(option);});
       card.selector.value=String(index);
       card.selector.onchange=() => {index=Number(card.selector.value);show();};
-      card.body.replaceChildren();card.body.style.padding='0';
+      card.body.replaceChildren();card.setState('ready');card.body.style.padding='0';
       const scope = {closed:false,url:async () => '',missing:new Set()};
       examples[index].plans.forEach(plan => {const section=element(document,'section');card.body.append(section);
         disposers.push(mountNativeDefinition(document,section,plan,scope,{

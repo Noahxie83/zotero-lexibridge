@@ -18,6 +18,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run build
+      - run: npm run build:site
       - uses: actions/upload-artifact@v4
         with:
           name: local-dictionary

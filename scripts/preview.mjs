@@ -19,6 +19,7 @@ const result = await build({
       current?.host.remove();
       current = createCard(document, 0, 0, ${JSON.stringify(word)}, () => current.host.remove());
       current.body.replaceChildren(renderDefinition(document, ${JSON.stringify(html)}));
+      current.setState('ready');
       current.selector.append(element(document, 'option', ${JSON.stringify(dictionaryName)}));
       current.footer.textContent = ${JSON.stringify('本地排版预览 · ' + version)};
       current.host.style.left = '50%'; current.host.style.top = '76px';

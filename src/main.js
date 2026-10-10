@@ -362,11 +362,13 @@ export function createApp(env, pluginID) {
         },
         onBrowse: async prefix => {
           current.browsing = true; display?.close(); current.audioButton.disabled = true; current.replayButton.disabled = true; current.collectButton.disabled = true; current.noteButton.disabled = true; current.body.hidden = false; current.body.textContent = '正在读取词目…';
+          current.setState('loading');
           try {
             const dictionary = await dictionaryPool.load(getPath()); let offset = 0;
             const renderPage = () => {
               if (ticket !== request || !current.host.isConnected) return;
               const page = dictionary.browseWords(prefix, offset, 30); current.body.replaceChildren();
+              current.setState(page.words.length ? 'ready' : 'empty');
               for (const headword of page.words) {
                 const button = element(doc, 'button', headword); button.type = 'button'; button.className = 'load-more';
                 button.addEventListener('click', () => { void show(queryFromText(headword, 'entry'), x, y, undefined, { context }).catch(log); }); current.body.append(button);
@@ -379,7 +381,7 @@ export function createApp(env, pluginID) {
               current.footer.textContent = '当前词典词目 · 前缀：' + (prefix || '全部'); current.position();
             };
             renderPage();
-          } catch (error) { if (ticket === request && current.host.isConnected) current.body.textContent = errorText(error); }
+          } catch (error) { if (ticket === request && current.host.isConnected) { current.setState('error'); current.body.textContent = errorText(error); } }
         },
       });
       if (options.focus) current.queryInput.focus();
@@ -406,6 +408,7 @@ export function createApp(env, pluginID) {
         catch (error) { log(error); current.footer.textContent = '切换失败：' + errorText(error); fillSelect(current.selector); }
       });
       if (!query.candidates.length) {
+        current.setState('idle');
         current.body.hidden = true;
         current.footer.textContent = annotation ? '选择颜色后点击高亮或下划线，保存至 Zotero' : '输入单词或词组后按 Enter 查询 · Ctrl/⌘+Alt+D';
         current.position(); return;
@@ -427,6 +430,7 @@ export function createApp(env, pluginID) {
         current.queries.hidden = found.groups.length === 1 && found.groups[0].attempts.length === 1;
         current.queries.textContent = found.groups.map(group => group.name + '：' + group.attempts.map(attempt => attempt.word + (attempt.kind === 'form' ? '（词形）' : '') + (attempt.found ? ' ✓' : '（未收录）')).join(' / ')).join('；');
         current.body.replaceChildren();
+        current.setState(found.results.length ? 'ready' : found.errors.length ? 'error' : 'empty');
         if (!found.results.length) current.body.textContent = found.errors.length ? '查询读取失败：' + found.errors.join('；') : '未找到“' + word + '”。可修改查询词或切换词典。';
         const diagnostics = [...found.errors, ...found.groups.flatMap(group => (group.warnings || []).map(issue => group.name + '：' + issue))];
         let resourceSources = [];
@@ -465,7 +469,7 @@ export function createApp(env, pluginID) {
           }
         }
       } catch (e) {
-        if (ticket === request && getPath() === selectedPath && current.host.isConnected) current.body.textContent = errorText(e);
+        if (ticket === request && getPath() === selectedPath && current.host.isConnected) { current.setState('error'); current.body.textContent = errorText(e); }
         log(e);
       }
       if (ticket === request) current.position();

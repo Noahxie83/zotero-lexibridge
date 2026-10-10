@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Local Dictionary · 本地词典",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Zotero 离线词典：MDX、StarDict 和 DSL，点击、划选与手动查询，词形还原、生词上下文、笔记与导出、本地发音。",
   "author": "Noahxie83",
   "icons": {

@@ -1,12 +1,14 @@
 {
   "name": "zotero-local-dictionary",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "build": "node scripts/build.mjs",
     "pack:source": "node scripts/package-source.mjs",
+    "preview:ui": "node scripts/build-interface-preview.mjs",
+    "build:site": "node scripts/build-showcase.mjs && node scripts/build-interface-preview.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {

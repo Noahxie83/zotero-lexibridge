@@ -3,9 +3,9 @@
     "local-mdx-click@noahx.local": {
       "updates": [
         {
-          "version": "1.2.0",
-          "update_link": "https://github.com/Noahxie83/zotero-local-mdx-click/releases/download/v1.2.0/local-dictionary-1.2.0.xpi",
-          "update_hash": "sha256:7df52d4733c372066ae9fc7407c154108dbefaf0cd0876f6183e6a8198601bc4",
+          "version": "1.2.1",
+          "update_link": "https://github.com/Noahxie83/zotero-local-mdx-click/releases/download/v1.2.1/local-dictionary-1.2.1.xpi",
+          "update_hash": "sha256:67e689878867367e9835143aaec754f01f8a4f4c4aef4a29c5ec02ffd15fdb23",
           "applications": {
             "zotero": {
               "strict_min_version": "10.0",

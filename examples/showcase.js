@@ -25,7 +25,14 @@ const fs = {
   readFile: async name => files.get(name),
 };
 let selectedDictionary = data.dictionaries[0].path, active, sequence = 0;
+let lastQuery;
 const loaded = new Map(), target = document.getElementById('result');
+const systemDark = window.matchMedia('(prefers-color-scheme:dark)');
+const pageTheme = () => document.documentElement.dataset.theme || (systemDark.matches ? 'dark' : 'light');
+function updateTheme() {
+  if (lastQuery) void show(lastQuery.text, lastQuery.selection);
+}
+window.addEventListener('local-dictionary-theme', updateTheme);
 const cases = [
   { text: 'network', selection: false, label: '单击 network，查询当前本地词典。' },
   { text: 'transfor-\nmation', selection: true, label: '选中断行两部分；保留连字符与拼接写法分别查询。' },
@@ -41,13 +48,15 @@ async function dictionary(path) {
 }
 async function show(text, selection = false) {
   const query = queryFromText(text); if (!query) { document.getElementById('hint').textContent = '请划选一个完整词或词组（最多 256 字符、16 个词）。'; return; }
+  lastQuery = { text, selection };
   dispose(); const ticket = sequence;
   target.replaceChildren();
   const card = createCard(document, 0, 0, query.text, () => { dispose(); target.textContent = '点击左侧示例，再次打开词条。'; });
   card.host.style.cssText = 'all:initial;display:block;position:relative;width:100%;'; target.append(card.host);
   const frameStyle = document.createElement('style');
-  frameStyle.textContent = ':host{color-scheme:light}.card{width:100%;max-height:650px;box-shadow:none;border-radius:10px}.body{min-height:160px;max-height:460px}';
+  frameStyle.textContent = ':host{color-scheme:light dark}.card{width:100%;max-height:650px;box-shadow:none}.body{min-height:160px;max-height:460px}';
   card.host.shadowRoot.append(frameStyle);
+  card.host.shadowRoot.querySelector('.card').dataset.theme = pageTheme();
   active = { card, disposers: [], scope: null };
   for (const entry of data.dictionaries) { const option = document.createElement('option'); option.value = entry.path; option.textContent = entry.name; card.selector.append(option); }
   card.selector.value = selectedDictionary;
@@ -67,18 +76,20 @@ async function show(text, selection = false) {
     }
     card.queries.hidden = query.candidates.length < 2; card.queries.textContent = '查询候选：' + attempts.join(' · ');
     card.body.replaceChildren();
+    card.setState(results.size ? 'ready' : 'empty');
     if (!results.size) { card.body.textContent = '示例词典仅收录 network、transformation、neural network 和 pre-softmax。'; card.footer.textContent = '请选择这些示例词体验'; return; }
     const scope = new ResourceScope(resources, window); active.scope = scope;
     for (const entry of results.values()) {
       const plan = await prepareNativeDefinition(entry.html, scope); if (ticket !== sequence) return;
       const section = document.createElement('section'); card.body.append(section);
       active.disposers.push(mountNativeDefinition(document, section, plan, scope, {
+        appearance: { theme: pageTheme(), fontSize: 16 },
         onEntry: word => void show(word, selection), onStatus: message => { card.footer.textContent = message + ' · 此音频是自制提示音'; },
         onClose: () => dispose(), onError: error => { card.footer.textContent = error.message; },
       }));
     }
     card.footer.textContent = '原创示例词条 · CSS / 图片来自示例 MDD 分卷 · 音频为提示音';
-  } catch (error) { if (ticket === sequence) { card.body.textContent = '示例读取失败：' + error.message; card.footer.textContent = '可重新点击示例或刷新页面'; } }
+  } catch (error) { if (ticket === sequence) { card.setState('error'); card.body.textContent = '示例读取失败：' + error.message; card.footer.textContent = '可重新点击示例或刷新页面'; } }
 }
 function activate(index) {
   document.querySelectorAll('[data-case]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.case) === index)));
@@ -92,5 +103,5 @@ document.getElementById('paper').addEventListener('mouseup', () => {
     document.getElementById('hint').textContent = '已读取网页选区。实际插件优先使用 Zotero 的 PDF 字形和选区。'; void show(selection.toString(), true);
   }
 });
-window.addEventListener('pagehide', dispose);
+window.addEventListener('pagehide', () => { dispose(); window.removeEventListener('local-dictionary-theme', updateTheme); });
 activate(0);

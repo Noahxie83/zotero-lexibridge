@@ -9,11 +9,8 @@ export function applyAppearance(current, appearance) {
   card.style.width = `min(${appearance.width}px, calc(100vw - 24px))`;
   card.style.maxHeight = `min(${appearance.height}px, calc(100vh - 24px))`;
   card.style.fontSize = appearance.fontSize + 'px';
-  if (appearance.theme === 'dark') {
-    for (const [key, value] of Object.entries({ surface: '#20252b', chrome: '#282e35', border: '#49535e', ink: '#e5eaf0', muted: '#b2bfcc', note: '#28394a' })) card.style.setProperty('--' + key, value);
-  } else if (appearance.theme === 'light') {
-    for (const [key, value] of Object.entries({ surface: '#fff', chrome: '#f8fafc', border: '#dce3ea', ink: '#31343b', muted: '#687383', note: '#f0f7fc' })) card.style.setProperty('--' + key, value);
-  }
+  // CSS owns the complete palette so switching themes never leaves stale colors.
+  card.dataset.theme = appearance.theme;
 }
 export function nativeAppearanceCSS(appearance = {}) {
   const size = bounded(appearance.fontSize, 16, 12, 28);

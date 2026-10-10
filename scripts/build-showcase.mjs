@@ -30,13 +30,23 @@ for (const [index, item] of dictionaries.entries()) {
   files[item.path.replace('.mdx','.mdd')] = makeDictionary([['demo.wav', wav],['style.css',Buffer.from(styles[index])]], {binary:true, keyBlockSize:1, recordChunk:8192}).toString('base64');
   files[item.path.replace('.mdx','.2.mdd')] = makeDictionary([['images/network.svg',Buffer.from(diagram)]],{binary:true}).toString('base64');
 }
-const bundle = await build({ entryPoints:[path.join(root,'examples/showcase.js')],bundle:true,platform:'browser',format:'iife',target:'es2022',minify:true,write:false,loader:{'.wasm':'binary'},legalComments:'none' });
+const bundle = await build({ entryPoints:[path.join(root,'examples/showcase.js')],outfile:path.join(root,'docs/assets/showcase.js'),sourcemap:'linked',bundle:true,platform:'browser',format:'iife',target:'es2022',minify:true,write:false,loader:{'.wasm':'binary'},legalComments:'none' });
 const esc = text => text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-let licenses = 'Local Dictionary — GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
+let licenses = 'Local Dictionary - GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
 for(const name of await readdir(path.join(root,'addon/licenses'))) licenses += '\n\n--- '+name+' ---\n'+await readFile(path.join(root,'addon/licenses',name),'utf8');
 const logo = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'docs/assets/wordmark.svg'))).toString('base64');
-const template = await readFile(path.join(root,'examples/template.html'),'utf8');
-const html = template.replace('__WORDMARK__',()=>logo).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__BUNDLE__',()=>bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'));
-await writeFile(path.join(root,'docs/index.html'),html);await writeFile(path.join(root,'docs/.nojekyll'),'');await mkdir(path.join(root,'dist'),{recursive:true});
+const icon = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'addon/icons/local-mdx.svg'))).toString('base64');
+const hero = 'data:image/webp;base64,'+(await readFile(path.join(root,'docs/assets/reading-desk.webp'))).toString('base64');
 const manifest = JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+const template = await readFile(path.join(root,'examples/template.html'),'utf8');
+const pageScript = await readFile(path.join(root,'examples/page.js'),'utf8');
+const base = template.replace('__WORDMARK__',()=>logo).replace('__ICON__',()=>icon).replaceAll('__VERSION__',manifest.version).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__PAGE_SCRIPT__',()=>pageScript);
+const script = bundle.outputFiles.find(file => file.path.endsWith('.js')).text;
+const html = base.replace('__HERO_IMAGE__',()=>hero).replace('__BUNDLE__',()=>script.replace(/\/\/# sourceMappingURL=[^\n]+/g,'').replace(/\/\/#sourceMappingURL=[^\n]+/g,'').replace(/<\/script/gi,'<\\/script'));
+// Pages loads the demo when it is visible or clicked; images are cached separately.
+// The downloaded HTML keeps every resource inline so it still opens offline.
+const online = base.replace('src="__HERO_IMAGE__"', 'src="assets/reading-desk.webp" srcset="assets/reading-desk-768.webp 768w, assets/reading-desk.webp 1536w" sizes="(max-width:767px) calc(100vw - 40px), (max-width:1264px) 44vw, 550px"')
+  .replace('<script>__BUNDLE__</script>', '<script id="demo-loader" data-src="assets/showcase.js"></script>');
+for (const file of bundle.outputFiles) await writeFile(file.path, file.contents);
+await writeFile(path.join(root,'docs/index.html'),online);await writeFile(path.join(root,'docs/.nojekyll'),'');await mkdir(path.join(root,'dist'),{recursive:true});
 await writeFile(path.join(root,`dist/local-dictionary-demo-${manifest.version}.html`),html);console.log('Built standalone showcase: '+Buffer.byteLength(html)+' bytes');

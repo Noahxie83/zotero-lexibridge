@@ -104,13 +104,16 @@ export function createCard(doc, x, y, word, close) {
   const card = element(doc, 'div'); card.className = 'card';
   card.setAttribute('role', 'dialog'); card.setAttribute('aria-label', '本地词典：' + word);
   const header = element(doc, 'header');
-  header.append(element(doc, 'h2', '查词 · ' + word));
+  header.append(element(doc, 'h2', '本地词典'));
   const button = element(doc, 'button', '×'); button.type = 'button';
   button.setAttribute('aria-label', '关闭释义'); button.addEventListener('click', close);
   header.append(button);
   const body = element(doc, 'div', '正在查询本地词典…'); body.className = 'body';
   body.setAttribute('aria-live', 'polite');
+  const setState = state => { body.dataset.state = state; body.setAttribute('aria-busy', String(state === 'loading')); };
+  setState('loading');
   const footer = element(doc, 'div', 'Local Dictionary'); footer.className = 'source';
+  footer.setAttribute('role', 'status');
   const choice = element(doc, 'div'); choice.className = 'dictionary-choice';
   const selector = element(doc, 'select'); selector.setAttribute('aria-label', '选择查询词典');
   const choiceLabel = element(doc, 'span', '词典'); choiceLabel.className = 'dictionary-label';
@@ -125,5 +128,5 @@ export function createCard(doc, x, y, word, close) {
     host.style.left = left + 'px'; host.style.top = top + 'px';
   };
   position();
-  return { host, body, footer, selector, choice, queries, selectionTools, position, close };
+  return { host, body, footer, selector, choice, queries, selectionTools, position, close, setState };
 }

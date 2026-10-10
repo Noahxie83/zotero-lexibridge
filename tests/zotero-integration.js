@@ -80,12 +80,12 @@ async function runZoteroVerification(config) {
     require(frame.querySelector('[data-mdx-entry]'), 'Native dictionary frame did not mount');
     require(frame.defaultView.getComputedStyle(frame.body).fontSize === '16px', 'Unexpected default definition size');
     frame.querySelector('[data-mdx-entry]').click();
-    for (let i = 0; i < 100 && !popup()?.querySelector('h2')?.textContent.includes('network'); i++) await pause(50);
-    require(popup()?.querySelector('h2').textContent.includes('network'), 'Internal link failed');
+    for (let i = 0; i < 100 && !popup()?.querySelector('.card')?.getAttribute('aria-label').includes('network'); i++) await pause(50);
+    require(popup()?.querySelector('.card').getAttribute('aria-label').includes('network'), 'Internal link failed');
     const action = (root, text) => [...root.querySelectorAll('button')].find(button => button.textContent === text);
     action(popup(), '返回').click();
-    for (let i = 0; i < 100 && !popup()?.querySelector('h2')?.textContent.includes('research'); i++) await pause(50);
-    require(popup()?.querySelector('h2').textContent.includes('research'), 'Back navigation failed');
+    for (let i = 0; i < 100 && !popup()?.querySelector('.card')?.getAttribute('aria-label').includes('research'); i++) await pause(50);
+    require(popup()?.querySelector('.card').getAttribute('aria-label').includes('research'), 'Back navigation failed');
     await step('entry-link-and-history', { restored: true });
     action(popup(), '固定').click(); pdfWin.dispatchEvent(new pdfWin.Event('scroll')); require(popup(), 'Pinned popup closed on scroll');
     await step('pinned-popup', { retained: true });
@@ -120,8 +120,8 @@ async function runZoteroVerification(config) {
     await step('word-form', { query: 'studies', hit: 'study' });
     await app.queryReader(reader);
     const manual = popup(); manual.querySelector('.query-form input').value = 'network'; manual.querySelector('.query-form button').click();
-    for (let i = 0; i < 100 && !popup()?.querySelector('h2')?.textContent.includes('network'); i++) await pause(50);
-    require(popup()?.querySelector('h2').textContent.includes('network'), 'Manual query submit failed');
+    for (let i = 0; i < 100 && !popup()?.querySelector('.card')?.getAttribute('aria-label').includes('network'); i++) await pause(50);
+    require(popup()?.querySelector('.card').getAttribute('aria-label').includes('network'), 'Manual query submit failed');
     await app.queryReader(reader, 'netwrok'); require(popup()?.querySelector('.body').textContent.includes('network'), 'Spelling suggestion failed');
     await step('manual-query-and-spelling', { available: true });
     Zotero.Prefs.set('localMDXClick.theme', 'dark'); Zotero.Prefs.set('localMDXClick.fontSize', 20);
@@ -143,7 +143,7 @@ async function runZoteroVerification(config) {
     action(popup(), '收藏').click(); require(app.vocabulary.list()[0].context.sentence.includes('research'), 'Selected text missing from vocabulary context');
     await step('selected-text-context', { sentence: app.vocabulary.list()[0].context.sentence });
     await app.queryReader(reader);
-    require(popup()?.querySelector('h2')?.textContent.includes('research'), 'Toolbar query ignored selected text');
+    require(popup()?.querySelector('.card')?.getAttribute('aria-label').includes('research'), 'Toolbar query ignored selected text');
     action(popup(), '收藏').click(); require(app.vocabulary.list()[0].context.sentence === 'research', 'Toolbar query lost selected context');
     await step('toolbar-selected-query', { word: 'research', sentence: 'research' });
     const eventTools = { Components, ChromeUtils, Cc, Ci, Cu, KeyboardEvent: win.KeyboardEvent, SpecialPowers: { ChromeUtils, Cc, Ci, Cu } };
@@ -156,7 +156,7 @@ async function runZoteroVerification(config) {
     action(popup(), '收藏').click(); require(app.vocabulary.list()[0].context.sentence === 'research', 'Shortcut query lost selected context');
     await step('shortcut-selected-context', { sentence: 'research' });
     popup().querySelector('.query-form input').value = 'network'; popup().querySelector('.query-form button').click();
-    for (let i = 0; i < 100 && (!popup()?.querySelector('h2')?.textContent.includes('network') || action(popup(), '收藏')?.disabled !== false); i++) await pause(50);
+    for (let i = 0; i < 100 && (!popup()?.querySelector('.card')?.getAttribute('aria-label').includes('network') || action(popup(), '收藏')?.disabled !== false); i++) await pause(50);
     action(popup(), '收藏').click(); require(app.vocabulary.list()[0].context.sentence === '', 'Typed query retained an unrelated sentence');
     require(app.vocabulary.list()[0].context.itemKey === item.key, 'Typed query lost PDF identity');
     await step('manual-context-cleared', { word: 'network', sentence: '' });
@@ -174,8 +174,8 @@ async function runZoteroVerification(config) {
     for (let i = 0; i < 100 && action(popup(), '重播').disabled; i++) await pause(50);
     require(!action(popup(), '重播').disabled, 'DSL external audio failed: ' + popup()?.querySelector('.source').textContent);
     dslFrame.querySelector('[data-mdx-entry]').click();
-    for (let i = 0; i < 100 && !popup()?.querySelector('h2')?.textContent.includes('network'); i++) await pause(50);
-    require(popup()?.querySelector('h2').textContent.includes('network'), 'DSL internal reference failed');
+    for (let i = 0; i < 100 && !popup()?.querySelector('.card')?.getAttribute('aria-label').includes('network'); i++) await pause(50);
+    require(popup()?.querySelector('.card').getAttribute('aria-label').includes('network'), 'DSL internal reference failed');
     await step('new-format-resources-and-links', { starDictSynonym: true, dslReference: true, dslAudio: true });
     Zotero.Prefs.set('localMDXClick.queryMode', 'single');
     reader.close(); await pause(500); reader = await Zotero.Reader.open(item.id); await reader._initPromise;
