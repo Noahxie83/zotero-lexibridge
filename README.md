@@ -96,6 +96,14 @@
 
 下载后保留 MDD 分卷、CSS、图片、图标和字体的目录结构。完整资源有助于呈现词典排版、插图与发音。
 
+| 格式 | 在插件中选择 | 需要保留的配套文件 |
+| --- | --- | --- |
+| **MDX** | `.mdx` | 同名 `.mdd`、数字分卷及外置资源（如有） |
+| **StarDict** | `.ifo` | 同名 `.idx` / `.idx.gz` 和 `.dict` / `.dict.dz`；可选 `.syn` 同义词文件 |
+| **DSL** | `.dsl` / `.dsl.dz` | 同目录或 `词典.dsl.files/` 中的图片和发音（如有）；`.files.zip` 需先解压 |
+
+各格式的编码、压缩与排版支持范围见 [词典格式说明](docs/FORMAT_SUPPORT.md)。
+
 ### 目录示例
 
 ```text
@@ -105,14 +113,20 @@ Dictionaries/
   DictionaryA.1.mdd
   DictionaryA.2.mdd
   DictionaryA.10.mdd
-  DictionaryB.mdx
-  DictionaryB.mdd
+  DictionaryB.ifo
+  DictionaryB.idx
+  DictionaryB.dict.dz
+  DictionaryB.syn
+  DictionaryC.dsl
+  DictionaryC.dsl.files/
+    images/
+    sounds/
   style.css
   images/
   fonts/
 ```
 
-以上名称仅为示例，可使用任意词典名称和目录。MDX 列表扫描当前目录，资源可位于子目录；每次查询使用当前选中的一部词典。数字分卷按编号排序，名称不同或位于其他目录的 MDD 可手动添加。
+以上名称仅为示例，可使用任意词典名称和目录。插件识别三类词典入口，可添加多个目录、开启递归扫描并调整查询顺序。默认查询当前词典，也可设置为“未命中回退”或“联合查询”；释义会标明来源。MDX 的数字分卷按编号排序，名称不同或位于其他目录的 MDD 可手动添加。
 
 ## 设置与恢复
 
@@ -134,6 +148,8 @@ Dictionaries/
 | --- | --- |
 | 阅读器 | Zotero **10.0 系列** PDF 阅读器；扫描文献需要 OCR 文字层 |
 | MDX / MDD | 1.x、2.x；raw/zlib/LZO；2.x `Encrypted=2` 索引混淆 |
+| StarDict | 2.4.2、3.0.0；32/64 位偏移、压缩索引、Dictzip 与同义词 |
+| DSL | `.dsl` / `.dsl.dz`；UTF-8、UTF-16、常见标记、内部链接与外置资源 |
 | 查询 | MDX、StarDict、DSL；大小写、内部链接、英语词形、单词典/回退/联合查询 |
 | 划选 | 规范化后最多 256 字符、16 个词；最多 3 个连字符候选 |
 | 资源 | 本地 HTML/CSS、导入样式、图片、字体、背景与音频 |
