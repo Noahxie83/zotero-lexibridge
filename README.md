@@ -8,15 +8,15 @@
 <p align="center">在文献阅读中查询单词与词组，使用本地词典的释义、排版和发音。</p>
 
 <p align="center">
-  <a href="https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.1"><img alt="版本 1.2.1" src="https://img.shields.io/badge/version-1.2.1-087bd0"></a>
+  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.2"><img alt="版本 1.2.2" src="https://img.shields.io/badge/version-1.2.2-087bd0"></a>
   <img alt="支持 Zotero 10.0 系列" src="https://img.shields.io/badge/Zotero-10.0-102b46">
-  <a href="https://github.com/Noahxie83/zotero-local-mdx-click/actions/workflows/build.yml"><img alt="构建状态" src="https://github.com/Noahxie83/zotero-local-mdx-click/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml"><img alt="构建状态" src="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="GPL 3.0 or later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-586d7f"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Noahxie83/zotero-local-mdx-click/releases/download/v1.2.1/local-dictionary-1.2.1.xpi"><b>下载安装包</b></a> ·
-  <a href="https://noahxie83.github.io/zotero-local-mdx-click/"><b>体验交互示例</b></a> ·
+  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-1.2.2.xpi"><b>下载安装包</b></a> ·
+  <a href="https://noahxie83.github.io/zotero-local-dictionary/"><b>体验交互示例</b></a> ·
   <a href="docs/USER_GUIDE.md">使用指南</a> ·
   <a href="docs/RESTORE.md">设置恢复</a> ·
   <a href="docs/CHANGES.md">版本变更</a>
@@ -26,9 +26,9 @@
 
 **Local Dictionary** 原名 Local MDX，在 Zotero PDF 阅读器中提供 MDX、StarDict 和 DSL 离线词典查询。插件标识和已有设置保持兼容，支持覆盖升级。
 
-**1.2.1 更新查词弹窗、设置页和项目展示页面。** 运行 `npm run build` 可生成 `dist/local-dictionary-1.2.1.xpi`。支持范围见 [格式支持](docs/FORMAT_SUPPORT.md)。
+**1.2.2 将 GitHub 仓库更名为 `zotero-local-dictionary`，同步安装、更新与展示页地址。** 运行 `npm run build` 可生成 `dist/local-dictionary-1.2.2.xpi`。支持范围见 [格式支持](docs/FORMAT_SUPPORT.md)。
 
-[1.2.0 新功能与验证](docs/UPGRADE_1.2.0.md) · [词典格式支持](docs/FORMAT_SUPPORT.md)。工具栏“查询”或 Ctrl/⌘+Alt+D 打开手动查询，词形还原、多词典联合查询、生词与笔记已加入。
+[仓库改名与插件收录](docs/REPOSITORY_RENAME.md) · [1.2.0 新功能与验证](docs/UPGRADE_1.2.0.md) · [词典格式支持](docs/FORMAT_SUPPORT.md)。工具栏“查询”或 Ctrl/⌘+Alt+D 打开手动查询，词形还原、多词典联合查询、生词与笔记已加入。
 
 **使用流程：** 选择词典目录 → 打开 PDF → 点击或划选文字 → 查看释义与发音
 
@@ -51,7 +51,7 @@
 
 ## 交互演示
 
-**[打开在线示例 →](https://noahxie83.github.io/zotero-local-mdx-click/)** · [下载单文件 HTML](https://github.com/Noahxie83/zotero-local-mdx-click/releases/download/v1.2.1/local-dictionary-demo-1.2.1.html)
+**[打开在线示例 →](https://noahxie83.github.io/zotero-local-dictionary/)** · [下载单文件 HTML](https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-demo-1.2.2.html)
 
 | 场景 | 示例操作 |
 | --- | --- |
@@ -61,13 +61,13 @@
 
 演示使用项目自制的 MDX/MDD 数据和插件的解析、排版组件。网页批注按钮仅展示操作反馈；音频为提示音。实际词典查询、单词发音和文献批注需在 Zotero 中使用插件。
 
-[查看新版弹窗与设置页](https://noahxie83.github.io/zotero-local-mdx-click/interface-preview.html) · [封面与展示页设计](docs/SITE_DESIGN.md)
+[查看新版弹窗与设置页](https://noahxie83.github.io/zotero-local-dictionary/interface-preview.html) · [封面与展示页设计](docs/SITE_DESIGN.md)
 
 ## 快速开始
 
 ### 1. 安装插件
 
-从 [1.2.1 Release](https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.1) 下载 `local-dictionary-1.2.1.xpi`，在 Zotero 中依次选择：
+从 [1.2.2 Release](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.2) 下载 `local-dictionary-1.2.2.xpi`，在 Zotero 中依次选择：
 
 **工具 → 插件 → 齿轮 → 从文件安装插件**
 
@@ -124,7 +124,7 @@ Dictionaries/
 | **切换词条显示方式** | 显示方式 → **简洁文字排版** / **词典原有排版**。 |
 | **恢复自动资源关联** | 选择当前词典 → **恢复自动关联**，清除该词典的手动资源配置。 |
 | **更新词典文件** | 增加、替换或删除文件后，点击“刷新词典列表”。 |
-| **回退插件版本** | 从 [Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases) 下载目标 XPI，按 [回退教程](docs/RESTORE.md#回退到历史插件版本) 安装。 |
+| **回退插件版本** | 从 [Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载目标 XPI，按 [回退教程](docs/RESTORE.md#回退到历史插件版本) 安装。 |
 
 停用或卸载后，阅读器菜单恢复原有行为，已保存的批注和词典文件保留。所有设置的具体影响见 **[恢复设置与回退教程](docs/RESTORE.md)**；完整功能及历史变更见 **[版本变更](docs/CHANGES.md)**。
 
@@ -188,7 +188,7 @@ npm run preview:ui
 
 生成项目上级目录中的 `本地词典-界面预览.html`、线上使用的 `docs/interface-preview.html` 和 `dist` 中的离线预览，可离线打开。设计规则与验证记录见 [界面设计](docs/UI_DESIGN.md)。
 
-源码结构与预览命令见 [开发指南](docs/USER_GUIDE.md#开发)。各版本安装包、源码快照与校验和见 [Releases](https://github.com/Noahxie83/zotero-local-mdx-click/releases)；历史记录见 [版本变更](docs/CHANGES.md) 和 [发布说明](RELEASE_NOTES.md)。
+源码结构与预览命令见 [开发指南](docs/USER_GUIDE.md#开发)。各版本安装包、源码快照与校验和见 [Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases)；历史记录见 [版本变更](docs/CHANGES.md) 和 [发布说明](RELEASE_NOTES.md)。
 
 ## 开源许可
 

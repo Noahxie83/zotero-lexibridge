@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Local Dictionary · 本地词典",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Zotero 离线词典：MDX、StarDict 和 DSL，点击、划选与手动查询，词形还原、生词上下文、笔记与导出、本地发音。",
   "author": "Noahxie83",
   "icons": {
@@ -16,7 +16,7 @@
   "applications": {
     "zotero": {
       "id": "local-mdx-click@noahx.local",
-      "update_url": "https://raw.githubusercontent.com/Noahxie83/zotero-local-mdx-click/main/updates.json",
+      "update_url": "https://raw.githubusercontent.com/Noahxie83/zotero-local-dictionary/main/updates.json",
       "strict_min_version": "10.0",
       "strict_max_version": "10.0.*"
     }

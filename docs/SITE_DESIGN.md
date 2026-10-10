@@ -37,4 +37,4 @@
 - Lighthouse 默认手机模拟、本地 HTTP：性能 99，无障碍 100，最佳实践 100，SEO 100；LCP 约 1.9 秒，CLS 0，阻塞时间 0ms。这是实验室结果，实际网络与设备表现会变化。
 - 插件 78 项自动测试通过；Zotero 10.0.6 的 1.2.1 隔离配置中 33 项检查通过。
 
-GitHub Pages 沿用 `main` 分支的 `/docs` 目录与现有首页 URL。安装入口和自动更新地址同步为 1.2.1。
+1.2.1 发布时，GitHub Pages 沿用 `main` 分支的 `/docs` 目录与当时首页 URL。1.2.2 仓库更名后，目录配置保留，首页迁移至 [zotero-local-dictionary](https://noahxie83.github.io/zotero-local-dictionary/)，安装入口和更新地址同步迁移，见 [仓库改名说明](REPOSITORY_RENAME.md)。

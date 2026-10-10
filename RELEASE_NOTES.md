@@ -1,4 +1,15 @@
-# 1.2.1 · 界面与展示页更新
+# 1.2.2 · 仓库名称与地址迁移
+
+- GitHub 仓库更名为 `Noahxie83/zotero-local-dictionary`，与 Local Dictionary 及多格式支持一致。
+- 同步安装、自动更新、GitHub Pages、使用指南与历史版本入口。
+- 保留插件 ID、旧设置与生词数据，已有版本可覆盖升级。
+- 核对 zotero-addons-scraper 的收录和 XPI 解析要求，提供保留 `reader` 标签的上游条目改名补丁；上游收录更新需另行合并。
+
+安装 `local-dictionary-1.2.2.xpi` 覆盖旧版后重启 Zotero。新网站：[在线示例](https://noahxie83.github.io/zotero-local-dictionary/)。迁移与收录说明见 [仓库改名](docs/REPOSITORY_RENAME.md)。
+
+验证：78 项自动测试通过，插件与网站构建成功；改名后旧仓库 API、历史安装包下载和旧更新清单可访问。本版修改名称与地址，实际插件代码沿用 1.2.1。
+
+## 1.2.1 · 界面与展示页更新
 
 - 查词弹窗重新整理输入、导航、词典选择、释义和操作区，减少颜色与工具按钮的干扰。
 - 设置页按查词、词典库、查询显示、外观和生词管理组织，资源与备份操作保持可用。

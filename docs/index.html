@@ -7,8 +7,8 @@
   <meta name="theme-color" content="#fbfcfd">
   <meta property="og:title" content="Local Dictionary · 论文里的本地词典">
   <meta property="og:description" content="本地词典，跟着论文走。支持 MDX、StarDict 和 DSL。">
-  <meta property="og:image" content="https://noahxie83.github.io/zotero-local-mdx-click/assets/cover.jpg">
-  <link rel="canonical" href="https://noahxie83.github.io/zotero-local-mdx-click/">
+  <meta property="og:image" content="https://noahxie83.github.io/zotero-local-dictionary/assets/cover.jpg">
+  <link rel="canonical" href="https://noahxie83.github.io/zotero-local-dictionary/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUiPgogIDx0aXRsZSBpZD0idGl0bGUiPkxvY2FsIERpY3Rpb25hcnk8L3RpdGxlPgogIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4N2JkMCIgc3Ryb2tlLXdpZHRoPSIzIj4KICAgIDxwYXRoIGQ9Ik01IDl2MjZsMTItNSAxMiA1VjlsLTEyIDV6TTE3IDE0djE2Ii8+CiAgICA8Y2lyY2xlIGN4PSIyOSIgY3k9IjI4IiByPSI4IiBmaWxsPSIjZmNmY2Y5Ii8+CiAgICA8cGF0aCBkPSJtMzUgMzQgNyA3Ii8+CiAgPC9nPgo8L3N2Zz4K">
   <title>Local Dictionary · 论文里的本地词典</title>
   <style>
@@ -36,12 +36,12 @@
 <body>
   <a class="skip-link" href="#try">跳到查词示例</a>
   <header class="wrap">
-    <a class="brand" href="https://github.com/Noahxie83/zotero-local-mdx-click"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOTAiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCAyOTAgNDgiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPkxvY2FsIERpY3Rpb25hcnkg6aG555uu5paH5a2X5qCH6K+GPC90aXRsZT4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDg3YmQwIiBzdHJva2Utd2lkdGg9IjMiPjxwYXRoIGQ9Ik01IDl2MjZsMTItNSAxMiA1VjlsLTEyIDV6TTE3IDE0djE2Ii8+PGNpcmNsZSBjeD0iMjkiIGN5PSIyOCIgcj0iOCIgZmlsbD0iI2ZjZmNmOSIvPjxwYXRoIGQ9Im0zNSAzNCA3IDciLz48L2c+Cjx0ZXh0IHg9IjU0IiB5PSIzMiIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjUiIGZpbGw9IiMxMDJiNDYiPkxvY2FsIERpY3Rpb25hcnk8L3RleHQ+PC9zdmc+Cg==" alt="Local Dictionary" width="290" height="48"></a>
-    <nav aria-label="主要导航"><a href="https://github.com/Noahxie83/zotero-local-mdx-click">GitHub</a><a class="install" href="https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.1">安装 1.2.1</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换至深色主题">深色</button></nav>
+    <a class="brand" href="https://github.com/Noahxie83/zotero-local-dictionary"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOTAiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCAyOTAgNDgiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPkxvY2FsIERpY3Rpb25hcnkg6aG555uu5paH5a2X5qCH6K+GPC90aXRsZT4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDg3YmQwIiBzdHJva2Utd2lkdGg9IjMiPjxwYXRoIGQ9Ik01IDl2MjZsMTItNSAxMiA1VjlsLTEyIDV6TTE3IDE0djE2Ii8+PGNpcmNsZSBjeD0iMjkiIGN5PSIyOCIgcj0iOCIgZmlsbD0iI2ZjZmNmOSIvPjxwYXRoIGQ9Im0zNSAzNCA3IDciLz48L2c+Cjx0ZXh0IHg9IjU0IiB5PSIzMiIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjUiIGZpbGw9IiMxMDJiNDYiPkxvY2FsIERpY3Rpb25hcnk8L3RleHQ+PC9zdmc+Cg==" alt="Local Dictionary" width="290" height="48"></a>
+    <nav aria-label="主要导航"><a href="https://github.com/Noahxie83/zotero-local-dictionary">GitHub</a><a class="install" href="https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.2">安装 1.2.2</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换至深色主题">深色</button></nav>
   </header>
   <main class="wrap">
     <section class="lead" aria-labelledby="hero-title">
-      <div><div class="eyebrow">Zotero 本地词典插件</div><h1 id="hero-title">本地词典，<br>跟着论文走。</h1><p>点击或划选，查询 MDX、StarDict 和 DSL。<br>释义与发音，都来自你的本地词典。</p><div class="hero-actions"><a class="button" href="#try">试用查词</a><a href="https://github.com/Noahxie83/zotero-local-mdx-click/blob/main/docs/USER_GUIDE.md">阅读使用指南</a></div></div>
+      <div><div class="eyebrow">Zotero 本地词典插件</div><h1 id="hero-title">本地词典，<br>跟着论文走。</h1><p>点击或划选，查询 MDX、StarDict 和 DSL。<br>释义与发音，都来自你的本地词典。</p><div class="hero-actions"><a class="button" href="#try">试用查词</a><a href="https://github.com/Noahxie83/zotero-local-dictionary/blob/main/docs/USER_GUIDE.md">阅读使用指南</a></div></div>
       <img class="hero-image" src="assets/reading-desk.webp" srcset="assets/reading-desk-768.webp 768w, assets/reading-desk.webp 1536w" sizes="(max-width:767px) calc(100vw - 40px), (max-width:1264px) 44vw, 550px" alt="打开的书、研究论文和蓝色参考书" width="1536" height="1024" fetchpriority="high" decoding="async">
     </section>
     <section class="demo" id="try" aria-labelledby="demo-title">
@@ -53,7 +53,7 @@
         <div><p class="label">本地词条 / 切换两种词典样式</p><div id="result" aria-live="polite"></div><noscript>交互示例需要启用 JavaScript。你仍可通过上方安装入口下载插件。</noscript></div>
       </div>
       <p class="hint" id="hint" role="status"></p>
-      <a class="preview-link" href="https://noahxie83.github.io/zotero-local-mdx-click/interface-preview.html">查看查词弹窗与设置页的完整预览 →</a>
+      <a class="preview-link" href="https://noahxie83.github.io/zotero-local-dictionary/interface-preview.html">查看查词弹窗与设置页的完整预览 →</a>
     </section>
     <section class="features" aria-labelledby="features-title">
       <div class="features-intro"><h2 id="features-title">每部词典，<br>自己的排版。</h2><p>在 Zotero 中安装后，换成你自己的本地词典。查询、阅读和批注留在同一个地方。</p></div>
@@ -62,10 +62,10 @@
     <section class="formats" aria-labelledby="formats-title">
       <h2 id="formats-title">选你已有的词典。</h2>
       <table><caption style="text-align:left;color:var(--muted)">插件支持的本地词典格式</caption><thead><tr><th scope="col">格式</th><th scope="col">入口文件</th><th scope="col">配套资源</th></tr></thead><tbody><tr><td>MDX</td><td>.mdx</td><td>同名 MDD、数字分卷和外置资源目录。</td></tr><tr><td>StarDict</td><td>.ifo</td><td>IDX / DICT，支持压缩索引、Dictzip 和同义词。</td></tr><tr><td>DSL</td><td>.dsl / .dsl.dz</td><td>常见 DSL 标记、内部引用和外置图片 / 音频。</td></tr></tbody></table>
-      <p>本页使用自制 MDX 示例。各格式支持范围与限制见 <a href="https://github.com/Noahxie83/zotero-local-mdx-click/blob/main/docs/FORMAT_SUPPORT.md">词典格式说明</a>。</p>
+      <p>本页使用自制 MDX 示例。各格式支持范围与限制见 <a href="https://github.com/Noahxie83/zotero-local-dictionary/blob/main/docs/FORMAT_SUPPORT.md">词典格式说明</a>。</p>
     </section>
   </main>
-  <footer class="wrap"><div class="links"><a href="https://github.com/Noahxie83/zotero-local-mdx-click/blob/main/docs/USER_GUIDE.md">完整使用指南</a><a href="https://github.com/Noahxie83/zotero-local-mdx-click/blob/main/docs/RESTORE.md">恢复设置教程</a><a href="https://www.pdawiki.com/forum/forum.php?gid=7">PDAWiki · MDict 专区</a></div><p>示例词条、样式、图形和提示音由本项目自行生成。提示音不是单词发音；没有包含商业词典、没有接入在线翻译、不会读写 Zotero 文献库。页面可下载后离线打开。Local Dictionary 是独立插件，非 Zotero 官方产品。</p><details><summary>开源许可与第三方来源</summary><pre>Local Dictionary - GPL-3.0-or-later
+  <footer class="wrap"><div class="links"><a href="https://github.com/Noahxie83/zotero-local-dictionary/blob/main/docs/USER_GUIDE.md">完整使用指南</a><a href="https://github.com/Noahxie83/zotero-local-dictionary/blob/main/docs/RESTORE.md">恢复设置教程</a><a href="https://www.pdawiki.com/forum/forum.php?gid=7">PDAWiki · MDict 专区</a></div><p>示例词条、样式、图形和提示音由本项目自行生成。提示音不是单词发音；没有包含商业词典、没有接入在线翻译、不会读写 Zotero 文献库。页面可下载后离线打开。Local Dictionary 是独立插件，非 Zotero 官方产品。</p><details><summary>开源许可与第三方来源</summary><pre>Local Dictionary - GPL-3.0-or-later
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

@@ -1,6 +1,8 @@
 # Local Dictionary 1.2.0 · 本次改进与验证
 
-产品原名 Local MDX，现因支持 MDX、StarDict 和 DSL 更名为 **Local Dictionary · 本地词典**。插件 ID、更新地址、原偏好命名空间和旧 API 别名保留，以便覆盖安装沿用设置。新安装包和源码 ZIP 使用 `local-dictionary` 名称；仓库地址与历史资产保留。安装包见 [1.2.0 Release](https://github.com/Noahxie83/zotero-local-mdx-click/releases/tag/v1.2.0)。
+产品原名 Local MDX，现因支持 MDX、StarDict 和 DSL 更名为 **Local Dictionary · 本地词典**。插件 ID、更新地址、原偏好命名空间和旧 API 别名保留，以便覆盖安装沿用设置。新安装包和源码 ZIP 使用 `local-dictionary` 名称；仓库地址与历史资产保留。安装包见 [1.2.0 Release](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.0)。
+
+以上为 1.2.0 发布时的迁移说明。1.2.2 起 GitHub 仓库更名为 `zotero-local-dictionary`，新安装包使用新更新地址；插件 ID 与旧设置继续兼容，见 [仓库改名与插件收录](REPOSITORY_RENAME.md)。
 
 ## 修复与改进
 
