@@ -1,10 +1,31 @@
 {
   "pendingProfileCount": 76,
-  "temporaryProfilesRestored": 76,
+  "temporaryProfilesRestored": 0,
   "regularZoteroProfileTouched": false,
-  "temporaryProfilesPermanentlyDeleted": 0,
-  "cleanupMode": "permanent deletion rejected; archive undone at user request",
+  "temporaryProfilesPermanentlyDeleted": 76,
+  "cleanupMode": "permanent deletion completed after the sandbox moved to unrestricted filesystem access",
   "date": "2026-10-15",
-  "oldBuildDeletionRejected": true,
-  "backupsCreated": 0
+  "oldBuildDeletionRejected": false,
+  "backupsCreated": 0,
+  "removedTargets": 130,
+  "removedBreakdown": {
+    "throwawayZoteroProfiles": 76,
+    "tempZoteroExtract": 1,
+    "supersededLooseDeliverables": 27,
+    "supersededDistOutputs": 25,
+    "internalTaskPrompts": 1
+  },
+  "retained": [
+    "dist/lexibridge-1.3.0.xpi",
+    "dist/lexibridge-source-1.3.0.zip",
+    "dist/lexibridge-demo-1.3.0.html",
+    "dist/lexibridge-ui-1.3.0.html",
+    "dist/SHA256SUMS.txt",
+    "node_modules (local build dependency, git-ignored)",
+    ".tools (local release tooling, outside the published tree)"
+  ],
+  "notes": [
+    "No backup archive was created, per the user's request.",
+    "The published source ZIP never contained verification directories or internal task prompts."
+  ]
 }
