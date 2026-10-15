@@ -47,9 +47,13 @@ async function walk(dir, prefix = '') {
 await walk(path.join(root, 'addon'));
 const manifest = JSON.parse(await readFile(path.join(root, 'addon/manifest.json'), 'utf8'));
 await mkdir(path.join(root, 'dist'), { recursive: true });
-const name = `local-dictionary-${manifest.version}.xpi`;
+const suffixIndex = process.argv.indexOf('--suffix');
+const suffix = suffixIndex < 0 ? '' : process.argv[suffixIndex + 1];
+if (suffixIndex >= 0 && (!suffix || !/^[a-z0-9-]{1,40}$/i.test(suffix))) throw new Error('Pass a safe --suffix for a separately named local test package.');
+const artifactTag = suffix ? `-${suffix}` : '';
+const name = `local-dictionary-${manifest.version}${artifactTag}.xpi`;
 const out = path.join(root, 'dist', name);
 const xpi = zipSync(files, { level: 6 });
 await writeFile(out, xpi);
-await writeFile(path.join(root, 'dist/SHA256SUMS.txt'), createHash('sha256').update(xpi).digest('hex') + '  ' + name + '\n');
+await writeFile(path.join(root, `dist/SHA256SUMS${artifactTag}.txt`), createHash('sha256').update(xpi).digest('hex') + '  ' + name + '\n');
 console.log(out);

@@ -15,9 +15,11 @@ function tidy(value) {
 
 export function queryFromText(value, source = 'click') {
   if (typeof value !== 'string' || value.length > 4096) return null;
+  const translationText = value.normalize('NFC').replace(/[\u00ad\u200b\ufeff]/g, '').replace(/\s+/g, ' ').trim();
+  if (!translationText || translationText.length > MAX_TEXT || translationText.split(/\s+/).length > MAX_WORDS) return null;
   if (source === 'entry') {
     const text = value.normalize('NFC').trim();
-    return text && text.length <= MAX_TEXT ? { text, candidates: [text], source } : null;
+    return text && text.length <= MAX_TEXT ? { text, candidates: [text], translationText, source } : null;
   }
   const raw = value.normalize('NFKC').replace(/[\u2010\u2011]/g, '-')
     // Some PDF text layers attach the line-break flag to the glyph before
@@ -33,7 +35,7 @@ export function queryFromText(value, source = 'click') {
     .replace(/([\p{L}\p{M}\p{N}])-\s+(?=[\p{L}\p{M}\p{N}])/gu, '$1'));
   const joined = preserved.replace(/([\p{L}\p{M}\p{N}])-(?=[\p{L}\p{M}\p{N}])/gu, '$1');
   const candidates = [...new Set([preserved, lineJoined, joined].filter(Boolean))];
-  return { text: preserved, candidates, source };
+  return { text: preserved, candidates, translationText, source };
 }
 
 function fingerprint(value) {

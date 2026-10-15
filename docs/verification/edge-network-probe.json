@@ -1,0 +1,27 @@
+{
+  "kind": "ordinary network probe (Node fetch; not Zotero)",
+  "method": "POST",
+  "url": "https://edge.microsoft.com/translate/translatetext?to=zh-Hans&isEnterpriseClient=false",
+  "requestCount": 2,
+  "requestBody": [["hello"], ["Hello, world!"]],
+  "sourceLanguageParameter": "omitted",
+  "userAgentOverride": false,
+  "cookiesProvided": false,
+  "results": [
+    {
+      "status": 200,
+      "responseKeys": ["detectedLanguage", "translations"],
+      "detectedLanguage": "en",
+      "translationTarget": "zh-Hans",
+      "translation": "你好"
+    },
+    {
+      "status": 200,
+      "responseKeys": ["detectedLanguage", "translations"],
+      "detectedLanguage": "en",
+      "translationTarget": "zh-Hans",
+      "translation": "你好，世界！"
+    }
+  ],
+  "note": "Translation item carries to=zh-Hans; top-level response item omits to. Zotero adapter accepts and verifies this observed shape."
+}

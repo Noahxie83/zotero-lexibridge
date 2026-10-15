@@ -1,0 +1,10 @@
+{
+  "checkedPreexistingFiles": 36,
+  "changedPreexistingFiles": [
+    "docs/QUERY_SOURCE_DELIVERY.md",
+    "src/main.js"
+  ],
+  "unexpectedChangedFiles": [],
+  "allOtherPreexistingFilesUnchanged": true,
+  "mainRestoredToInitialByRemovingOnlyF1Fix": true
+}

@@ -7,8 +7,34 @@ import { dictionaryFormat } from './dictionary-formats.js';
 // Keep only a few decoded word indexes. A failed replacement never evicts the
 // previous working index; callers commit their active selection after load().
 export class DictionaryPool {
-  constructor(fs, capacity = 3) { this.fs = fs; this.capacity = capacity; this.cache = new Map(); this.pending = new Map(); this.epoch = 0; }
+  constructor(fs, capacity = 3) { this.fs = fs; this.capacity = capacity; this.cache = new Map(); this.pending = new Map(); this.epoch = 0; this.leases = new Map(); this.retired = new Map(); }
+  evict() {
+    while (this.cache.size > this.capacity) {
+      const oldest = [...this.cache.keys()].find(key => key !== this.activePath && !this.leases.get(key));
+      if (oldest === undefined) break;
+      this.cache.get(oldest).clearCache(); this.cache.delete(oldest);
+    }
+  }
+  async acquire(path) {
+    const epoch = this.epoch;
+    this.leases.set(path, (this.leases.get(path) || 0) + 1);
+    let released = false;
+    const release = () => {
+      if (released) return; released = true;
+      if (epoch !== this.epoch) return;
+      const count = (this.leases.get(path) || 1) - 1;
+      if (count) this.leases.set(path, count); else {
+        this.leases.delete(path); this.retired.get(path)?.clearCache(); this.retired.delete(path);
+      }
+      this.evict();
+    };
+    try { const dictionary = await this.load(path); return { dictionary, release }; }
+    catch (error) { release(); throw error; }
+  }
   async load(path, { reload = false } = {}) {
+    // At most one retired index per leased path; repeated refreshes coalesce
+    // until users of the previous index finish.
+    if (reload && this.leases.get(path) && this.retired.has(path) && this.cache.has(path)) return this.cache.get(path);
     if (!reload && this.cache.has(path)) {
       const dictionary = this.cache.get(path); this.cache.delete(path); this.cache.set(path, dictionary); return dictionary;
     }
@@ -25,16 +51,17 @@ export class DictionaryPool {
       dictionary.stats.format = format || 'MDX'; dictionary.stats.indexMs = Date.now() - started;
       guard();
       if (this.pending.get(path) === pending) {
-        const previous = this.cache.get(path); if (previous !== dictionary) previous?.clearCache();
-        this.cache.delete(path); this.cache.set(path, dictionary);
-        while (this.cache.size > this.capacity) {
-          const oldest = [...this.cache.keys()].find(key => key !== this.activePath); this.cache.get(oldest).clearCache(); this.cache.delete(oldest);
+        const previous = this.cache.get(path);
+        if (previous && previous !== dictionary) {
+          if (this.leases.get(path)) this.retired.set(path, previous); else previous.clearCache();
         }
+        this.cache.delete(path); this.cache.set(path, dictionary);
+        this.evict();
       }
       return dictionary;
     })();
     this.pending.set(path, pending);
     try { return await pending; } finally { if (this.pending.get(path) === pending) this.pending.delete(path); }
   }
-  clear() { this.epoch++; this.pending.clear(); for (const dictionary of this.cache.values()) dictionary.clearCache(); this.cache.clear(); }
+  clear() { this.epoch++; this.leases.clear(); this.pending.clear(); for (const dictionary of [...this.cache.values(), ...this.retired.values()]) dictionary.clearCache(); this.cache.clear(); this.retired.clear(); }
 }

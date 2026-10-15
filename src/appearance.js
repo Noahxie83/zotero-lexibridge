@@ -23,7 +23,7 @@ export const popupCSS = `
     min-height:36px; padding:6px 12px 4px 20px;
   }
   header h2 {
-    flex:1; min-width:0; margin:0; color:var(--ink);
+    flex:0 1 auto; min-width:0; margin:0; color:var(--ink);
     font-size:13px; font-weight:600; line-height:1.4;
     overflow-wrap: anywhere;
   }
@@ -38,7 +38,11 @@ export const popupCSS = `
   button:disabled { color:var(--disabled); background:var(--chrome); cursor:default; }
   button[aria-pressed="true"] { background:var(--accent-soft); border-color:var(--blue); color:var(--blue); }
   button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
-  header button { width:28px; min-height:28px; padding:0; border-color:transparent; background:transparent; color:var(--muted); font-size:22px; }
+  header button { margin-left:auto; width:28px; min-height:28px; padding:0; border-color:transparent; background:transparent; color:var(--muted); font-size:22px; }
+  .query-source { border-bottom:1px solid var(--border); padding-block:8px; }
+  .query-source h3 { font-size:13px; margin:0; }
+  .source-status, .source-footer { font-size:12px; color:var(--muted); }
+  .source-diagnostic { font:11px/1.5 monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
   .query-form { display:flex; gap:8px; align-items:flex-end; padding:2px 20px 10px; flex:0 0 auto; }
   .query-field { display:flex; flex-direction:column; gap:6px; min-width:0; flex:1; }
   .query-label { color:var(--muted); font-size:12px; line-height:1.4; }

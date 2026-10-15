@@ -1,0 +1,86 @@
+{
+  "kind": "F1-reader-toolbar-lifecycle",
+  "hostVersion": "10.0.6",
+  "dataPath": "<workspace>\\verification-f1-focused-20261015-a\\data",
+  "checks": [
+    {
+      "id": "ordinary-tab/before-close",
+      "ok": true,
+      "details": {
+        "queried": true
+      }
+    },
+    {
+      "id": "ordinary-tab/refresh-after-close",
+      "ok": true,
+      "details": {
+        "repeatedRefreshes": 2,
+        "dictionaries": 5
+      }
+    },
+    {
+      "id": "ordinary-tab/switch-after-close",
+      "ok": true,
+      "details": {
+        "sourceId": "local:<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\B.mdx",
+        "dictionaryPath": "<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\B.mdx"
+      }
+    },
+    {
+      "id": "ordinary-tab/reopen-refresh-switch-query",
+      "ok": true,
+      "details": {
+        "sourceId": "local:<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\A.mdx",
+        "queried": true,
+        "resultSections": 1
+      }
+    },
+    {
+      "id": "ordinary-tab/second-close-refresh",
+      "ok": true,
+      "details": {
+        "refreshed": true
+      }
+    },
+    {
+      "id": "detached-window/before-close",
+      "ok": true,
+      "details": {
+        "queried": true
+      }
+    },
+    {
+      "id": "detached-window/refresh-after-close",
+      "ok": true,
+      "details": {
+        "repeatedRefreshes": 2,
+        "dictionaries": 5
+      }
+    },
+    {
+      "id": "detached-window/switch-after-close",
+      "ok": true,
+      "details": {
+        "sourceId": "local:<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\B.mdx",
+        "dictionaryPath": "<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\B.mdx"
+      }
+    },
+    {
+      "id": "detached-window/reopen-refresh-switch-query",
+      "ok": true,
+      "details": {
+        "sourceId": "local:<workspace>\\verification-f1-focused-20261015-a\\dictionaries\\A.mdx",
+        "queried": true,
+        "resultSections": 1
+      }
+    },
+    {
+      "id": "detached-window/second-close-refresh",
+      "ok": true,
+      "details": {
+        "refreshed": true
+      }
+    }
+  ],
+  "ok": true
+}

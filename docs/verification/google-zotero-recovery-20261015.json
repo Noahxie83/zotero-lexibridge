@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-15",
+  "classification": "当前网络环境下Google真实Zotero翻译通过",
+  "hostVersion": "10.0.6",
+  "pluginVersion": "1.2.2",
+  "profile": "verification-google-once-20261015",
+  "query": "Neural networks can learn useful representations.",
+  "liveGoogleRequestCount": 1,
+  "liveOtherEngineRequestCount": 0,
+  "request": {
+    "method": "GET",
+    "endpoint": "https://translate.googleapis.com/translate_a/single",
+    "parametersVerified": true,
+    "anonymous": true,
+    "httpStatus": 200,
+    "contentType": "application/json; charset=utf-8",
+    "responseClass": "http-success",
+    "validTranslationResponse": true,
+    "translationSegments": 1
+  },
+  "result": {
+    "engineId": "google",
+    "sourceId": "online:google",
+    "sourceStatus": "已完成",
+    "translation": "神经网络可以学习有用的表示。",
+    "translationDisplayed": true,
+    "copyMatchesTranslation": true,
+    "successDiagnosticsHidden": true,
+    "cooldownUi": false
+  },
+  "package": {
+    "path": "dist/local-dictionary-1.2.2-youdao-mymemory-test.xpi",
+    "sha256": "175828f7dbf1638c5a321a8079acbb2ecd421e6924a7e717f5e2040518fa7567",
+    "productPluginBundleSha256": "0e7fa6fce48126600e1b0fc7b66b242676848b2a133ec3c936df50f478b0fd14",
+    "packageLoadedFromXpi": true,
+    "isolatedInstrumentedXpi": "verification-google-once-20261015/profile/extensions/local-mdx-click@noahx.local.xpi",
+    "isolatedInstrumentedXpiSha256": "7c9899046d52476b9f3b3f4e9443607e1a1ca0931b50e2e478bb74a6013eb682",
+    "isolatedInstrumentedPluginBundleSha256": "032f3715493dc9475456e17b4c028ca4891677b7e99778aa8924dfc29c803afd"
+  },
+  "scope": {
+    "googleDiagnosticEnabled": true,
+    "edgeLiveProbeEnabled": false,
+    "youdaoMyMemoryLiveProbeEnabled": false,
+    "googleRequestRetries": 0,
+    "adapterProxyChanges": 0,
+    "normalZoteroProfileModified": false,
+    "systemNetworkSettingsModified": false
+  },
+  "fullHostHarness": {
+    "passed": true,
+    "steps": 47,
+    "productTestsRebuiltOrRerun": false
+  },
+  "history": "Prior failure records retained; this report supplements them."
+}

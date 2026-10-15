@@ -1,0 +1,9 @@
+{
+  "version": "1.2.2",
+  "package": "dist/local-dictionary-1.2.2-microsoft-edge-test.xpi",
+  "sizeBytes": 321036,
+  "sha256": "647e3b092c37d7c37dcbf67a30b6687a14dd6ae4cd107bbede8c6794e234b3ed",
+  "checksumFile": "dist/SHA256SUMS-microsoft-edge-test.txt",
+  "buildCommand": "npm run build -- --suffix microsoft-edge-test",
+  "localTestArtifact": true
+}

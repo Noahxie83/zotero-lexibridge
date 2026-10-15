@@ -1,0 +1,3 @@
+npm notice run zotero-local-dictionary@1.2.2 build
+npm notice run node scripts/build.mjs
+<repo>\dist\local-dictionary-1.2.2.xpi

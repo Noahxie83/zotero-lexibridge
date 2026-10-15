@@ -1,0 +1,20 @@
+{
+  "evidence": "Existing independent record, read during this repair; not a newly executed pre-fix host run",
+  "source": "D:/Project/zotero local mdx click/verification-independent-20261015-run1/independent-report.json",
+  "check": {
+    "id": "8.4",
+    "name": "closing a reader does not break later settings/library refreshes",
+    "ok": false,
+    "error": "A closed reader broke later refreshes (updateUI reads a dead toolbar button): {\"first\":{\"label\":\"scanLibrary-after-close\",\"ok\":false,\"error\":\"can't access dead object\",\"errorName\":\"TypeError\"},\"second\":{\"label\":\"scanLibrary-after-close-again\",\"ok\":false,\"error\":\"can't access dead object\",\"errorName\":\"TypeError\"}}",
+    "errorName": "Error",
+    "stack": "require_@jar:file:///D:/Project/zotero%20local%20mdx%20click/verification-independent-20261015-run1/profile/extensions/local-mdx-click@noahx.local.xpi!/independent-harness.js:15:68 | runIndependentVerification/<@jar:file:///D:/Project/zotero%20local%20mdx%20click/verification-independent-20261015-run1/profile/extensions/local-mdx-click@noahx.local.xpi!/independent-harness.js:823:17 | ",
+    "trail": [],
+    "fileName": "jar:file:///D:/Project/zotero%20local%20mdx%20click/verification-independent-20261015-run1/profile/extensions/local-mdx-click@noahx.local.xpi!/independent-harness.js",
+    "lineNumber": 15,
+    "columnNumber": 68,
+    "result": null,
+    "location": "",
+    "toString": "Error: A closed reader broke later refreshes (updateUI reads a dead toolbar button): {\"first\":{\"label\":\"scanLibrary-after-close\",\"ok\":false,\"error\":\"can't access dead object\",\"errorName\":\"TypeError\"},\"second\":{\"label\":\"scanLibrary-after-close-again\",\"ok\":false,\"error\":\"can't access dead object\",\"errorName\":\"TypeError\"}}",
+    "ms": 2791
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "unchangedVerifierFiles": {
+    "VERIFICATION_REPORT.md": "fa8abda3a01e8d96db50f06d1d895c5db5f9fd71a79efb88597b39e73a282d89",
+    "scripts/prepare-independent-zotero.mjs": "7d06d514ea751d8d25e4c99b9ba14b44b29ec09840bf639c050d5bbd2691ccff",
+    "scripts/integration-independent.js": "64281001a9aa37460ab932a71150eefa568596aa15fc8bd3a6180cc6f49fde67",
+    "tests/query-sources.independent.test.mjs": "ad667110c06db500d45ab0216eef98a7686f9424cf52433bf16b63e9defaac03",
+    "tests/settings.independent.test.mjs": "534fc37f38eaec4c9d1f4f23d6365c34abec31c86f281d873ee2381fffd4e5b7"
+  }
+}

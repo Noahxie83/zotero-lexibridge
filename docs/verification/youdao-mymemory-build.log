@@ -1,0 +1,4 @@
+Command: npm run build -- --suffix youdao-mymemory-test
+Result: success
+Artifact: dist/local-dictionary-1.2.2-youdao-mymemory-test.xpi
+Version: 1.2.2

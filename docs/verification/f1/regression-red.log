@@ -1,0 +1,54 @@
+✖ A toolbar isConnected exception evicts only that node and never blocks later refreshes (2.7643ms)
+✖ A toolbar disabled exception evicts only that node and never blocks later refreshes (0.4939ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 198.3414
+
+✖ failing tests:
+
+test at tests\toolbar-lifecycle.test.mjs:39:3
+✖ A toolbar isConnected exception evicts only that node and never blocks later refreshes (2.7643ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted rejection.
+  Actual message: "can't access dead object"
+      at async TestContext.<anonymous> (fil<repo>/tests/toolbar-lifecycle.test.mjs:49:7)
+      at async Test.run (node:internal/test_runner/test:1373:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: can't access dead object
+        at Object.get [as isConnected] (fil<repo>/tests/toolbar-lifecycle.test.mjs:45:39)
+        at updateUI (file:///<absolute-path>:23734:19)
+        at Object.scanLibrary (file:///<absolute-path>:23959:5)
+        at TestContext.<anonymous> (fil<repo>/tests/toolbar-lifecycle.test.mjs:49:38)
+        at async Test.run (node:internal/test_runner/test:1373:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: undefined,
+    operator: 'doesNotReject',
+    diff: 'simple'
+  }
+
+test at tests\toolbar-lifecycle.test.mjs:39:3
+✖ A toolbar disabled exception evicts only that node and never blocks later refreshes (0.4939ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted rejection.
+  Actual message: "can't access dead object"
+      at async TestContext.<anonymous> (fil<repo>/tests/toolbar-lifecycle.test.mjs:49:7)
+      at async Test.run (node:internal/test_runner/test:1373:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:946:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: can't access dead object
+        at Object.set [as disabled] (fil<repo>/tests/toolbar-lifecycle.test.mjs:46:39)
+        at updateUI (file:///<absolute-path>:23735:28)
+        at Object.scanLibrary (file:///<absolute-path>:23959:5)
+        at TestContext.<anonymous> (fil<repo>/tests/toolbar-lifecycle.test.mjs:49:38)
+        at async Test.run (node:internal/test_runner/test:1373:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:946:7),
+    expected: undefined,
+    operator: 'doesNotReject',
+    diff: 'simple'
+  }

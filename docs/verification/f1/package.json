@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-15",
+  "version": "1.2.2",
+  "head": "764da04",
+  "testBuild": true,
+  "path": "dist/local-dictionary-1.2.2-query-sources-f1-test.xpi",
+  "bytes": 320095,
+  "sha256": "0e340af315a3e62e3b5a725c938f40f391972c6b55bfecc12ba4678ebe78bf07",
+  "checks": {
+    "productTests": 120,
+    "independentNodeTests": 37,
+    "independentZoteroChecks": 21,
+    "independentCheck8_4": "PASS",
+    "focusedLifecycleChecks": 10,
+    "productZoteroSteps": 44
+  },
+  "network": {
+    "executedThisRepair": false,
+    "priorGoogleStatus": 429,
+    "liveTranslationSuccessVerified": false
+  },
+  "published": false,
+  "packageChecks": {
+    "versionPreserved": true,
+    "noVerificationHarness": true
+  }
+}

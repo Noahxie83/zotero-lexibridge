@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-15",
+  "host": "Zotero 10.0.6",
+  "probe": "one fixed endpoint, synthetic q=test",
+  "status": 429,
+  "passed": false,
+  "note": "Real request returned 429; no endpoint rotation or automatic retry. Response body omitted.",
+  "evidenceProfile": "verification-query-sources-20261015-h"
+}

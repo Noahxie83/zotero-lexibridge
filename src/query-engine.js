@@ -18,3 +18,5 @@ export async function queryDictionaries(query, dictionaries, { load, mode = 'sin
   }
   return { groups, errors, results: groups.flatMap(group => group.results.map(result => ({ ...result, dictionaryPath: group.path, dictionaryName: group.name }))) };
 }
+
+export { querySources, createQueryScope, LOCAL_CAPABILITIES, ONLINE_CAPABILITIES } from './query-sources.js';

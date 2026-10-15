@@ -1,8 +1,9 @@
 // Creates a fresh isolated profile. Does not launch Zotero or touch its normal profile.
-import { zipSync } from 'fflate';
+import { zipSync, unzipSync } from 'fflate';
 import { mkdir, readFile, writeFile, readdir, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { makeDictionary } from '../tests/fixtures.mjs';
 import { makeStarDict, dictzip } from '../tests/format-fixtures.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -16,6 +17,7 @@ const dictFolder = path.join(base, 'dictionaries'); await mkdir(dictFolder, { re
 await writeFile(path.join(dictFolder, 'A.mdx'), makeDictionary([
   ['research', '<h2>research</h2><p>Research definition A</p><a href="entry://network">network</a><a href="sound://gb.wav">UK</a><a href="sound://us.wav">US</a>'],
   ['network', '<h2>network</h2><p>Network definition</p>'], ['study', '<p>Study definition</p>'], ['run', '<p>Run definition</p>'],
+  ...Array.from({ length: 13 }, (_, index) => ['bulk', `<p>Bulk definition ${index + 1}</p>`]),
 ]));
 await writeFile(path.join(dictFolder, 'B.mdx'), makeDictionary([['research', '<p>Research definition B</p>'], ['gradient', '<p>Gradient definition</p>']]));
 const wav = Buffer.alloc(44 + 1600); wav.write('RIFF'); wav.writeUInt32LE(wav.length - 8, 4); wav.write('WAVEfmt ', 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22); wav.writeUInt32LE(8000, 24); wav.writeUInt32LE(16000, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write('data', 36); wav.writeUInt32LE(1600, 40);
@@ -25,7 +27,27 @@ for (const [file, bytes] of Object.entries(makeStarDict(path.join(formatsFolder,
 const dsl = '#NAME "DSL test"\n#INDEX_LANGUAGE "English"\n#CONTENTS_LANGUAGE "English"\nresearch\n  [b]DSL research definition[/b] [ref]network[/ref] [s]gb.wav[/s]\nnetwork\n  DSL network definition\n';
 await writeFile(path.join(formatsFolder, 'D-DSL.dsl.dz'), dictzip(Buffer.from(dsl)));
 await mkdir(path.join(formatsFolder, 'D-DSL.dsl.files'), { recursive: true }); await writeFile(path.join(formatsFolder, 'D-DSL.dsl.files', 'gb.wav'), wav);
-const config = { version: manifest.version, dictFolder, formatsFolder, dataPath: data, pdfPath: path.join(base, 'sample.pdf'), reportPath: path.join(base, 'report.json'), preferencesXML: await readFile(path.join(root, 'addon/content/preferences.xhtml'), 'utf8') };
+const packageArgument = process.argv.find(arg => arg.startsWith('--package='))?.slice('--package='.length);
+let testPackage, packagedFiles;
+if (packageArgument) {
+  const packagePath = path.resolve(packageArgument), packageBytes = await readFile(packagePath);
+  testPackage = { path: packagePath, sha256: createHash('sha256').update(packageBytes).digest('hex') };
+  const packaged = unzipSync(packageBytes);
+  if (!packaged['manifest.json'] || !packaged['content/plugin.js']) throw new Error('The specified test package is missing addon files.');
+  const packagedManifest = JSON.parse(new TextDecoder().decode(packaged['manifest.json']));
+  if (packagedManifest.version !== manifest.version) throw new Error('The specified package version does not match the workspace manifest.');
+  testPackage.pluginSha256 = createHash('sha256').update(packaged['content/plugin.js']).digest('hex');
+  packagedFiles = packaged;
+}
+const config = {
+  version: manifest.version, liveEdgeProbe: process.argv.includes('--network'),
+  livePublicOnlineProbes: process.argv.includes('--public-online-probes'), testPackage,
+  publicQuery: process.argv.find(arg => arg.startsWith('--public-query='))?.slice('--public-query='.length) || 'hello',
+  googleQuery: process.argv.find(arg => arg.startsWith('--google-query='))?.slice('--google-query='.length) || 'hello',
+  liveGoogleDiagnostic: process.argv.includes('--google-diagnostic'),
+  dictFolder, formatsFolder, dataPath: data, pdfPath: path.join(base, 'sample.pdf'),
+  reportPath: path.join(base, 'report.json'), preferencesXML: await readFile(path.join(root, 'addon/content/preferences.xhtml'), 'utf8'),
+};
 const files = {};
 async function walk(dir, prefix = '') {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -34,7 +56,16 @@ async function walk(dir, prefix = '') {
     else files[name] = new Uint8Array(await readFile(path.join(dir, entry.name)));
   }
 }
-await walk(path.join(root, 'addon'));
+if (packagedFiles) Object.assign(files, packagedFiles);
+else await walk(path.join(root, 'addon'));
+// Instrument only this isolated test copy, never the distributable package.
+let probeBundle = new TextDecoder().decode(files['content/plugin.js']);
+probeBundle = probeBundle.replace('const origin = down;', 'Zotero.__localQueryTrace?.push({ stage: "up", down: !!down, request }); const origin = down;')
+  .replace('if (stopped || ticket !== request || !enabled()) return;', 'Zotero.__localQueryTrace?.push({ stage: "wait", ticket, request, stopped }); if (stopped || ticket !== request || !enabled()) return;')
+  .replace('if (word) void show(word,', 'Zotero.__localQueryTrace?.push({ stage: "word", word }); if (word) void show(word,');
+probeBundle = probeBundle.replace('if (disposed || drag || event.target !== header2', 'Zotero.__localQueryTrace?.push({ stage: "drag-start", same: event.target === header2, nodeSame: header2.isSameNode(event.target), target: event.target.localName, button: event.button, primary: event.isPrimary, x: event.clientX, y: event.clientY }); if (disposed || drag || event.target !== header2')
+  .replace('if (!drag || event.pointerId !== drag.pointerId ||', 'Zotero.__localQueryTrace?.push({ stage: "drag-move", drag: !!drag, pointer: event.pointerId, expected: drag?.pointerId, x: event.clientX, y: event.clientY }); if (!drag || event.pointerId !== drag.pointerId ||');
+files['content/plugin.js'] = new TextEncoder().encode(probeBundle);
 const bootstrap = new TextDecoder().decode(files['bootstrap.js']).replace('await Zotero.LocalMDXClick.start();',
   'await Zotero.LocalMDXClick.start();\n  Services.scriptloader.loadSubScript(rootURI + "integration.js", pluginScope);\n  pluginScope.runZoteroVerification(' + JSON.stringify(config) + ');');
 files['bootstrap.js'] = new TextEncoder().encode(bootstrap);

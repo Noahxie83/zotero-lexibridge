@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 import { parseFragment } from 'parse5';
 import { popupCSS } from './appearance.js';
+import { createPopupPosition } from './popup-position.js';
 
 const HTML = 'http://www.w3.org/1999/xhtml';
 const skip = new Set('script style link meta base iframe frame frameset object embed applet template svg math audio video source track img input button select textarea form noscript audio-wr audio-gbs-liju audio-uss-liju audio-brs-liju audio-br-liju audio-gb-liju audio-ams-liju audio-us-liju audio-n_am-liju'.split(' '));
@@ -93,7 +94,7 @@ export function renderDefinition(doc, html) {
   return fragment;
 }
 
-export function createCard(doc, x, y, word, close) {
+export function createCard(doc, x, y, word, close, { positionState } = {}) {
   const win = doc.defaultView;
   const host = element(doc, 'div');
   host.setAttribute('data-local-mdx-popup', 'true');
@@ -108,25 +109,38 @@ export function createCard(doc, x, y, word, close) {
   const button = element(doc, 'button', '×'); button.type = 'button';
   button.setAttribute('aria-label', '关闭释义'); button.addEventListener('click', close);
   header.append(button);
-  const body = element(doc, 'div', '正在查询本地词典…'); body.className = 'body';
+  const body = element(doc, 'div', '正在查询来源…'); body.className = 'body';
   body.setAttribute('aria-live', 'polite');
   const setState = state => { body.dataset.state = state; body.setAttribute('aria-busy', String(state === 'loading')); };
   setState('loading');
   const footer = element(doc, 'div', 'Local Dictionary'); footer.className = 'source';
   footer.setAttribute('role', 'status');
   const choice = element(doc, 'div'); choice.className = 'dictionary-choice';
-  const selector = element(doc, 'select'); selector.setAttribute('aria-label', '选择查询词典');
-  const choiceLabel = element(doc, 'span', '词典'); choiceLabel.className = 'dictionary-label';
+  const selector = element(doc, 'select'); selector.setAttribute('aria-label', '选择查询来源');
+  const choiceLabel = element(doc, 'span', '来源'); choiceLabel.className = 'dictionary-label';
   choice.append(choiceLabel, selector);
   const queries = element(doc, 'div'); queries.className = 'query-alternatives'; queries.hidden = true;
   const selectionTools = element(doc, 'div'); selectionTools.className = 'selection-tools'; selectionTools.hidden = true;
   card.append(header, selectionTools, choice, queries, body, footer); root.append(style, card); doc.body.append(host);
-  const position = () => {
-    const rect = host.getBoundingClientRect();
-    const left = Math.max(8, Math.min(x + 12, win.innerWidth - rect.width - 8));
-    const top = y + 18 + rect.height <= win.innerHeight - 8 ? y + 18 : Math.max(8, y - rect.height - 12);
-    host.style.left = left + 'px'; host.style.top = top + 'px';
+  const placement = createPopupPosition({ host, header, win, x, y, state: positionState });
+  let cleaned = false;
+  const cleanups = new Set();
+  const runCleanup = fn => { try { fn(); } catch (_) { /* keep cleaning other owners */ } };
+  const addCleanup = fn => {
+    if (typeof fn !== 'function') return;
+    if (cleaned) runCleanup(fn);
+    else cleanups.add(fn);
   };
-  position();
-  return { host, body, footer, selector, choice, queries, selectionTools, position, close, setState };
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    for (const fn of cleanups) runCleanup(fn);
+    cleanups.clear();
+  };
+  addCleanup(placement.cleanup);
+  addCleanup(() => button.removeEventListener('click', close));
+  win.addEventListener('unload', cleanup);
+  addCleanup(() => win.removeEventListener('unload', cleanup));
+  return { host, body, footer, selector, choice, queries, selectionTools,
+    position: placement.position, positionState: placement.snapshot, close, setState, addCleanup, cleanup };
 }

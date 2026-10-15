@@ -4,7 +4,7 @@ var pluginScope;
 async function startup({ id, rootURI }) {
   await Zotero.initializationPromise;
   await Zotero.uiReadyPromise;
-  pluginScope = { Zotero, Services, ChromeUtils, Cc, Ci, Cu, IOUtils, TextDecoder, TextEncoder, WebAssembly, setInterval, clearInterval };
+  pluginScope = { Zotero, Services, ChromeUtils, Cc, Ci, Cu, IOUtils, TextDecoder, TextEncoder, WebAssembly, setInterval, clearInterval, setTimeout, clearTimeout };
   Services.scriptloader.loadSubScript(rootURI + "content/plugin.js", pluginScope);
   Zotero.LocalDictionary = pluginScope.LocalDictionaryModule.createApp(pluginScope, id);
   // Preserve the old API alias and preference namespace for in-place upgrades.

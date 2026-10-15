@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-15",
+  "classification": "still limited; not recovered",
+  "endpoint": "https://translate.googleapis.com/translate_a/single",
+  "currentRoundProbe": {
+    "requestCount": 1,
+    "parameters": {
+      "client": "gtx",
+      "sl": "auto",
+      "tl": "zh-CN",
+      "dt": "t",
+      "querySample": "hello"
+    },
+    "httpStatus": 429,
+    "contentType": "text/html",
+    "responseClass": "Google Sorry/rejection page",
+    "retryAfter": null,
+    "responseBodyPersisted": false,
+    "queryUrlPersisted": false
+  },
+  "historicalZoteroEvidence": {
+    "file": "google-connectivity.json",
+    "zoteroVersion": "10.0.6",
+    "requestCount": 1,
+    "httpStatus": 429,
+    "responseBodyPersisted": false
+  },
+  "latestPackageZoteroRun": {
+    "googleLiveRequestCount": 0,
+    "googleMockRequestsWereUsedFor": "UI failure, cooldown, mixed-source and recovery checks",
+    "providerE2ERequests": {
+      "youdao": 1,
+      "mymemory": 1
+    }
+  },
+  "proxyInspection": {
+    "processEnvironment": {
+      "HTTP_PROXYConfigured": true,
+      "HTTPS_PROXYConfigured": true,
+      "valuesPersisted": false
+    },
+    "WindowsSystemProxy": {
+      "WinInetProxyEnabled": true,
+      "PACConfigured": false,
+      "valuesPersisted": false
+    },
+    "causalRelationshipTo429": "unknown; no route-isolation test was made"
+  },
+  "codeChanges": {
+    "statusValidation": "Only integer HTTP 2xx is parsed; missing status and status 0 fail closed.",
+    "anonymous": true,
+    "retryPolicy": "No retry; no endpoint rotation or hidden provider fallback.",
+    "transportErrorDisclosure": "Sanitized; query URLs and response bodies are not surfaced."
+  }
+}

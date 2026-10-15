@@ -5,10 +5,12 @@ import { queryFromText, readSelection, selectionSignature } from './selection-qu
 import { replaceSelectionMenu, renderSelectionTools, saveSelectionAnnotation } from './selection-menu.js';
 import { createCard, element } from './render.js';
 import { LocalResources, MAX_RESOURCE, ResourceCancelledError } from './resources.js';
-import { queryDictionaries } from './query-engine.js';
+import { querySources, createQueryScope } from './query-sources.js';
+import { createOnlineTranslator } from './online-translators.js';
+import { resolveSources } from './source-settings.js';
 import { displayResults } from './definition-view.js';
 import { QueryHistory } from './history.js';
-import { queryControls } from './query-controls.js';
+import { queryControls, shouldShowQueryDiagnostics } from './query-controls.js';
 import { readerViews, readerContext, readerInput } from './reader-adapter.js';
 import { basename, dirname } from './local-path.js';
 import { ResourcePool } from './resource-pool.js';
@@ -16,7 +18,7 @@ import { VocabularyStore, exportVocabulary, saveVocabularyNote } from './vocabul
 import { appearanceSettings, applyAppearance, preferredAudio } from './appearance-settings.js';
 import { mountEnhancements } from './preferences-panel.js';
 import { folderList, scanDirectories, orderedDictionaries } from './directory-library.js';
-import { settingsBackup, validateSettings, relocateSettings } from './settings-backup.js';
+import { SETTING_KEYS, settingsBackup, validateSettings, relocateSettings } from './settings-backup.js';
 import { spellingSuggestions } from './word-search.js';
 import { dictionaryFormat } from './dictionary-formats.js';
 
@@ -27,9 +29,10 @@ export function createApp(env, pluginID) {
   let dictionaries = [], loadedDictionary, loadedResources, resourcesPromise;
   let status = '尚未选择词典。';
   let selectionEpoch = 0;
-  const dictionaryPool = new DictionaryPool(IOUtils);
+  const dictionaryPool = new DictionaryPool(IOUtils, 6);
   const resourcePool = new ResourcePool(openResources);
   const extraToolbar = new Set();
+  const preferenceObservers = [];
   const preferencePanels = new Map();
   const vocabulary = new VocabularyStore({ read: () => Zotero.Prefs.get(pref + 'vocabulary'), write: value => Zotero.Prefs.set(pref + 'vocabulary', value) });
   const sessions = new Map(), toolbarButtons = new Set(), selectors = new Set(), preferenceWindows = new Set();
@@ -37,6 +40,10 @@ export function createApp(env, pluginID) {
   const getFolder = () => Zotero.Prefs.get(pref + 'folder') || '';
   const getFolders = () => folderList(Zotero.Prefs.get(pref + 'directories'), getFolder());
   const enabled = () => Zotero.Prefs.get(pref + 'enabled') !== false;
+  const clickEnabled = () => Zotero.Prefs.get(pref + 'clickEnabled') !== false;
+  const getSources = () => resolveSources(Zotero.Prefs.get(pref + 'sources'), dictionaries);
+  const selectedSource = () => getSources().find(source => source.id === Zotero.Prefs.get(pref + 'selectedSource') && source.enabled) || getSources().find(source => source.kind === 'local' && source.path === getPath() && source.enabled) || getSources().find(source => source.enabled);
+  const translate = createOnlineTranslator(Zotero);
   const selectionEnabled = () => Zotero.Prefs.get(pref + 'selectionEnabled') !== false;
   const integratedMenu = () => Zotero.Prefs.get(pref + 'selectionMenu') !== 'native';
   const errorText = e => String(e?.message || e);
@@ -48,28 +55,43 @@ export function createApp(env, pluginID) {
   const resourceOptions = () => configurations()[getPath()] || {};
 
   function fillSelect(select) {
-    const signature = dictionaries.map(d => d.path).join('\n');
+    const sources = getSources().filter(source => source.enabled);
+    const signature = JSON.stringify(sources);
     if (select.dataset.list !== signature) {
       select.replaceChildren();
-      for (const d of dictionaries) {
-        const option = element(select.ownerDocument, 'option', d.name + ' · ' + (d.format || dictionaryFormat(d.path)));
-        option.value = d.path; select.append(option);
+      for (const source of sources) {
+        const option = element(select.ownerDocument, 'option', source.name + (source.kind === 'online' ? ' · 实验性翻译' : ' · 本地'));
+        option.value = source.id; select.append(option);
       }
-      if (!dictionaries.length) select.append(element(select.ownerDocument, 'option', '请先选择词典文件夹'));
+      if (!sources.length) select.append(element(select.ownerDocument, 'option', '请先启用查询来源'));
       select.dataset.list = signature;
     }
-    if (select.value !== getPath()) select.value = getPath();
-    select.disabled = !dictionaries.length;
+    select.value = selectedSource()?.id || '';
+    select.disabled = !sources.length;
+  }
+
+  async function selectSource(id, keepSession) {
+    const epoch = ++selectionEpoch;
+    const source = getSources().find(source => source.id === id && source.enabled);
+    if (!source) throw new Error('该来源不可用。');
+    if (source.kind === 'local' && !await selectDictionary(source.path, keepSession, { selectionEpoch: epoch })) return false;
+    if (stopped || epoch !== selectionEpoch) return false;
+    Zotero.Prefs.set(pref + 'selectedSource', id);
+    for (const session of sessions.values()) if (session !== keepSession) session.close();
+    updateUI(); return true;
   }
 
   function updateUI() {
-    for (const button of extraToolbar) { if (!button.isConnected) extraToolbar.delete(button); else button.disabled = !enabled(); }
+    for (const button of extraToolbar) {
+      try { if (!button.isConnected) extraToolbar.delete(button); else button.disabled = !enabled(); }
+      catch { extraToolbar.delete(button); }
+    }
     for (const button of toolbarButtons) {
       try {
         if (!button.isConnected) { toolbarButtons.delete(button); continue; }
         button.textContent = enabled() ? '本地词典 ✓' : '本地词典';
         button.setAttribute('aria-pressed', String(enabled()));
-        button.title = getPath() ? '单击开关本地查词（点击 / 划选）；右键更换词典文件夹' : '选择本地词典文件夹';
+        button.title = getSources().some(source => source.enabled) ? '单击切换查询总开关；右键添加本地词典目录' : '选择本地词典文件夹；在线翻译可在设置中启用';
       } catch { toolbarButtons.delete(button); }
     }
     for (const select of selectors) {
@@ -87,6 +109,7 @@ export function createApp(env, pluginID) {
       fillSelect(doc.getElementById('local-mdx-select'));
       doc.getElementById('local-mdx-status').textContent = status;
       doc.getElementById('local-mdx-enabled').checked = enabled();
+      const clickControl = doc.getElementById('local-mdx-click-enabled'); if (clickControl) clickControl.checked = clickEnabled();
       doc.getElementById('local-mdx-selection-enabled').checked = selectionEnabled();
       doc.getElementById('local-mdx-selection-menu').value = integratedMenu() ? 'integrated' : 'native';
       doc.getElementById('local-mdx-selection-enabled').disabled = !integratedMenu();
@@ -184,6 +207,9 @@ export function createApp(env, pluginID) {
     invalidateResources();
     dictionaryPromise = prepared ? Promise.resolve(prepared) : undefined; dictionaryPath = path || undefined;
     if (options.list) dictionaries = options.list;
+    const sources = getSources(); Zotero.Prefs.set(pref + 'sources', JSON.stringify(sources));
+    const selected = sources.find(source => source.kind === 'local' && source.path === path && source.enabled);
+    if (selected && (!options.list || !sources.some(source => source.enabled && source.id === Zotero.Prefs.get(pref + 'selectedSource')))) Zotero.Prefs.set(pref + 'selectedSource', selected.id);
     if (options.folder != null) Zotero.Prefs.set(pref + 'folder', options.folder);
     if (options.folders) Zotero.Prefs.set(pref + 'directories', JSON.stringify(options.folders));
     Zotero.Prefs.set(pref + 'path', path || '');
@@ -293,7 +319,7 @@ export function createApp(env, pluginID) {
       for (const session of sessions.values()) session.menu?.refresh();
       refreshResources(); updateUI(); return;
     }
-    settings = { ...JSON.parse(settingsBackup(key => Zotero.Prefs.get(pref + key))).settings, ...settings };
+    settings = { ...Object.fromEntries(SETTING_KEYS.map(key => [key, Zotero.Prefs.get(pref + key)]).filter(([, value]) => value != null)), ...settings };
     const operation = ++selectionEpoch, scan = ++folderEpoch;
     const cancelled = () => stopped || operation !== selectionEpoch || scan !== folderEpoch;
     const replacements = [];
@@ -341,37 +367,40 @@ export function createApp(env, pluginID) {
       if (!query) return;
       const word = query.text;
       const pinned = card?.pinned || false;
+      const positionState = options.preservePosition ? card?.positionState?.() : undefined;
       if (!card) returnFocus = doc.activeElement;
       close(false); const ticket = request;
-      card = createCard(doc, x, y, word, close);
+      card = createCard(doc, x, y, word, close, { positionState });
       const current = card;
       current.pinned = pinned;
       const appearance = appearanceSettings(key => Zotero.Prefs.get(pref + key)); applyAppearance(current, appearance);
       const context = options.context || readerContext(Zotero, reader, view, annotation, options.anchor);
       if (options.record !== false && query.candidates.length) history.add({ query, annotation, preferredPath: options.preferredPath, context });
-      const makeRecord = () => vocabulary.add({ word, results: current.results, context });
+      const makeRecord = () => vocabulary.add({ word, results: (current.results || []).filter(result => result.type === 'local').map(result => ({ ...result })), context });
       queryControls(doc, current, {
         query, history,
-        onQuery: text => { const next = queryFromText(text, 'manual'); if (next) void show(next, x, y, undefined, { context: readerContext(Zotero, reader, view) }).catch(log); else current.footer.textContent = '请输入最多 256 字符、16 个词的查询。'; },
-        onHistory: delta => { const entry = history.move(delta); if (entry) void show(entry.query, x, y, entry.annotation, { record: false, preferredPath: entry.preferredPath, context: entry.context }).catch(log); },
+        onQuery: text => { const next = queryFromText(text, 'manual'); if (next) void show(next, x, y, undefined, { preservePosition: true, context: readerContext(Zotero, reader, view) }).catch(log); else current.footer.textContent = '请输入最多 256 字符、16 个词的查询。'; },
+        onHistory: delta => { const entry = history.move(delta); if (entry) void show(entry.query, x, y, entry.annotation, { preservePosition: true, record: false, preferredPath: entry.preferredPath, context: entry.context }).catch(log); },
         onCollect: () => { try { makeRecord(); current.collectButton.textContent = '已收藏'; current.footer.textContent = '已保存生词与文献上下文；可在设置中导出。'; } catch (error) { current.footer.textContent = errorText(error); } },
         onNote: async () => {
           current.noteButton.disabled = true;
           try { await saveVocabularyNote(Zotero, makeRecord()); current.noteButton.textContent = '已写入笔记'; current.footer.textContent = '已保存至当前文献库。'; }
           catch (error) { current.footer.textContent = errorText(error); current.noteButton.disabled = false; }
         },
-        onBrowse: async prefix => {
-          current.browsing = true; display?.close(); current.audioButton.disabled = true; current.replayButton.disabled = true; current.collectButton.disabled = true; current.noteButton.disabled = true; current.body.hidden = false; current.body.textContent = '正在读取词目…';
+        onBrowse: getSources().some(source => source.enabled && source.kind === 'local') ? async prefix => {
+          current.browsing = true; scope.cancel(); displays.forEach(display => display.close()); current.audioButton.disabled = true; current.replayButton.disabled = true; current.collectButton.disabled = true; current.noteButton.disabled = true; current.body.hidden = false; current.body.textContent = '正在读取词目…';
           current.setState('loading');
           try {
-            const dictionary = await dictionaryPool.load(getPath()); let offset = 0;
+            const browseSource = selectedSource()?.kind === 'local' ? selectedSource() : getSources().find(source => source.enabled && source.kind === 'local');
+            const lease = await dictionaryPool.acquire(browseSource.path); current.addCleanup(lease.release);
+            const dictionary = lease.dictionary; let offset = 0;
             const renderPage = () => {
               if (ticket !== request || !current.host.isConnected) return;
               const page = dictionary.browseWords(prefix, offset, 30); current.body.replaceChildren();
               current.setState(page.words.length ? 'ready' : 'empty');
               for (const headword of page.words) {
                 const button = element(doc, 'button', headword); button.type = 'button'; button.className = 'load-more';
-                button.addEventListener('click', () => { void show(queryFromText(headword, 'entry'), x, y, undefined, { context }).catch(log); }); current.body.append(button);
+                button.addEventListener('click', () => { void show(queryFromText(headword, 'entry'), x, y, undefined, { preservePosition: true, preferredPath: browseSource.path, context }).catch(log); }); current.body.append(button);
               }
               if (!page.words.length) current.body.textContent = '没有该前缀的词目。修改输入框后再次点击“浏览词目”。';
               for (const [label, delta, disabled] of [['上一页', -30, offset === 0], ['下一页', 30, !page.more]]) {
@@ -382,7 +411,7 @@ export function createApp(env, pluginID) {
             };
             renderPage();
           } catch (error) { if (ticket === request && current.host.isConnected) { current.setState('error'); current.body.textContent = errorText(error); } }
-        },
+        } : undefined,
       });
       if (options.focus) current.queryInput.focus();
       if (annotation) {
@@ -399,13 +428,14 @@ export function createApp(env, pluginID) {
           onStatus: message => { if (current.host.isConnected) current.footer.textContent = message; },
         });
       }
-      let display;
-      current.cleanup = () => display?.close();
+      const scope = createQueryScope(), displays = [];
+      current.cancelQuery = () => { scope.cancel(); displays.forEach(display => display.close()); };
+      current.addCleanup(() => scope.cancel());
+      current.addCleanup(() => displays.forEach(display => display.close()));
       fillSelect(current.selector);
-      const selectedPath = getPath();
       current.selector.addEventListener('change', async () => {
-        try { if (await selectDictionary(current.selector.value, sessions.get(win))) await show(query, x, y, annotation, { record: false, context }); }
-        catch (error) { log(error); current.footer.textContent = '切换失败：' + errorText(error); fillSelect(current.selector); }
+        try { if (await selectSource(current.selector.value, sessions.get(win)) && ticket === request && current.host.isConnected) await show(query, x, y, annotation, { preservePosition: true, record: false, context }); }
+        catch (error) { if (current.host.isConnected) { current.footer.textContent = '切换失败：' + errorText(error); fillSelect(current.selector); } }
       });
       if (!query.candidates.length) {
         current.setState('idle');
@@ -414,63 +444,102 @@ export function createApp(env, pluginID) {
         current.position(); return;
       }
       try {
-        const isCurrent = () => !stopped && !current.browsing && ticket === request && getPath() === selectedPath && current.host.isConnected;
-        const primaryPath = options.preferredPath || selectedPath;
-        const primary = dictionaries.find(d => d.path === primaryPath) || { path: primaryPath, name: basename(primaryPath) };
-        const order = [primary, ...dictionaries.filter(d => d.path !== primaryPath)];
-        const mode = Zotero.Prefs.get(pref + 'queryMode') || 'single';
-        const found = await queryDictionaries(query, order, {
-          load: path => dictionaryPool.load(path), mode,
-          forms: Zotero.Prefs.get(pref + 'wordForms') !== false, cancelled: () => !isCurrent(),
-        });
-        if (!isCurrent()) return;
-        current.results = found.results;
-        current.collectButton.disabled = !found.results.length;
-        current.noteButton.disabled = !found.results.length || !context.itemID || !!internal?._annotationManager?._readOnly;
-        current.queries.hidden = found.groups.length === 1 && found.groups[0].attempts.length === 1;
-        current.queries.textContent = found.groups.map(group => group.name + '：' + group.attempts.map(attempt => attempt.word + (attempt.kind === 'form' ? '（词形）' : '') + (attempt.found ? ' ✓' : '（未收录）')).join(' / ')).join('；');
-        current.body.replaceChildren();
-        current.setState(found.results.length ? 'ready' : found.errors.length ? 'error' : 'empty');
-        if (!found.results.length) current.body.textContent = found.errors.length ? '查询读取失败：' + found.errors.join('；') : '未找到“' + word + '”。可修改查询词或切换词典。';
-        const diagnostics = [...found.errors, ...found.groups.flatMap(group => (group.warnings || []).map(issue => group.name + '：' + issue))];
-        let resourceSources = [];
-        const updateDiagnostics = (details, sources) => {
-          if (!isCurrent()) return;
-          if (sources) resourceSources = sources;
-          for (const detail of details) if (!diagnostics.includes(detail)) diagnostics.push(detail);
-          current.footer.title = diagnostics.slice(0, 100).join('\n');
-          current.setDiagnostics?.(diagnostics, found.groups, resourceSources);
+        const isCurrent = () => !stopped && !scope.cancelled() && !current.browsing && ticket === request && current.host.isConnected;
+        const mode = options.preferredPath ? 'single' : (Zotero.Prefs.get(pref + 'queryMode') || 'single');
+        const allSources = getSources().filter(source => source.enabled);
+        const sources = options.preferredPath
+          ? allSources.filter(source => source.kind === 'local' && source.path === options.preferredPath)
+          : mode === 'single' ? allSources.filter(source => source.id === selectedSource()?.id) : allSources;
+        const slots = new Map(), snapshots = new Map(), rendered = new Set(), resourceDiagnostics = new Map();
+        const resourceBudget = { bytes: 0, count: 0 };
+        current.body.replaceChildren(); current.results = [];
+        for (const source of sources) {
+          const section = element(doc, 'section'); section.className = 'query-source'; section.dataset.sourceId = source.id;
+          const title = element(doc, 'h3', source.name), state = element(doc, 'p', '等待查询…'), content = element(doc, 'div'), diagnostic = element(doc, 'pre'), footer = element(doc, 'div');
+          state.className = 'source-status'; diagnostic.className = 'source-diagnostic'; diagnostic.hidden = true; footer.className = 'source-footer';
+          section.append(title, state, content, diagnostic, footer); current.body.append(section);
+          slots.set(source.id, { state, content, diagnostic, footer });
+        }
+        const refreshDiagnostics = () => {
+          const failures = sources.flatMap(source => {
+            const group = snapshots.get(source.id);
+            if (!shouldShowQueryDiagnostics(group)) return [];
+            const slot = slots.get(source.id), extra = resourceDiagnostics.get(source.id) || [];
+            return [{ name: source.name, group, text: slot.diagnostic.textContent || extra.join('\n') }];
+          });
+          current.setDiagnostics?.(failures);
         };
-        current.footer.textContent = found.groups.map(group => group.name).join(' / ') + ' · ' + found.results.length + ' 条释义';
-        updateDiagnostics([]);
-        display = displayResults({
-          doc, current, results: found.results, win, original: getMode() === 'original', acquireResources: path => resourcePool.acquire(path), isCurrent,
-          onEntry: (entry, path) => { void show(queryFromText(entry, 'entry'), x, y, undefined, { preferredPath: path, context }).catch(log); },
-          onStatus: message => { if (isCurrent()) current.footer.textContent = message; },
-          onDiagnostics: updateDiagnostics, appearance,
-          onAudio: player => {
-            if (!isCurrent()) return;
-            if (player.keys?.length && !current.playPreferred) {
-              current.audioButton.disabled = false; current.playPreferred = () => player.play(preferredAudio(player.keys, Zotero.Prefs.get(pref + 'pronunciation') || 'first'));
-            }
-            if (player.played) { current.replayButton.disabled = false; current.replay = () => player.play(player.played); }
-          },
-        });
-        await display.ready;
-        if (!found.results.length && !found.errors.length && isCurrent()) {
-          const dictionary = await dictionaryPool.load(primaryPath);
-          const suggestions = await spellingSuggestions(dictionary, word, { cancelled: () => !isCurrent(), yieldControl: () => new Promise(resolve => win.setTimeout(resolve, 0)) });
-          if (isCurrent() && suggestions.length) {
-            current.body.append(element(doc, 'p', '你可能想查：'));
-            for (const suggestion of suggestions) {
-              const button = element(doc, 'button', suggestion); button.type = 'button'; button.className = 'load-more';
-              button.addEventListener('click', () => { void show(queryFromText(suggestion, 'entry'), x, y, undefined, { context, preferredPath: primaryPath }).catch(log); }); current.body.append(button);
+        const renderSourceDiagnostics = (sourceId, group) => {
+          const slot = slots.get(sourceId); if (!slot) return;
+          const extra = resourceDiagnostics.get(sourceId) || [];
+          slot.diagnostic.textContent = [...(group?.attempts || []).map(attempt => attempt.word + (attempt.found ? ' ✓' : '（未收录）')), ...(group?.errors || []), ...(group?.warnings || []), ...extra].join('\n');
+          slot.diagnostic.hidden = !shouldShowQueryDiagnostics(group);
+        };
+        const renderUpdate = group => {
+          if (!isCurrent()) return;
+          const slot = slots.get(group.sourceId); if (!slot) return;
+          snapshots.set(group.sourceId, group);
+          const labels = { queued:'等待查询…', running:'正在查询…', ready:'已完成', empty:'未找到结果', error:'查询失败', cooldown:'服务冷却中', cancelled:'已取消' };
+          slot.state.textContent = labels[group.status] || group.status;
+          renderSourceDiagnostics(group.sourceId, group);
+          slot.footer.textContent = group.source.name + ' · ' + group.results.length + ' 条结果' + (group.elapsedMs == null ? '' : ' · ' + group.elapsedMs + ' ms');
+          current.results = sources.flatMap(source => snapshots.get(source.id)?.results || []).filter(result => result.type === 'local');
+          current.collectButton.disabled = !current.results.length;
+          current.noteButton.disabled = !current.results.length || !context.itemID || !!internal?._annotationManager?._readOnly;
+          current.setState([...snapshots.values()].some(item => item.results.length) ? 'ready' : [...snapshots.values()].some(item => ['running','queued'].includes(item.status)) ? 'loading' : 'empty');
+          current.footer.textContent = '来源 ' + snapshots.size + '/' + sources.length + ' · ' + sources.reduce((n, source) => n + (snapshots.get(source.id)?.results.length || 0), 0) + ' 条结果';
+          refreshDiagnostics();
+          if (group.results.length && !rendered.has(group.sourceId)) {
+            rendered.add(group.sourceId); slot.content.replaceChildren();
+            if (group.kind === 'online') {
+              for (const result of group.results) {
+                const text = element(doc, 'p', result.text); text.style.whiteSpace = 'pre-wrap';
+                const copy = element(doc, 'button', '复制'); copy.type = 'button';
+                copy.addEventListener('click', () => { if (isCurrent()) { try { Zotero.Utilities.Internal.copyTextToClipboard(result.text); slot.footer.textContent = '已复制翻译'; } catch (error) { slot.footer.textContent = errorText(error); } } });
+                slot.content.append(text, copy);
+              }
+            } else {
+              const display = displayResults({
+                doc, current: { ...current, body: slot.content }, results: group.results, win, budget: resourceBudget, original: getMode() === 'original', acquireResources: path => resourcePool.acquire(path), isCurrent,
+                onEntry: (entry, path) => { void show(queryFromText(entry, 'entry'), x, y, undefined, { preservePosition: true, preferredPath: path, context }).catch(log); },
+                onStatus: message => { if (isCurrent()) slot.footer.textContent = message; },
+                onDiagnostics: (details, resources = []) => {
+                  if (!isCurrent()) return;
+                  resourceDiagnostics.set(group.sourceId, [...details, ...resources]);
+                  renderSourceDiagnostics(group.sourceId, snapshots.get(group.sourceId));
+                  refreshDiagnostics();
+                }, appearance,
+                onAudio: player => {
+                  if (!isCurrent()) return;
+                  if (player.keys?.length && !current.playPreferred) { current.audioButton.disabled = false; current.playPreferred = () => player.play(preferredAudio(player.keys, Zotero.Prefs.get(pref + 'pronunciation') || 'first')); }
+                  if (player.played) { current.replayButton.disabled = false; current.replay = () => player.play(player.played); }
+                },
+              }); displays.push(display); current.addCleanup(display.close);
             }
           }
+          current.position();
+        };
+        if (!sources.length) { current.setState('empty'); current.body.textContent = '没有启用的查询来源。请在设置中启用本地词典或实验性翻译服务。'; }
+        const found = await querySources(query, sources, { load: path => dictionaryPool.acquire(path), mode, forms: Zotero.Prefs.get(pref + 'wordForms') !== false, scope, onUpdate: renderUpdate, translate });
+        if (!isCurrent()) return;
+        for (const source of sources) if (snapshots.get(source.id)?.status === 'queued') slots.get(source.id).state.textContent = '未查询（前序来源已命中）';
+        await Promise.all(displays.map(display => display.ready));
+        const local = sources.find(source => source.kind === 'local' && source.id === selectedSource()?.id) || sources.find(source => source.kind === 'local');
+        if (!found.results.length && !found.errors.length && local && isCurrent()) {
+          const lease = await dictionaryPool.acquire(local.path);
+          try {
+            const suggestions = await spellingSuggestions(lease.dictionary, word, { cancelled: () => !isCurrent(), yieldControl: () => new Promise(resolve => win.setTimeout(resolve, 0)) });
+            if (isCurrent() && suggestions.length) {
+              const slot = slots.get(local.id); slot.content.append(element(doc, 'p', '你可能想查：'));
+              for (const suggestion of suggestions) {
+                const button = element(doc, 'button', suggestion); button.type = 'button'; button.className = 'load-more';
+                button.addEventListener('click', () => { void show(queryFromText(suggestion, 'entry'), x, y, undefined, { preservePosition: true, context, preferredPath: local.path }).catch(log); }); slot.content.append(button);
+              }
+            }
+          } finally { lease.release(); }
         }
-      } catch (e) {
-        if (ticket === request && getPath() === selectedPath && current.host.isConnected) { current.setState('error'); current.body.textContent = errorText(e); }
-        log(e);
+      } catch (error) {
+        if (!scope.cancelled() && ticket === request && current.host.isConnected) { current.setState('error'); current.footer.textContent = errorText(error); log(error); }
       }
       if (ticket === request) current.position();
     };
@@ -478,7 +547,7 @@ export function createApp(env, pluginID) {
       // Leave the native menu usable if a future reader lacks the callback.
       if (!integratedMenu() || !menu) return;
       const annotation = menu?.popup?.annotation;
-      const query = selectionEnabled() && getPath() ? selected.query : null;
+      const query = selectionEnabled() && getSources().some(source => source.enabled) ? selected.query : null;
       if (!query && !annotation) return;
       const input = query || { text: annotation.text?.slice(0, 80) || '已选文字', candidates: [], source: 'selection' };
       if (card?.selectionSignature === selectionSignature(win, view)) return;
@@ -518,7 +587,6 @@ export function createApp(env, pluginID) {
       const origin = down; down = undefined;
       if (!origin || event.button !== 0 || event.pointerId !== origin.id) return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !enabled()) return;
-      if (view.action?.type === 'drag') return;
       const wasMoved = moved || Math.hypot(event.clientX - origin.x, event.clientY - origin.y) > 5;
       const ticket = request;
       // Zotero's native text selection may stop bubbling pointerup. Capture it,
@@ -530,7 +598,7 @@ export function createApp(env, pluginID) {
         if (wasMoved || selectionSignature(win, view) !== origin.selection) showSelection(selected, event.clientX, event.clientY);
         return;
       }
-      if (!getPath() || wasMoved || Date.now() - origin.time > 650 || view._isSelectionCollapsed?.() === false) return;
+      if (view.action?.type === 'drag' || !clickEnabled() || !getSources().some(source => source.enabled) || wasMoved || Date.now() - origin.time > 650 || view._isSelectionCollapsed?.() === false) return;
       const anchor = {};
       const word = wordAtPoint(win, event.clientX, event.clientY, view, info => Object.assign(anchor, info));
       if (word) void show(word, event.clientX, event.clientY, undefined, { anchor }).catch(log);
@@ -545,14 +613,14 @@ export function createApp(env, pluginID) {
       }
     }, true);
     on(win, 'scroll', event => { if (!inside(event) && !card?.pinned) close(); }, true);
-    on(win, 'resize', () => { if (card?.pinned) card.position(); else close(); });
+    on(win, 'resize', () => card?.position({ clampOnly: true }));
     const cleanup = () => {
       close(); win.clearTimeout(selectionTimer);
       try { menu?.dispose(); } catch {}
       listeners.forEach(f => { try { f(); } catch {} }); sessions.delete(win);
     };
     on(win, 'unload', cleanup);
-    sessions.set(win, { close, cleanup, show, view, menu });
+    sessions.set(win, { close, cleanup, show, view, menu, cancelQuery: () => card?.cancelQuery?.() });
   }
 
   function scanReaders() {
@@ -580,14 +648,14 @@ export function createApp(env, pluginID) {
     button.type = 'button'; button.className = 'toolbar-button';
     button.style.cssText = 'width:auto;padding:0 8px;font-size:12px;white-space:nowrap;';
     button.addEventListener('click', () => {
-      if (!getPath()) void chooseDictionary(Zotero.getMainWindow()).catch(log);
+      if (!getSources().some(source => source.enabled)) void chooseDictionary(Zotero.getMainWindow()).catch(log);
       else setEnabled(!enabled());
     });
     button.addEventListener('contextmenu', e => { e.preventDefault(); void chooseDictionary(Zotero.getMainWindow()).catch(log); });
     const select = element(event.doc, 'select');
-    select.setAttribute('aria-label', '选择本地词典');
+    select.setAttribute('aria-label', '选择查询来源');
     select.style.cssText = 'max-width:200px;min-width:100px;font-size:12px;';
-    select.addEventListener('change', () => selectDictionary(select.value).catch(log));
+    select.addEventListener('change', () => selectSource(select.value).catch(log));
     selectors.add(select);
     toolbarButtons.add(button); event.append(button, select); updateUI();
     const queryButton = element(event.doc, 'button', '查询'); queryButton.type = 'button'; queryButton.className = 'toolbar-button';
@@ -602,6 +670,12 @@ export function createApp(env, pluginID) {
 
   return {
     async start() {
+      if (Zotero.Prefs.registerObserver) for (const key of SETTING_KEYS) if (key !== 'vocabulary' && key !== 'annotationColor') {
+        preferenceObservers.push(Zotero.Prefs.registerObserver(pref + key, () => {
+          for (const session of sessions.values()) session.cancelQuery();
+          if (!enabled()) dismissAll();
+        }));
+      }
       await Zotero.PreferencePanes.register({ pluginID, id: 'local-mdx-click-preferences', label: '本地词典', src: 'content/preferences.xhtml' });
       Zotero.Reader.registerEventListener('renderToolbar', toolbar, pluginID);
       timer = env.setInterval(scanReaders, 1000);
@@ -615,6 +689,7 @@ export function createApp(env, pluginID) {
     },
     stop() {
       stopped = true;
+      for (const observer of preferenceObservers.splice(0)) Zotero.Prefs.unregisterObserver(observer);
       generation++; folderEpoch++; selectionEpoch++; dictionaryPool.clear();
       env.clearInterval(timer);
       Zotero.Reader.unregisterEventListener('renderToolbar', toolbar);
@@ -631,7 +706,9 @@ export function createApp(env, pluginID) {
       win.document.getElementById('local-mdx-choose').onclick = () => chooseDictionary(win).catch(log);
       win.document.getElementById('local-mdx-choose-file').onclick = () => chooseFile(win).catch(log);
       win.document.getElementById('local-mdx-refresh').onclick = () => scanLibrary().catch(log);
-      win.document.getElementById('local-mdx-select').onchange = event => selectDictionary(event.target.value).catch(log);
+      win.document.getElementById('local-mdx-select').onchange = event => selectSource(event.target.value).catch(log);
+      const clickControl = win.document.getElementById('local-mdx-click-enabled');
+      if (clickControl) clickControl.onchange = event => { Zotero.Prefs.set(pref + 'clickEnabled', event.target.checked); dismissAll(); updateUI(); };
       win.document.getElementById('local-mdx-enabled').onchange = event => setEnabled(event.target.checked);
       win.document.getElementById('local-mdx-selection-enabled').onchange = event => {
         Zotero.Prefs.set(pref + 'selectionEnabled', event.target.checked); dismissAll(); updateUI();
@@ -654,13 +731,22 @@ export function createApp(env, pluginID) {
       if (getPath()) loadDictionary().catch(log);
       preferencePanels.set(win, mountEnhancements(win, {
         get: key => Zotero.Prefs.get(pref + key), set: (key, value) => { Zotero.Prefs.set(pref + key, value); dismissAll(); },
+        sources: getSources, onSources: sources => {
+          Zotero.Prefs.set(pref + 'sources', JSON.stringify(sources));
+          const positions = new Map(sources.filter(source => source.kind === 'local').map((source, index) => [source.path, index]));
+          dictionaries.sort((a, b) => positions.get(a.path) - positions.get(b.path));
+          Zotero.Prefs.set(pref + 'dictionaryOrder', JSON.stringify(dictionaries.map(dictionary => dictionary.path)));
+          dismissAll(); updateUI();
+        },
         vocabulary, onExport: format => exportWords(win, format), onBackup: () => backupSettings(win), onImport: () => importSettings(win),
         dictionaries: () => dictionaries.slice(), folders: getFolders, onFolders: () => chooseDictionary(win),
         onRemoveFolder: path => scanLibrary(getFolders().filter(folder => folder !== path)), onRefresh: () => scanLibrary(),
         onOrder: (index, delta) => {
           const next = index + delta; if (next < 0 || next >= dictionaries.length) return;
           [dictionaries[index], dictionaries[next]] = [dictionaries[next], dictionaries[index]];
-          Zotero.Prefs.set(pref + 'dictionaryOrder', JSON.stringify(dictionaries.map(dictionary => dictionary.path))); updateUI();
+          Zotero.Prefs.set(pref + 'dictionaryOrder', JSON.stringify(dictionaries.map(dictionary => dictionary.path)));
+          const sources = getSources(), locals = dictionaries.map(dictionary => sources.find(source => source.kind === 'local' && source.path === dictionary.path)); let i = 0;
+          Zotero.Prefs.set(pref + 'sources', JSON.stringify(sources.map(source => source.kind === 'local' ? locals[i++] : source))); dismissAll(); updateUI();
         },
         onResourceOrder: (index, delta) => {
           const config = configurations(), options = config[getPath()] || {}, archives = (options.extraArchives || []).slice();
@@ -672,6 +758,6 @@ export function createApp(env, pluginID) {
     },
     loadDictionary, loadResources, chooseDictionary, chooseFile, chooseResources, resetResources, scanReaders, scanFolder, selectDictionary,
     vocabulary, scanLibrary, exportWords, backupSettings, importSettings, queryReader,
-    getDictionaries: () => dictionaries.slice(), getPath,
+    getDictionaries: () => dictionaries.slice(), getPath, getSources, selectSource,
   };
 }

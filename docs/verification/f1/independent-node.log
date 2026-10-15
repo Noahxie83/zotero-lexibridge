@@ -1,0 +1,45 @@
+✔ [3] single mode loads exactly one source, even when that source is empty (1.4857ms)
+✔ [3] fallback never starts a later source before the earlier one is empty, and stops on a hit (0.7592ms)
+✔ [3] disabled online source is never consulted: zero translate calls and zero HTTP (0.2667ms)
+✔ [3] enabled list ordering is preserved and each configured source is queried exactly once (0.547ms)
+✔ [4] all mode caps local concurrency at two and never exceeds it under load (0.602ms)
+✔ [4] the online lane is plugin-global: one running HTTP request across separate scopes (0.3704ms)
+✔ [4] a slow source cannot reorder or delay the final configured group order (0.3547ms)
+✔ [4] one failing source is isolated from the others in all mode (0.414ms)
+✔ [5] a newer query cancels the older one: no stale update can write back (0.3358ms)
+✔ [5] cancelling one window leaves an unrelated in-flight query untouched (0.27ms)
+✔ [5] settings change cancels the query scope and drops in-flight results (0.2152ms)
+✔ [5] scope cancellation is idempotent, composes callbacks and fires late subscribers once (0.0977ms)
+✔ [6] online results are plain text and can never carry local/audio/resource fields (0.1837ms)
+✔ [6] translation works without any local dictionary: online-only single source (0.4872ms)
+✔ [6] an online source never reaches the local loader even when both are enabled (0.1576ms)
+✔ [3] Google request uses one fixed endpoint and the frozen query parameters (0.196ms)
+✔ [3] a network failure never triggers automatic resend, and 429 sets a shared cooldown (0.4957ms)
+✔ [3] retry-after accepts seconds, HTTP dates and falls back to 60s; malformed bodies are rejected (0.8885ms)
+✔ [3] an over-long or empty translation query is rejected before any HTTP (0.1308ms)
+✔ [3] cancelling an online request aborts the observed XHR and frees the global lane (0.5899ms)
+✔ [3] the request watchdog aborts a stalled request (0.3929ms)
+✔ [1/5] translation text is captured for all four origins, bounded and preserved (3.47ms)
+✔ [9] text capture keeps local input, candidates, punctuation and NFC normalisation (0.1674ms)
+✔ [5] history stores a full independent snapshot of the query input (0.1542ms)
+✔ [4] legacy queryDictionaries API still returns the documented shape (0.4513ms)
+✔ [7] old version-1 backups without clickEnabled leave the current user value untouched (0.9735ms)
+✔ [7] new version-1 backup round-trips every new field and stays version 1 (0.5312ms)
+✔ [7] every documented legacy backup alias is still accepted (0.2586ms)
+✔ [7] import rejects invalid types, unknown enums and out-of-range numbers (0.4836ms)
+✔ [7] source configuration rejects impossible shapes and accepts the documented one (1.6387ms)
+✔ [7] Windows path relocation moves local paths only and keeps identity stable (0.476ms)
+✔ [7] path relocation handles Windows drive roots, UNC prefixes and trailing separators (0.098ms)
+✔ [7] local path helpers agree on Windows separators (0.1347ms)
+✔ [7] reconciliation keeps configured order, IDs and flags and appends discoveries (0.2621ms)
+✔ [7] a missing local source is not silently re-enabled and Google stays disabled by default (0.2652ms)
+✔ [7] duplicate imported ids are repaired so the reconciled list always validates (0.1169ms)
+✔ [7] unknown engines and config shapes are rejected on import, not silently dropped (0.1174ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 128.3216

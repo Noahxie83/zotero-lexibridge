@@ -1,0 +1,24 @@
+{
+  "version": "1.2.2",
+  "testBuild": true,
+  "path": "dist/local-dictionary-1.2.2-youdao-mymemory-test.xpi",
+  "bytes": 323286,
+  "sha256": "175828f7dbf1638c5a321a8079acbb2ecd421e6924a7e717f5e2040518fa7567",
+  "published": false,
+  "zoteroVerification": {
+    "version": "10.0.6",
+    "passed": true,
+    "steps": 48,
+    "profile": "verification-youdao-mymemory-20261015",
+    "packageExtractedForTest": true,
+    "packageSha256ObservedByHarness": "175828f7dbf1638c5a321a8079acbb2ecd421e6924a7e717f5e2040518fa7567",
+    "pluginBundleSha256": "0e7fa6fce48126600e1b0fc7b66b242676848b2a133ec3c936df50f478b0fd14"
+  },
+  "checks": {
+    "versionPreserved": true,
+    "oldPackagesPreserved": true,
+    "realGoogleProbeRepeated": false,
+    "realYoudaoRequests": 1,
+    "realMyMemoryRequests": 1
+  }
+}

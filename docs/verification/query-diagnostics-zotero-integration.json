@@ -1,0 +1,558 @@
+{
+  "version": "1.2.2",
+  "steps": [
+    {
+      "name": "isolated-profile",
+      "details": {
+        "version": "10.0.6",
+        "dataPath": "<repo>\\verification-diagnostics-20261015-final-ui\\data"
+      }
+    },
+    {
+      "name": "imported-test-pdf",
+      "details": {
+        "id": 1
+      }
+    },
+    {
+      "name": "opened-test-reader",
+      "details": {
+        "id": 1
+      }
+    },
+    {
+      "name": "pdf-geometry",
+      "details": {
+        "characters": 14
+      }
+    },
+    {
+      "name": "selected-color-highlight",
+      "details": {
+        "color": "#ff6666"
+      }
+    },
+    {
+      "name": "clicked-highlight",
+      "details": {
+        "status": "选择颜色后点击高亮或下划线，保存至 Zotero"
+      }
+    },
+    {
+      "name": "accepted-highlight",
+      "details": {
+        "status": "已保存高亮批注"
+      }
+    },
+    {
+      "name": "annotation-diagnostics-highlight",
+      "details": {
+        "items": [
+          {
+            "type": "highlight",
+            "color": "#ff6666",
+            "text": "research"
+          }
+        ],
+        "reader": [
+          {
+            "type": "highlight",
+            "sortIndex": "00000|000000|00000",
+            "pageLabel": "1",
+            "position": {
+              "pageIndex": 0,
+              "rects": [
+                [
+                  72,
+                  715.86,
+                  149.8,
+                  734.36
+                ]
+              ]
+            },
+            "text": "research",
+            "color": "#ff6666",
+            "comment": "",
+            "tags": [],
+            "id": "X9EALAGS",
+            "dateCreated": "2026-10-15T11:31:41.426Z",
+            "dateModified": "2026-10-15T11:31:41.426Z",
+            "authorName": ""
+          }
+        ],
+        "errors": []
+      }
+    },
+    {
+      "name": "stored-highlight",
+      "details": {
+        "type": "highlight",
+        "color": "#ff6666",
+        "text": "research",
+        "key": "X9EALAGS"
+      }
+    },
+    {
+      "name": "selected-color-underline",
+      "details": {
+        "color": "#2ea8e5"
+      }
+    },
+    {
+      "name": "clicked-underline",
+      "details": {
+        "status": "选择颜色后点击高亮或下划线，保存至 Zotero"
+      }
+    },
+    {
+      "name": "accepted-underline",
+      "details": {
+        "status": "已保存下划线批注"
+      }
+    },
+    {
+      "name": "annotation-diagnostics-underline",
+      "details": {
+        "items": [
+          {
+            "type": "highlight",
+            "color": "#ff6666",
+            "text": "research"
+          },
+          {
+            "type": "underline",
+            "color": "#2ea8e5",
+            "text": "research"
+          }
+        ],
+        "reader": [
+          {
+            "type": "highlight",
+            "sortIndex": "00000|000000|00000",
+            "pageLabel": "1",
+            "position": {
+              "pageIndex": 0,
+              "rects": [
+                [
+                  72,
+                  715.86,
+                  149.8,
+                  734.36
+                ]
+              ]
+            },
+            "text": "research",
+            "color": "#ff6666",
+            "comment": "",
+            "tags": [],
+            "id": "X9EALAGS",
+            "dateCreated": "2026-10-15T11:31:41.426Z",
+            "dateModified": "2026-10-15T11:31:41.426Z",
+            "authorName": ""
+          },
+          {
+            "type": "underline",
+            "sortIndex": "00000|000000|00000",
+            "pageLabel": "1",
+            "position": {
+              "pageIndex": 0,
+              "rects": [
+                [
+                  72,
+                  715.86,
+                  149.8,
+                  734.36
+                ]
+              ]
+            },
+            "text": "research",
+            "color": "#2ea8e5",
+            "comment": "",
+            "tags": [],
+            "id": "9ZVBYZPY",
+            "dateCreated": "2026-10-15T11:31:41.597Z",
+            "dateModified": "2026-10-15T11:31:41.597Z",
+            "authorName": ""
+          }
+        ],
+        "errors": []
+      }
+    },
+    {
+      "name": "stored-underline",
+      "details": {
+        "type": "underline",
+        "color": "#2ea8e5",
+        "text": "research",
+        "key": "9ZVBYZPY"
+      }
+    },
+    {
+      "name": "combined-query",
+      "details": {
+        "sources": 2
+      }
+    },
+    {
+      "name": "entry-link-and-history",
+      "details": {
+        "restored": true
+      }
+    },
+    {
+      "name": "pinned-popup",
+      "details": {
+        "retained": true
+      }
+    },
+    {
+      "name": "vocabulary-and-note",
+      "details": {
+        "word": "research",
+        "itemKey": "2SLMS9XM"
+      }
+    },
+    {
+      "name": "preferences-controls",
+      "details": {
+        "recursive": true,
+        "resourceRemoval": true,
+        "ordering": true,
+        "vocabulary": true
+      }
+    },
+    {
+      "name": "word-form",
+      "details": {
+        "query": "studies",
+        "hit": "study"
+      }
+    },
+    {
+      "name": "manual-query-and-spelling",
+      "details": {
+        "available": true
+      }
+    },
+    {
+      "name": "theme-size-and-audio",
+      "details": {
+        "fontSize": 20,
+        "replay": true
+      }
+    },
+    {
+      "name": "selected-text-context",
+      "details": {
+        "sentence": "research"
+      }
+    },
+    {
+      "name": "toolbar-selected-query",
+      "details": {
+        "word": "research",
+        "sentence": "research"
+      }
+    },
+    {
+      "name": "shortcut-selected-context",
+      "details": {
+        "sentence": "research"
+      }
+    },
+    {
+      "name": "manual-context-cleared",
+      "details": {
+        "word": "network",
+        "sentence": ""
+      }
+    },
+    {
+      "name": "mixed-format-query",
+      "details": {
+        "sources": 4,
+        "formats": [
+          "MDX",
+          "StarDict",
+          "DSL"
+        ]
+      }
+    },
+    {
+      "name": "trigger-click-probe",
+      "details": {
+        "trace": [
+          {
+            "stage": "up",
+            "down": false,
+            "request": 22
+          },
+          {
+            "stage": "up",
+            "down": true,
+            "request": 31
+          },
+          {
+            "stage": "wait",
+            "ticket": 31,
+            "request": 31,
+            "stopped": false
+          }
+        ],
+        "errors": [],
+        "clickEnabled": false,
+        "selectionEnabled": false,
+        "popup": false,
+        "collapsed": true,
+        "tool": "pointer",
+        "selection": "",
+        "ranges": [],
+        "clickX": 185.57254393334483,
+        "clickY": 104.8956818181817,
+        "target": "<span style=\"left: 11.76%; top: 7.07%; --font-height: 20.00px; font-family: sans-serif; --scale-x: 0.9540976372519031;\" role=\"presentation\" dir=\"ltr\">research sample</span>"
+      }
+    },
+    {
+      "name": "trigger-click-probe",
+      "details": {
+        "trace": [
+          {
+            "stage": "up",
+            "down": true,
+            "request": 35
+          },
+          {
+            "stage": "wait",
+            "ticket": 35,
+            "request": 35,
+            "stopped": false
+          }
+        ],
+        "errors": [],
+        "clickEnabled": false,
+        "selectionEnabled": true,
+        "popup": false,
+        "collapsed": true,
+        "tool": "pointer",
+        "selection": "",
+        "ranges": [],
+        "clickX": 185.57254393334483,
+        "clickY": 104.8956818181817,
+        "target": "<span style=\"left: 11.76%; top: 7.07%; --font-height: 20.00px; font-family: sans-serif; --scale-x: 0.9540976372519031;\" role=\"presentation\" dir=\"ltr\">research sample</span>"
+      }
+    },
+    {
+      "name": "trigger-click-probe",
+      "details": {
+        "trace": [
+          {
+            "stage": "up",
+            "down": true,
+            "request": 39
+          },
+          {
+            "stage": "wait",
+            "ticket": 39,
+            "request": 39,
+            "stopped": false
+          },
+          {
+            "stage": "word",
+            "word": "research"
+          }
+        ],
+        "errors": [],
+        "clickEnabled": true,
+        "selectionEnabled": false,
+        "popup": true,
+        "collapsed": true,
+        "tool": "pointer",
+        "selection": "",
+        "ranges": [],
+        "clickX": 185.57254393334483,
+        "clickY": 104.8956818181817,
+        "target": "<span style=\"left: 11.76%; top: 7.07%; --font-height: 20.00px; font-family: sans-serif; --scale-x: 0.9540976372519031;\" role=\"presentation\" dir=\"ltr\">research sample</span>"
+      }
+    },
+    {
+      "name": "trigger-click-probe",
+      "details": {
+        "trace": [
+          {
+            "stage": "up",
+            "down": true,
+            "request": 45
+          },
+          {
+            "stage": "wait",
+            "ticket": 45,
+            "request": 45,
+            "stopped": false
+          },
+          {
+            "stage": "word",
+            "word": "research"
+          }
+        ],
+        "errors": [],
+        "clickEnabled": true,
+        "selectionEnabled": true,
+        "popup": true,
+        "collapsed": true,
+        "tool": "pointer",
+        "selection": "",
+        "ranges": [],
+        "clickX": 185.57254393334483,
+        "clickY": 104.8956818181817,
+        "target": "<span style=\"left: 11.76%; top: 7.07%; --font-height: 20.00px; font-family: sans-serif; --scale-x: 0.9540976372519031;\" role=\"presentation\" dir=\"ltr\">research sample</span>"
+      }
+    },
+    {
+      "name": "four-trigger-combinations",
+      "details": {
+        "clickAndSelection": true,
+        "clickOnly": true,
+        "selectionOnly": true,
+        "neither": true,
+        "manualAndAnnotations": true
+      }
+    },
+    {
+      "name": "drag-probe",
+      "details": {
+        "trace": [
+          {
+            "stage": "drag-start",
+            "same": true,
+            "nodeSame": true,
+            "target": "header",
+            "button": 0,
+            "primary": true,
+            "x": 222,
+            "y": 28.333328247070312
+          },
+          {
+            "stage": "drag-move",
+            "drag": true,
+            "pointer": 81,
+            "expected": 81,
+            "x": 272,
+            "y": 68.33332824707031
+          },
+          {
+            "stage": "up",
+            "down": false,
+            "request": 50
+          }
+        ],
+        "before": {
+          "left": 42,
+          "top": 16.333328247070312,
+          "width": 540,
+          "height": 462.66668701171875
+        },
+        "dragged": {
+          "left": "92px",
+          "top": "16.3333px"
+        },
+        "viewport": {
+          "width": 1001,
+          "height": 487
+        }
+      }
+    },
+    {
+      "name": "online-only-and-drag",
+      "details": {
+        "transport": "offline mock in real Zotero",
+        "punctuation": true,
+        "slowResultPreserved": true,
+        "manualAndHistoryPreserved": true,
+        "localActionsDisabled": true,
+        "aborts": 1
+      }
+    },
+    {
+      "name": "diagnostic-visibility-mixed-and-recovery",
+      "details": {
+        "transport": "offline mock in real Zotero",
+        "failedSource": "Google 翻译（实验性）",
+        "successfulSourcesHidden": true,
+        "recovered": true
+      }
+    },
+    {
+      "name": "fixed-source-order",
+      "details": {
+        "ids": [
+          "local:<repo>\\verification-diagnostics-20261015-final-ui\\dictionaries\\B.mdx",
+          "local:<repo>\\verification-diagnostics-20261015-final-ui\\dictionaries\\A.mdx",
+          "local:<repo>\\verification-diagnostics-20261015-final-ui\\formats\\C-StarDict.ifo",
+          "local:<repo>\\verification-diagnostics-20261015-final-ui\\formats\\D-DSL.dsl.dz"
+        ]
+      }
+    },
+    {
+      "name": "local-drag-entry-resize",
+      "details": {
+        "originalIframeLink": true,
+        "positionPreserved": true,
+        "originalDictionaryOnly": true,
+        "globalOrderPreserved": true
+      }
+    },
+    {
+      "name": "new-format-resources-and-links",
+      "details": {
+        "starDictSynonym": true,
+        "dslReference": true,
+        "dslAudio": true
+      }
+    },
+    {
+      "name": "reopened-reader",
+      "details": {
+        "annotations": 2
+      }
+    },
+    {
+      "name": "readonly-controls",
+      "details": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "split-view-controls",
+      "details": {
+        "available": true
+      }
+    },
+    {
+      "name": "native-menu",
+      "details": {
+        "restored": true
+      }
+    },
+    {
+      "name": "detached-reader",
+      "details": {
+        "query": true,
+        "ownIframe": true
+      }
+    },
+    {
+      "name": "microsoft-edge-zotero-e2e",
+      "details": {
+        "skipped": true,
+        "reason": "Explicit --network required; sends at most two live requests (one word and one short sentence)."
+      }
+    },
+    {
+      "name": "plugin-cleanup",
+      "details": {
+        "restored": true
+      }
+    }
+  ],
+  "ok": true
+}

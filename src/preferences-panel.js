@@ -1,8 +1,10 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 import { element } from './render.js';
 import { preferencesCSS } from './preferences-appearance.js';
+import { validateSources } from './source-settings.js';
+import { onlineEngine } from './online-engine-catalog.js';
 
-export function mountEnhancements(win, { get, set, vocabulary, onExport, onBackup, onImport, onResourceOrder, dictionaries, onOrder, onFolders, onRemoveFolder, folders, onRefresh }) {
+export function mountEnhancements(win, { get, set, vocabulary, onExport, onBackup, onImport, onResourceOrder, dictionaries, onOrder, onFolders, onRemoveFolder, folders, onRefresh, sources, onSources }) {
   const doc = win.document, host = doc.getElementById('local-mdx-enhancements');
   if (!host) return () => {};
   const container = host.closest('.dictionary-settings') || host;
@@ -60,6 +62,12 @@ export function mountEnhancements(win, { get, set, vocabulary, onExport, onBacku
   select('扫描子目录', 'recursive', [['false', '只扫描当前层'], ['true', '递归扫描（最多 8 层）']]);
   const resourcesSection = section('当前词典的手动 MDD 顺序', true);
   const resources = element(doc, 'div'); resourcesSection.append(resources);
+  const sourceSection = sources && onSources ? section('查询来源与顺序') : null;
+  const sourceList = sourceSection ? element(doc, 'div') : null;
+  if (sourceSection) {
+    const sourceHelp = element(doc, 'p', '勾选需要的查询来源，并用上下箭头调整回退与联合查询顺序。当前来源可在上方选择。');
+    sourceHelp.className = 'settings-help'; sourceSection.append(sourceHelp, sourceList);
+  }
   const dictionarySection = section('词典查询顺序', true);
   const dictionaryList = element(doc, 'div'); dictionarySection.append(dictionaryList);
   const foldersSection = section('词典目录', true);
@@ -93,10 +101,12 @@ export function mountEnhancements(win, { get, set, vocabulary, onExport, onBacku
   const refresh = () => {
     for (const [key, { input, fallback }] of fields) if (doc.activeElement !== input) input.value = String(get(key) ?? fallback);
     const dicts = dictionaries(), directories = folders(), config = get('resources') || '{}';
+    let sourceRows = [];
+    if (sourceList) try { sourceRows = validateSources(sources()); } catch (error) { status.className = 'settings-danger'; status.textContent = error.message; }
     let rows;
     try { rows = vocabulary.list(); } catch (error) { status.textContent = error.message; rows = []; }
     offset = Math.max(0, Math.min(offset, Math.max(0, Math.ceil(rows.length / 20) - 1) * 20));
-    const next = JSON.stringify([dicts, directories, config, get('path'), rows, offset]);
+    const next = JSON.stringify([dicts, directories, config, get('path'), sourceRows, rows, offset]);
     if (next === signature) return; signature = next;
     resources.replaceChildren();
     let options = {}; try { options = JSON.parse(config)[get('path')] || {}; } catch { status.textContent = '资源设置格式错误。'; }
@@ -107,6 +117,37 @@ export function mountEnhancements(win, { get, set, vocabulary, onExport, onBacku
       button(actions, '移除', () => onResourceOrder(index, 0));
     }
     if (!archives.length) empty(resources, '未手动添加 MDD。自动关联的分卷按编号排序。');
+    if (sourceList) {
+      sourceList.replaceChildren();
+      sourceRows.forEach((source, index) => {
+        const name = source.name;
+        const { main, actions } = listRow(sourceList, '');
+        if (source.kind === 'local') main.title = source.path;
+        const label = element(doc, 'label'); label.className = 'settings-toggle';
+        const checkbox = element(doc, 'input'); checkbox.type = 'checkbox'; checkbox.checked = source.enabled; checkbox.dataset.sourceId = source.id;
+        label.append(checkbox, element(doc, 'span', '启用 ' + name));
+        if (source.kind === 'online') {
+          const disclosure = element(doc, 'small', onlineEngine(source.engineId)?.disclosure || '开启后，查询文本会发送给此在线翻译服务。');
+          disclosure.className = 'settings-help'; disclosure.id = 'local-mdx-' + source.engineId + '-disclosure';
+          checkbox.setAttribute('aria-describedby', disclosure.id); label.append(disclosure);
+        }
+        main.replaceChildren(label);
+        checkbox.addEventListener('change', async () => {
+          checkbox.disabled = true;
+          try {
+            const next = validateSources(sources()).map(item => item.id === source.id ? { ...item, enabled: checkbox.checked } : item);
+            await onSources(next); status.className = ''; status.textContent = '查询来源已更新。'; refresh();
+          } catch (error) { checkbox.checked = source.enabled; status.className = 'settings-danger'; status.textContent = error.message; }
+          finally { checkbox.disabled = false; }
+        });
+        ordering(actions, name, index, sourceRows.length, async (_index, delta) => {
+          const next = validateSources(sources()), current = next.findIndex(item => item.id === source.id), target = current + delta;
+          if (current < 0 || target < 0 || target >= next.length) return;
+          [next[current], next[target]] = [next[target], next[current]]; await onSources(next);
+        });
+      });
+      if (!sourceRows.length) empty(sourceList, '还没有可用查询来源。请刷新词典列表。');
+    }
     dictionaryList.replaceChildren();
     dicts.forEach((dictionary, index) => {
       const { main, actions } = listRow(dictionaryList, dictionary.name); main.title = dictionary.path;

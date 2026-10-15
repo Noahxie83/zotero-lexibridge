@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-15",
+  "kind": "real Zotero HTTP short-sentence verification",
+  "zoteroVersion": "10.0.6",
+  "pluginVersion": "1.2.2",
+  "isolatedProfile": "verification-youdao-mymemory-sentence-20261015",
+  "package": {
+    "path": "dist/local-dictionary-1.2.2-youdao-mymemory-test.xpi",
+    "sha256": "175828f7dbf1638c5a321a8079acbb2ecd421e6924a7e717f5e2040518fa7567",
+    "pluginBundleSha256": "0e7fa6fce48126600e1b0fc7b66b242676848b2a133ec3c936df50f478b0fd14"
+  },
+  "stepsPassed": 49,
+  "publicQuery": "Neural networks can learn useful representations.",
+  "results": [
+    {
+      "service": "youdao",
+      "engineId": "youdao",
+      "sourceId": "online:youdao",
+      "httpStatus": 200,
+      "businessStatus": "0",
+      "businessOk": true,
+      "translation": "神经网络可以学习有用的表示。",
+      "popupDisplayed": true,
+      "copyMatchesTranslation": true,
+      "diagnosticsHidden": true,
+      "requestCount": 1,
+      "targetLanguage": "zh-CHS"
+    },
+    {
+      "service": "mymemory",
+      "engineId": "mymemory",
+      "sourceId": "online:mymemory",
+      "httpStatus": 200,
+      "businessStatus": 200,
+      "businessOk": true,
+      "translation": "神经网络可以学习有用的表示。",
+      "popupDisplayed": true,
+      "copyMatchesTranslation": true,
+      "diagnosticsHidden": true,
+      "requestCount": 1,
+      "targetLanguage": "zh-CN"
+    }
+  ],
+  "requests": {
+    "youdao": 1,
+    "mymemory": 1,
+    "google": 0,
+    "requestUrlsContainQueryText": false
+  },
+  "transport": "real Zotero HTTP",
+  "packageLoadedFromXpi": true,
+  "googleProxyAssessment": {
+    "environmentChangedSincePrior": false,
+    "windowsSystemProxyEnabled": true,
+    "profileExplicitProxyOverride": false,
+    "realGoogleRequestMadeThisRound": false,
+    "ordinaryProgramGoogleTimeoutEvidence": "none",
+    "latestZoteroHttpStatus": "not directly captured; cooldown was inferred",
+    "nextStep": "No route change is established. Do not repeat Google on the same path. If an authorized alternate route/configuration is later used in an isolated profile, make one request with redacted HTTP status capture.",
+    "toolProcessHttpProxyHostPortMatchesWindows": true,
+    "toolProcessHttpsProxyHostPortMatchesWindows": true,
+    "noConfirmedRouteChangeSincePrior": true,
+    "priorEndpointValuesAvailable": false
+  },
+  "evidenceRecord": "docs/verification/youdao-mymemory-sentence-zotero.json"
+}

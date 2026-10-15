@@ -1,0 +1,27 @@
+{
+  "kind": "ordinary Node fetch probe (not Zotero)",
+  "sample": "hello",
+  "requests": [
+    {
+      "provider": "youdao",
+      "method": "POST",
+      "endpoint": "https://aidemo.youdao.com/trans",
+      "requestCount": 1,
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "errorCode": "0",
+      "translated": ["你好"]
+    },
+    {
+      "provider": "mymemory",
+      "method": "GET",
+      "endpoint": "https://api.mymemory.translated.net/get",
+      "requestCount": 1,
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseStatus": 200,
+      "quotaFinished": false,
+      "translated": "你好"
+    }
+  ]
+}

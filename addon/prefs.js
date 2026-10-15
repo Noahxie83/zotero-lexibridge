@@ -1,4 +1,5 @@
 pref("extensions.zotero.localMDXClick.enabled", true);
+pref("extensions.zotero.localMDXClick.clickEnabled", true);
 pref("extensions.zotero.localMDXClick.selectionEnabled", true);
 pref("extensions.zotero.localMDXClick.selectionMenu", "integrated");
 pref("extensions.zotero.localMDXClick.annotationColor", "#ffd400");
@@ -16,4 +17,6 @@ pref("extensions.zotero.localMDXClick.popupHeight", 580);
 pref("extensions.zotero.localMDXClick.pronunciation", "first");
 pref("extensions.zotero.localMDXClick.directories", "[]");
 pref("extensions.zotero.localMDXClick.dictionaryOrder", "[]");
+pref("extensions.zotero.localMDXClick.sources", "[]");
+pref("extensions.zotero.localMDXClick.selectedSource", "online:google");
 pref("extensions.zotero.localMDXClick.recursive", false);

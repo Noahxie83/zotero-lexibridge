@@ -1,0 +1,539 @@
+{
+  "version": "1.2.2",
+  "kind": "independent-real-zotero",
+  "checks": [
+    {
+      "id": "1.1",
+      "name": "four automatic click/selection combinations behave independently",
+      "ok": true,
+      "details": {
+        "observed": [
+          {
+            "clickEnabled": false,
+            "selectionEnabled": false,
+            "queried": false,
+            "word": "",
+            "stat": 0,
+            "read": 0
+          },
+          {
+            "clickEnabled": false,
+            "selectionEnabled": true,
+            "queried": false,
+            "word": "",
+            "stat": 0,
+            "read": 0
+          },
+          {
+            "clickEnabled": true,
+            "selectionEnabled": false,
+            "queried": true,
+            "word": "本地词典：research",
+            "stat": 0,
+            "read": 7
+          },
+          {
+            "clickEnabled": true,
+            "selectionEnabled": true,
+            "queried": true,
+            "word": "本地词典：research",
+            "stat": 0,
+            "read": 0
+          }
+        ]
+      },
+      "ms": 2304
+    },
+    {
+      "id": "1.2",
+      "name": "master switch off blocks every automatic trigger",
+      "ok": true,
+      "details": {
+        "clickQuery": false,
+        "selectionQuery": false,
+        "delta": {
+          "stat": 0,
+          "read": 0
+        },
+        "drag": {
+          "mechanism": "synthesizeMouseAtPoint-drag",
+          "ranges": [
+            {
+              "text": "searc",
+              "anchor": 0,
+              "head": 1,
+              "collapsed": false
+            }
+          ],
+          "text": "searc"
+        },
+        "manualWithMasterOff": "本地查词已暂停。"
+      },
+      "ms": 1731
+    },
+    {
+      "id": "1.3",
+      "name": "manual query still works when both automatic switches are off",
+      "ok": true,
+      "details": {
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "B.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "C.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "已完成",
+            "results": 1
+          }
+        ],
+        "typedWord": "本地词典：network"
+      },
+      "ms": 384
+    },
+    {
+      "id": "2.1",
+      "name": "a real drag selection still opens a lookup when click lookup is disabled",
+      "ok": true,
+      "details": {
+        "drag": {
+          "mechanism": "synthesizeMouseAtPoint-drag",
+          "ranges": [
+            {
+              "text": "searc",
+              "anchor": 0,
+              "head": 1,
+              "collapsed": false
+            }
+          ],
+          "text": "searc"
+        },
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "B.mdx",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "C.mdx",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "未找到结果",
+            "results": 0
+          }
+        ],
+        "selectionQueryText": "本地词典：searc"
+      },
+      "ms": 13042
+    },
+    {
+      "id": "2.2",
+      "name": "a finished drag never also fires a click query when selection lookup is off",
+      "ok": true,
+      "details": {
+        "drag": {
+          "mechanism": "synthesizeMouseAtPoint-drag",
+          "ranges": [
+            {
+              "text": "searc",
+              "anchor": 0,
+              "head": 1,
+              "collapsed": false
+            }
+          ],
+          "text": "searc"
+        },
+        "delta": {
+          "stat": 0,
+          "read": 0
+        },
+        "sections": [],
+        "clickStillWorks": true
+      },
+      "ms": 2256
+    },
+    {
+      "id": "2.3",
+      "name": "selection with both lookups off keeps annotation tools and runs zero queries",
+      "ok": true,
+      "details": {
+        "drag": {
+          "mechanism": "synthesizeMouseAtPoint-drag",
+          "ranges": [
+            {
+              "text": "searc",
+              "anchor": 0,
+              "head": 1,
+              "collapsed": false
+            }
+          ],
+          "text": "searc"
+        },
+        "delta": {
+          "stat": 0,
+          "read": 0
+        }
+      },
+      "ms": 1570
+    },
+    {
+      "id": "2.4",
+      "name": "the selection popup can still save a highlight into the library",
+      "ok": true,
+      "details": {
+        "selection": {
+          "mechanism": "reader-setSelectionRanges",
+          "ranges": [
+            {
+              "text": "searc",
+              "anchor": 0,
+              "head": 1,
+              "collapsed": false
+            }
+          ],
+          "text": "searc"
+        },
+        "stored": {
+          "type": "highlight",
+          "color": "#ff6666",
+          "text": "research"
+        }
+      },
+      "ms": 617
+    },
+    {
+      "id": "3.1",
+      "name": "single mode queries only the selected source",
+      "ok": true,
+      "details": {
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          }
+        ],
+        "selected": "local:<workspace>\\verification-f1-independent-20261015-a\\dictionaries\\A.mdx"
+      },
+      "ms": 281
+    },
+    {
+      "id": "3.2",
+      "name": "fallback stops after the first hit and never queries later sources",
+      "ok": true,
+      "details": {
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "B.mdx",
+            "status": "未查询（前序来源已命中）",
+            "results": 0
+          },
+          {
+            "id": "C.mdx",
+            "status": "未查询（前序来源已命中）",
+            "results": 0
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "未查询（前序来源已命中）",
+            "results": 0
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "未查询（前序来源已命中）",
+            "results": 0
+          }
+        ]
+      },
+      "ms": 605
+    },
+    {
+      "id": "3.3",
+      "name": "a disabled online source produces zero HTTP requests",
+      "ok": true,
+      "details": {
+        "translateRequests": 0,
+        "sections": [
+          "A.mdx",
+          "B.mdx",
+          "C.mdx",
+          "D-StarDict.ifo",
+          "E-DSL.dsl.dz"
+        ]
+      },
+      "ms": 698
+    },
+    {
+      "id": "3.4",
+      "name": "an enabled online source is queried once at the fixed endpoint with punctuation preserved",
+      "ok": true,
+      "details": {
+        "url": "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&dt=t&q=Hello%2C%20world!",
+        "calls": 1
+      },
+      "ms": 247
+    },
+    {
+      "id": "3.5",
+      "name": "translation works with no enabled local dictionary, and unsupported features stay off",
+      "ok": true,
+      "details": {
+        "calls": 2,
+        "footer": "已复制翻译",
+        "missDelta": {
+          "stat": 0,
+          "read": 0
+        }
+      },
+      "ms": 1322
+    },
+    {
+      "id": "4.1",
+      "name": "a first result appears before the slowest source and the final order is stable",
+      "ok": true,
+      "details": {
+        "firstResultMs": 26,
+        "totalMs": 184,
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "B.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "C.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "已完成",
+            "results": 1
+          }
+        ]
+      },
+      "ms": 295
+    },
+    {
+      "id": "4.2",
+      "name": "one failing local source is isolated from the others",
+      "ok": true,
+      "details": {
+        "sections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "B.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "C.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "Broken.mdx",
+            "status": "查询失败",
+            "results": 0
+          }
+        ],
+        "failed": [
+          "Broken.mdx"
+        ],
+        "diagnostics": "undefined：MDX，5 个词目，1 条命中，索引 3 ms\nundefined：MDX，2 个词目，1 条命中，索引 9 ms\nundefined：MDX，401 个词目，1 条命中，索引 11 ms\nundefined：StarDict，2 个词目，1 条命中，索引 33 ms\nundefined：DSL，2 个词目，1 条命中，索引 18 ms\nundefined：MDX，0 个词目，0 条命中，索引 未知 ms\nMDX: MDX 文件头无效"
+      },
+      "ms": 737
+    },
+    {
+      "id": "5.1",
+      "name": "closing the popup cancels the running query and no late result reopens it",
+      "ok": true,
+      "details": {
+        "aborts": 1,
+        "calls": 1
+      },
+      "ms": 1214
+    },
+    {
+      "id": "5.2",
+      "name": "a settings change cancels in-flight work so no stale result is written",
+      "ok": true,
+      "details": {
+        "aborts": 1,
+        "staleVisible": false
+      },
+      "ms": 1529
+    },
+    {
+      "id": "5.3",
+      "name": "a second reader window is independent and closing it never disturbs the first",
+      "ok": true,
+      "details": {
+        "firstWord": "本地词典：research",
+        "ownWindow": true,
+        "firstPopupSurvived": true
+      },
+      "ms": 2366
+    },
+    {
+      "id": "8.1",
+      "name": "drag survives slow results, resize, internal entry links and history",
+      "ok": true,
+      "details": {
+        "dragged": {
+          "left": "102px",
+          "top": "16.3333px"
+        },
+        "freshAnchorLeft": "197.333px",
+        "sectionsAfterEntry": 1
+      },
+      "ms": 1741
+    },
+    {
+      "id": "9.1",
+      "name": "word forms, original layout, resources, audio and notes keep working",
+      "ok": true,
+      "details": {
+        "vocabulary": 1,
+        "notesInLibrary": 3,
+        "childNotes": 0,
+        "noteFooter": "已保存至当前文献库。",
+        "audio": true,
+        "originalLayout": true,
+        "wordForm": true,
+        "frameCountAfterWordForm": 5,
+        "formSections": [
+          {
+            "id": "A.mdx",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "B.mdx",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "C.mdx",
+            "status": "未找到结果",
+            "results": 0
+          },
+          {
+            "id": "D-StarDict.ifo",
+            "status": "已完成",
+            "results": 1
+          },
+          {
+            "id": "E-DSL.dsl.dz",
+            "status": "未找到结果",
+            "results": 0
+          }
+        ],
+        "entryFrameCount": 2
+      },
+      "ms": 1353
+    },
+    {
+      "id": "8.4",
+      "name": "closing a reader does not break later settings/library refreshes",
+      "ok": true,
+      "details": {
+        "first": {
+          "label": "scanLibrary-after-close",
+          "ok": true
+        },
+        "second": {
+          "label": "scanLibrary-after-close-again",
+          "ok": true
+        }
+      },
+      "ms": 2977
+    },
+    {
+      "id": "8.2",
+      "name": "stop() removes every popup and leaves no plugin UI behind",
+      "ok": true,
+      "details": {
+        "beforeStop": {
+          "main": true,
+          "detached": true
+        },
+        "leftover": false,
+        "detachedLeftover": false
+      },
+      "ms": 2689
+    }
+  ],
+  "ok": true,
+  "summary": {
+    "total": 21,
+    "passed": 21,
+    "failed": []
+  },
+  "http": {
+    "total": 14,
+    "translate": 5
+  },
+  "io": {
+    "stat": 38,
+    "read": 107
+  }
+}

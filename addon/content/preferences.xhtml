@@ -1,15 +1,17 @@
 <vbox onload="Zotero.LocalDictionary.mountPreferences(window)">
   <html:div class="dictionary-settings">
     <html:h2>Local Dictionary · 本地词典</html:h2>
-    <html:p class="settings-intro">添加本地词典，在阅读中查询、听发音和记录生词。</html:p>
+    <html:p class="settings-intro">添加本地词典，在阅读中查询、听发音和记录生词；也可选择开启实验性在线翻译。</html:p>
     <html:section class="settings-section">
       <html:h3>查词方式</html:h3>
-      <html:label class="settings-toggle"><html:input id="local-mdx-enabled" type="checkbox"/>启用本地查词（点击 / 划选）</html:label>
+      <html:label class="settings-toggle"><html:input id="local-mdx-enabled" type="checkbox"/>启用查词</html:label>
+      <html:label class="settings-toggle"><html:input id="local-mdx-click-enabled" type="checkbox"/>点击单词后自动查询</html:label>
       <html:label class="settings-toggle"><html:input id="local-mdx-selection-enabled" type="checkbox"/>划选单词或词组后自动查询</html:label>
       <html:label class="settings-field">划选菜单<html:select id="local-mdx-selection-menu"><html:option value="integrated">插件查词与批注菜单</html:option><html:option value="native">Zotero 自带菜单</html:option></html:select></html:label>
       <html:details class="settings-help">
         <html:summary>划选与批注说明</html:summary>
-        <html:p>插件菜单提供查词、8 色选择、高亮和下划线。获得释义后可主动收藏生词或写入文献笔记。选择自带菜单时暂停划选自动查词，单击查词继续保留。</html:p>
+        <html:p>插件菜单提供查词、8 色选择、高亮和下划线。关闭划选自动查词后，批注工具仍可使用。获得本地释义后可主动收藏生词或写入文献笔记。</html:p>
+        <html:p>选择 Zotero 自带菜单时暂停划选自动查词；点击取词由上方开关单独控制。两个自动查询开关均关闭时，仍可手动输入查询。</html:p>
         <html:p>用普通指针拖选完整词或词组，松开鼠标查询。遇到 transfor- 换行 mation，请选中两部分；保留连字符和拼接写法都会查询。最多 256 字符、16 个词，按本地词目查询。</html:p>
         <html:p>如同时启用 Hover Translate Eudic 的点击取词，建议在其设置中关闭点击取词，避免两个弹窗同时出现。</html:p>
       </html:details>
@@ -23,20 +25,20 @@
         <html:button id="local-mdx-refresh" type="button">刷新词典列表</html:button>
       </html:div>
       <html:p id="local-mdx-folder" class="settings-path"></html:p>
-      <html:label class="settings-field">当前查询词典<html:select id="local-mdx-select"></html:select></html:label>
+      <html:label class="settings-field">当前查询来源<html:select id="local-mdx-select"></html:select></html:label>
       <html:p id="local-mdx-path" class="settings-path"></html:p>
       <html:p id="local-mdx-status" role="status"></html:p>
       <html:details class="settings-help">
         <html:summary>支持的格式与索引</html:summary>
         <html:p>支持 MDX、StarDict（选择 .ifo）和 DSL（.dsl / .dsl.dz）。默认扫描当前层；下方可开启子目录扫描。加入新词典后刷新全部目录。</html:p>
-        <html:p>按查询需要建立词目索引，最近三部词典保留在内存中。词典只在本机读取，无需翻译账号。</html:p>
+        <html:p>按查询需要建立词目索引，最多保留六部空闲词典的索引，使用中的索引另行保护。本地词典只在本机读取；在线翻译需单独启用。</html:p>
       </html:details>
     </html:section>
     <html:section class="settings-section">
       <html:h3>查询与显示</html:h3>
       <html:label class="settings-toggle"><html:input id="local-mdx-word-forms" type="checkbox"/>原词未命中时尝试词形还原</html:label>
       <html:div class="settings-grid">
-        <html:label class="settings-field">查询范围<html:select id="local-mdx-query-mode"><html:option value="single">当前词典</html:option><html:option value="fallback">未命中时按顺序查其他词典</html:option><html:option value="all">联合查询所有词典</html:option></html:select></html:label>
+        <html:label class="settings-field">查询范围<html:select id="local-mdx-query-mode"><html:option value="single">当前来源</html:option><html:option value="fallback">未命中时按顺序查其他来源</html:option><html:option value="all">联合查询所有已启用来源</html:option></html:select></html:label>
         <html:label class="settings-field">显示方式<html:select id="local-mdx-mode"><html:option value="original">词典原有排版（样式、图片、字体与发音）</html:option><html:option value="text">简洁文字排版</html:option></html:select></html:label>
       </html:div>
     </html:section>

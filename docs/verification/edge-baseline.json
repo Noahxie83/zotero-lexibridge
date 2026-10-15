@@ -1,0 +1,8 @@
+{
+  "recordedAt": "2026-10-15",
+  "worktreeState": "existing uncommitted implementation preserved; no reset or cleanup",
+  "command": "npm test",
+  "passed": 120,
+  "failed": 0,
+  "historicalBaseline": "docs/QUERY_SOURCE_DELIVERY.md records the earlier clean-HEAD baseline separately"
+}

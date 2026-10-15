@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-15",
+  "currentToolProcessProxyEnvironment": {
+    "HTTPS_PROXY": {
+      "currentToolProcess": true,
+      "user": false,
+      "machine": false
+    },
+    "HTTP_PROXY": {
+      "currentToolProcess": true,
+      "user": false,
+      "machine": false
+    },
+    "ALL_PROXY": {
+      "currentToolProcess": false,
+      "user": false,
+      "machine": false
+    }
+  },
+  "windowsUserProxy": {
+    "proxyEnabled": true,
+    "manualProxyConfigured": true,
+    "pacConfigured": false
+  },
+  "zoteroDefaultProfile": {
+    "profileName": "default",
+    "resolvedProfileMatchesKnownDefault": true,
+    "prefsFilePresent": true,
+    "explicitNetworkProxyTypePresent": false,
+    "explicitManualProxySettingPresent": false,
+    "zoteroProcessRunning": true
+  },
+  "comparison": {
+    "currentToolProcessEnvironmentUnchangedFromPrior": true,
+    "windowsProxyUnchangedFromPrior": true,
+    "effectiveRouting": "The default Zotero profile has no explicit network.proxy.type or manual override. Zotero default type 5 uses the Windows system proxy. The current diagnostic process HTTP and HTTPS proxy host:port values were compared in memory with the Windows manual proxy and matched; raw values and userinfo were not displayed or persisted. Zotero per-process environment was not read.",
+    "currentToolProxyHostPortMatchesWindowsHttp": true,
+    "currentToolProxyHostPortMatchesWindowsHttps": true,
+    "currentPathConfigurationUnchangedFromPrior": null,
+    "confirmedRouteChangeSincePrior": false,
+    "priorProxyEndpointsWerePersisted": false,
+    "historicalEndpointComparison": "Prior evidence recorded proxy configuration presence but did not persist endpoint values; whether the endpoint itself changed cannot be verified."
+  },
+  "ordinaryProgramGoogleTimeoutEvidence": "None found; no ordinary-program Google request made this round.",
+  "latestIndependentZoteroEvidence": "The current independent run inferred cooldown but did not capture a numeric HTTP status. A separate older record has HTTP 429 and is not a request from the current package.",
+  "noProxyValuesPersisted": true,
+  "noCredentialsOrCookiesRead": true,
+  "noGoogleRequestsMadeThisRound": true,
+  "zoteroProxyDocumentation": "https://www.zotero.org/support/kb/connection_error",
+  "processToWindowsComparison": {
+    "httpProxyConfigured": true,
+    "httpsProxyConfigured": true,
+    "windowsHttpServerConfigured": true,
+    "windowsHttpsServerConfigured": true,
+    "httpProxyHostPortMatchesWindows": true,
+    "httpsProxyHostPortMatchesWindows": true,
+    "endpointsComparable": true,
+    "valuesDisplayedOrPersisted": false
+  }
+}

@@ -4,12 +4,16 @@ import { ResourceScope, prepareNativeDefinition, mountNativeDefinition } from '.
 
 // Text appears before any resource I/O. Only two entries prepare concurrently;
 // every entry retains its own dictionary's resource root and cancellation scope.
-export function displayResults({ doc, current, results, win, original, acquireResources, isCurrent, onEntry, onStatus, onDiagnostics, appearance = {}, onAudio }) {
+export function displayResults({ doc, current, results, win, original, acquireResources, isCurrent, onEntry, onStatus, onDiagnostics, appearance = {}, onAudio, budget = { bytes: 0, count: 0 } }) {
   const scopes = new Map(), jobs = new Map(), disposers = [], leases = [];
-  const budget = { bytes: 0, count: 0 };
   let closed = false, shown = 0;
   const active = () => !closed && isCurrent();
-  const close = () => { if (closed) return; closed = true; disposers.forEach(dispose => dispose()); for (const scope of scopes.values()) scope.close(); leases.forEach(lease => lease.release()); };
+  const close = () => {
+    if (closed) return; closed = true;
+    for (const cleanup of [...disposers, ...[...scopes.values()].map(scope => () => scope.close()), ...leases.map(lease => () => lease.release())]) {
+      try { cleanup(); } catch (_) { /* All scopes and leases still need closing. */ }
+    }
+  };
   const scopeFor = path => {
     if (!jobs.has(path)) jobs.set(path, (async () => {
       const lease = await acquireResources(path);

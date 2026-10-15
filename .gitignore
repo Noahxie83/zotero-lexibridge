@@ -18,3 +18,4 @@ addon/THIRD_PARTY.md
 *.xpi
 .DS_Store
 Thumbs.db
+/verification-*/
