@@ -33,3 +33,18 @@
 ## 检查范围
 
 桌面、375px/320px 窄屏、浅色/深色、减少动态效果、示例加载、词典切换、三个示例、错误重试、原入口跳转、设置页来源列表均作为交付检查项。当前结果与限制见 [交付记录](DELIVERY_1.3.0.md)；历史 1.2.1 的 Lighthouse 分数不代表本版结果。
+
+## 2026-10-16 封面精修与复验
+
+本次采用保留品牌的局部精修。保留书本放大镜标识、LexiBridge 名称、蓝灰配色与阅读场景；封面参数为 DESIGN_VARIANCE 6、MOTION_INTENSITY 2、VISUAL_DENSITY 2，网页既有交互与动效保持原有设计。
+
+- 标题取消负字距和粗重字重，改用等线常规体；两行分别使用石墨色和品牌蓝。英文品牌与中文名称对齐，说明文字缩减为两行，删除底部功能标语。
+- 图片由内置 image_gen 参考原阅读场景精修，柔化窗影，保留纸张和蓝色亚麻书签的纹理。所有中文和英文排版由浏览器真实字体输出，避免生成图片中的字形偏差。
+- 封面源文件仍为 `examples/cover.html`，画布 1600×720；在 Windows 等线字体已加载后以 2 倍像素密度导出 `docs/assets/cover.jpg`（3200×1440）。不把系统字体文件分发进仓库。README 引用地址保持不变，展示页首屏同步字重与字距。
+- 复验修正了原创示例词典在窄屏下的插图浮动：400px 以下改为图文上下排列。页面二级标题使用平衡换行。两处均属于网页示例排版，不修改插件的词典渲染逻辑。
+
+最终图片提示词（内置工具 edit；输入为原 `reading-desk.webp`）：
+
+> Use case: lighting-weather / precise-object-edit. Input image is the EDIT TARGET for the photographic half of the LexiBridge academic reading plugin cover. Refine this existing still-life into an exquisite, art-directed editorial photograph, retaining its recognizable scene and cool blue-grey identity. Preserve: open dictionary, single muted blue linen bookmark, closed blue reference book behind, research pages, no extra props. Improve light into soft diffused silver daylight; preserve realistic paper detail without overly sharpened tiny pseudo-print; lower the harsh contrast of window patches; sculpt elegant clean shadows with richer but subtle blue linen texture. Composition: landscape 3:2, main open book and blue ribbon clearly visible toward the right, generous calm cool pale grey table toward the left for a clean transition into a separate white typography panel. A slightly wider and calmer camera framing than the reference, carefully balanced objects, quiet intellectual atmosphere, excellent tactile photography. No readable words, no logo, no text overlay, no UI, no watermark, no person, no gradients or glowing effects. Do not invent additional bookmarks. This is a background photographic asset; all typography will be rendered separately with real fonts. Return the refined photograph only.
+
+本轮范围与结果见 [封面精修验收记录](verification/cover-refinement-20261016.json)。性能分数为本地 Lighthouse 模拟结果，未重新进行真实联网翻译或 Zotero 宿主验收；既有 1.3.0 安装包继续使用。

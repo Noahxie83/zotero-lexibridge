@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-16",
+  "scope": "Cover, README presentation, showcase and existing automated product regression. No new live translation or Zotero-host test.",
+  "skills": [
+    "design-taste-frontend",
+    "imagegen"
+  ],
+  "cover": {
+    "source": "examples/cover.html",
+    "output": "docs/assets/cover.jpg",
+    "width": 3200,
+    "height": 1440,
+    "typography": "DengXian regular for Chinese display text; Segoe UI / Microsoft YaHei for supporting copy",
+    "imageGeneration": "Built-in image_gen; referenced existing reading-desk.webp; photographic retouch only; lettering is real browser text"
+  },
+  "productTests": {
+    "passed": 144,
+    "failed": 0
+  },
+  "checks": [
+    "Desktop headline stays on two deliberate lines",
+    "Theme switches light to dark and back",
+    "Network lookup renders an actual definition",
+    "Dictionary switching updates the displayed definition",
+    "Hyphen example resolves transformation",
+    "Phrase example resolves neural network",
+    "Annotation demo discloses that it does not persist",
+    "Legacy homepage preserves query and fragment",
+    "320px light: no horizontal clipping",
+    "320px dark: no horizontal clipping",
+    "375px light: no horizontal clipping",
+    "375px dark: no horizontal clipping",
+    "768px light: no horizontal clipping",
+    "768px dark: no horizontal clipping",
+    "1440px light: no horizontal clipping",
+    "1440px dark: no horizontal clipping",
+    "Independent click switch present",
+    "Independent selection switch present",
+    "Click switch changes without changing selection switch",
+    "Four online sources default disabled",
+    "Source enable control works",
+    "Failure diagnostic visible",
+    "Recovery hides success diagnostic",
+    "Preview theme cycle works",
+    "Failed demo load offers retry",
+    "Retry restores rendered result",
+    "Self-contained file HTML loads a definition",
+    "Reduced motion disables hero animation",
+    "No uncaught page errors",
+    "README loads the 3200px cover",
+    "README image scales within 375px viewport",
+    "Loaded 320px demo has no horizontal overflow",
+    "Narrow demo moves image above definition instead of squeezing text"
+  ],
+  "notes": [
+    "The verification script initially waited for a lazy-loaded mobile result before scrolling it into view; scrolling into view correctly loaded it. This was a test-order issue.",
+    "A real visual issue was found in the synthetic mobile demo: its floating illustration squeezed the definition into short lines. The demo dictionary stylesheet now stacks the image below 400px.",
+    "Existing live-translation evidence and v1.3.0 XPI are retained unchanged."
+  ],
+  "lighthouse": {
+    "scores": {
+      "performance": 99,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "agentic-browsing": 100
+    },
+    "lcpMilliseconds": 1875.817,
+    "cls": 0,
+    "warnings": []
+  },
+  "installationPackageSha256": "7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7"
+}
