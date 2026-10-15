@@ -1,24 +1,22 @@
-<p align="right"><a href="https://github.com/Noahxie83"><sub>Noah Xie · Personal profile</sub></a></p>
-
 <p align="center"><img src="docs/assets/cover.jpg" alt="LexiBridge 词译桥：查一个词，读懂下一句。在 Zotero 中连接本地词典与在线翻译。" width="100%"></p>
 
 <h1 align="center">LexiBridge · 词译桥</h1>
 <p align="center"><b>Zotero 查词与翻译插件</b><br>本地词典的深度，在线翻译的广度。查词、译句、批注，留在阅读里。</p>
 <p align="center">
-  <a href="RELEASE_NOTES.md"><img alt="版本 1.3.0" src="https://img.shields.io/badge/1.3.0-词译桥-246a96?style=flat-square"></a>
+  <a href="RELEASE_NOTES.md"><img alt="版本 1.3.1" src="https://img.shields.io/badge/1.3.1-词译桥-246a96?style=flat-square"></a>
   <img alt="支持 Zotero 10.0 系列" src="https://img.shields.io/badge/Zotero-10.0-536575?style=flat-square">
-  <a href="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml"><img alt="构建状态" src="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/Noahxie83/zotero-lexibridge/actions/workflows/build.yml"><img alt="构建状态" src="https://github.com/Noahxie83/zotero-lexibridge/actions/workflows/build.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="GPL 3.0 or later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-536575?style=flat-square"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases"><img alt="下载安装包" src="docs/assets/button-download.svg" height="40"></a>
-  <a href="https://noahxie83.github.io/zotero-local-dictionary/lexibridge/"><img alt="体验交互示例" src="docs/assets/button-demo.svg" height="40"></a>
+  <a href="https://github.com/Noahxie83/zotero-lexibridge/releases"><img alt="下载安装包" src="docs/assets/button-download.svg" height="40"></a>
+  <a href="https://noahxie83.github.io/zotero-lexibridge/lexibridge/"><img alt="体验交互示例" src="docs/assets/button-demo.svg" height="40"></a>
   <a href="docs/USER_GUIDE.md"><img alt="阅读使用指南" src="docs/assets/button-guide.svg" height="40"></a>
 </p>
 
-**LexiBridge（词译桥）** 原名 Local Dictionary / Local MDX。在 Zotero PDF 阅读器中查询 MDX、StarDict、DSL 本地词典，也可按需开启在线翻译。插件 ID 与设置命名空间保留，支持覆盖升级，原有词典路径、生词和资源配置继续使用。
+**LexiBridge（词译桥）** 在 Zotero PDF 阅读器中查询 MDX、StarDict、DSL 本地词典，也可按需开启在线翻译。支持覆盖升级，原有词典路径、生词和资源配置继续使用。
 
-## 1.3.0 有什么新变化
+## 1.3 系列有什么新变化
 
 - **查词与翻译，共用一组来源。** 加入 Google、Microsoft Edge、有道和 MyMemory，无需填写 API 密钥。在线服务默认关闭，逐项开启。
 - **按你的顺序查询。** 本地词典与翻译引擎统一排序；可查当前来源、依次回退，或联合显示多个来源。
@@ -28,13 +26,13 @@
 - **成功结果更干净。** 本地与在线来源成功时不显示诊断区域；未命中、出错或限流时只显示对应来源的诊断。
 - **关闭阅读器后仍可继续使用。** 修复失效工具栏节点阻断后续界面更新的问题。
 
-详见 [完整版本变更](docs/CHANGES.md) 与 [升级说明](docs/UPGRADE_1.3.0.md)。
+1.3.1 统一项目名称与仓库地址，并精简公开说明。详见 [完整版本变更](docs/CHANGES.md) 与 [升级说明](docs/UPGRADE_1.3.1.md)。
 
 ## 看看实际操作
 
 <p align="center"><img src="docs/assets/lookup-demo.gif" alt="网页示例：点击 network 查询本地词典，切换词典排版，再查看词组与批注工具" width="960"></p>
 
-动图录自网页中的**实际插件解析与排版组件**，使用项目原创词条；不代表真实在线请求或 Zotero 宿主录像。可 [打开交互示例](https://noahxie83.github.io/zotero-local-dictionary/lexibridge/) 自己操作，也可 [预览完整弹窗与设置页](https://noahxie83.github.io/zotero-local-dictionary/interface-preview.html)。网页批注只演示反馈，音频为提示音，不会写入文献库或调用翻译服务。
+动图录自网页中的**实际插件解析与排版组件**，使用项目原创词条；不代表真实在线请求或 Zotero 宿主录像。可 [打开交互示例](https://noahxie83.github.io/zotero-lexibridge/lexibridge/) 自己操作，也可 [预览完整弹窗与设置页](https://noahxie83.github.io/zotero-lexibridge/interface-preview.html)。网页批注只演示反馈，音频为提示音，不会写入文献库或调用翻译服务。
 
 <details>
 <summary>查看静态图与深色效果</summary>
@@ -71,7 +69,7 @@
 
 ## 快速开始
 
-**安装插件。** 从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载对应版本的 XPI。在 Zotero 中选择 **工具 → 插件 → 齿轮 → 从文件安装插件**，选择安装包。若提示重启，重启 Zotero。本地构建的 1.3.0 成品位于 `dist/lexibridge-1.3.0.xpi`；公开可下载版本以 Releases 为准。
+**安装插件。** 从 [GitHub Releases](https://github.com/Noahxie83/zotero-lexibridge/releases) 下载对应版本的 XPI。在 Zotero 中选择 **工具 → 插件 → 齿轮 → 从文件安装插件**，选择安装包。若提示重启，重启 Zotero。本地构建的 1.3.1 成品位于 `dist/lexibridge-1.3.1.xpi`；公开可下载版本以 Releases 为准。
 
 **准备来源。** 打开 **设置 → 词译桥**，添加词典目录或入口文件，开启需要的来源并调整顺序。只用在线翻译时无需添加本地词典。插件不附带商业词典。
 
@@ -106,9 +104,9 @@
 ## 常见问题
 
 <details>
-<summary>升级或改名会丢失设置吗？</summary>
+<summary>升级会丢失设置吗？</summary>
 
-插件仍使用原 ID `local-mdx-click@noahx.local`，保留原偏好命名空间和备份格式。覆盖升级保留原设置；升级前仍可主动导出设置备份。仓库地址保持稳定，原展示页首页跳转至新页面。
+覆盖升级会保留词典目录、资源配置、生词记录和查询设置。也可以在设置中主动导出备份，再于其他设备导入。
 
 </details>
 <details>

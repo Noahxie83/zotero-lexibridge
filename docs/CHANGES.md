@@ -1,6 +1,10 @@
 # 功能与版本变更
 
-LexiBridge 词译桥原名 Local Dictionary / Local MDX。本页汇总 0.1.0 至 1.3.0 的变化；恢复和回退步骤见 [复原教程](RESTORE.md)。
+本页汇总 LexiBridge 词译桥 0.1.0 至 1.3.1 的变化；恢复和回退步骤见 [复原教程](RESTORE.md)。
+
+## 1.3.1 维护更新
+
+统一仓库、展示页、下载和更新地址，精简公开名称与标识，保持设置兼容。见 [升级说明](UPGRADE_1.3.1.md)。
 
 ## 1.3.0 新增
 
@@ -46,10 +50,11 @@ LexiBridge 词译桥原名 Local Dictionary / Local MDX。本页汇总 0.1.0 至
 | 1.1.0 | 合并查词与批注菜单、8 色/高亮/下划线、自带菜单恢复、内置 Speex 解码器；去除添加笔记 |
 | 1.1.1 | 修复 `Missing 'color' property`，完整批注数据复制到 Zotero 阅读器窗口 |
 | 1.1.2 | 修复 LZO 精确边界、合法别名、失败目录切换、资源来源错误回退、Speex 累计时长；普通音频单次读取、MDD 定位/缺失缓存与统计、独立资源失效；33 项回归与独立 Zotero 保存验收 |
-| 1.1.3 | 插件管理器和设置页采用 Local MDX 的“书本＋放大镜”SVG 图标 |
-| 1.2.0 | 更名 Local Dictionary；修复不可见字符、坏词典切换、MDD 缺失查找与依赖；加入九项查询/阅读扩展、StarDict/DSL 及设置迁移；验证详见 [升级说明](UPGRADE_1.2.0.md) 与 [审查整改](REVIEW_FIXES_1.2.0.md) |
+| 1.1.3 | 插件管理器和设置页采用“书本＋放大镜”SVG 图标 |
+| 1.2.0 | 统一命名；修复不可见字符、坏词典切换、MDD 缺失查找与依赖；加入九项查询/阅读扩展、StarDict/DSL 及设置迁移；验证详见 [升级说明](UPGRADE_1.2.0.md) 与 [审查整改](REVIEW_FIXES_1.2.0.md) |
 | 1.2.1 | 重做弹窗与设置页的排版，统一浅色/深色主题，补齐查询状态和小高度滚动；更新 README 封面与 GitHub Pages，加入完整界面预览；见 [界面设计](UI_DESIGN.md) |
-| 1.3.0 | 更名词译桥，四种在线翻译、混合来源排序、有界并行与渐进结果、点击/划选独立开关、拖动弹窗、成功隐藏诊断；修复失效工具栏。见 [升级说明](UPGRADE_1.3.0.md) |
-| 1.2.2 | GitHub 仓库更名为 zotero-local-dictionary，同步 Pages、下载与更新地址，保留插件 ID；见 [仓库改名与插件收录](REPOSITORY_RENAME.md) |
+| 1.2.2 | 迁移 GitHub 仓库，同步 Pages、下载与更新地址，保留插件 ID；见 [仓库改名与插件收录](REPOSITORY_RENAME.md) |
+| 1.3.0 | 四种在线翻译、混合来源排序、有界并行与渐进结果、点击/划选独立开关、拖动弹窗、成功隐藏诊断；修复失效工具栏。见 [升级说明](UPGRADE_1.3.0.md) |
+| 1.3.1 | 仓库、下载、更新与展示页统一地址，精简公开说明并保留覆盖升级兼容性；见 [升级说明](UPGRADE_1.3.1.md) |
 
-各版对应的源代码快照、安装包与原说明见 [Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases)。历史快照保持原样，详细当时记录见 [发布说明](../RELEASE_NOTES.md)；1.1.2 验证证据见 [审查整改](REVIEW_FIXES_1.1.2.md)。
+各版对应的源代码快照、安装包与原说明见 [Releases](https://github.com/Noahxie83/zotero-lexibridge/releases)。历史快照保持原样，详细当时记录见 [发布说明](../RELEASE_NOTES.md)；1.1.2 验证证据见 [审查整改](REVIEW_FIXES_1.1.2.md)。

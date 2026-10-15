@@ -5,7 +5,7 @@ import { validateSources } from './source-settings.js';
 export const SETTING_KEYS = ['enabled', 'clickEnabled', 'selectionEnabled', 'selectionMenu', 'annotationColor', 'path', 'folder', 'directories', 'dictionaryOrder', 'sources', 'selectedSource', 'recursive', 'displayMode', 'resources', 'wordForms', 'queryMode', 'vocabulary', 'theme', 'fontSize', 'popupWidth', 'popupHeight', 'pronunciation'];
 const enumValues = { selectionMenu: ['integrated', 'native'], displayMode: ['original', 'text'], queryMode: ['single', 'fallback', 'all'], theme: ['original', 'light', 'dark'], pronunciation: ['first', 'uk', 'us'] };
 export function validateSettings(backup) {
-  if (!backup || !['local-dictionary-settings', 'local-mdx-settings'].includes(backup.format) || backup.version !== 1 || !backup.settings || typeof backup.settings !== 'object' || Array.isArray(backup.settings)) throw new Error('这不是支持的 Local Dictionary 备份。');
+  if (!backup || !['local-dictionary-settings', 'local-mdx-settings'].includes(backup.format) || backup.version !== 1 || !backup.settings || typeof backup.settings !== 'object' || Array.isArray(backup.settings)) throw new Error('这不是支持的词译桥备份。');
   const result = Object.create(null);
   for (const key of SETTING_KEYS) {
     if (!Object.hasOwn(backup.settings, key)) continue;

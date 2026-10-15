@@ -3,8 +3,19 @@
     "local-mdx-click@noahx.local": {
       "updates": [
         {
+          "version": "1.3.1",
+          "update_link": "https://github.com/Noahxie83/zotero-lexibridge/releases/download/v1.3.1/lexibridge-1.3.1.xpi",
+          "update_hash": "sha256:43ca6fa90d8ade44643983f569e9da36abc9961d459a50c29a3fd97f30af7483",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "10.0",
+              "strict_max_version": "10.0.*"
+            }
+          }
+        },
+        {
           "version": "1.3.0",
-          "update_link": "https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.3.0/lexibridge-1.3.0.xpi",
+          "update_link": "https://github.com/Noahxie83/zotero-lexibridge/releases/download/v1.3.0/lexibridge-1.3.0.xpi",
           "update_hash": "sha256:7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7",
           "applications": {
             "zotero": {
@@ -15,7 +26,7 @@
         },
         {
           "version": "1.2.2",
-          "update_link": "https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-1.2.2.xpi",
+          "update_link": "https://github.com/Noahxie83/zotero-lexibridge/releases/download/v1.2.2/local-dictionary-1.2.2.xpi",
           "update_hash": "sha256:838fa95df1ab1d0d181977f78fbeb6cf61e09f19fab885af4d62fbba875f996a",
           "applications": {
             "zotero": {

@@ -1,6 +1,15 @@
-# 1.3.0 · LexiBridge 词译桥
+# 1.3.1 · 项目地址统一
 
-Local Dictionary 更名为 **LexiBridge · 词译桥**，在 Zotero 中连接本地词典与在线翻译。保留插件 ID、词典路径、资源配置、生词记录和旧备份格式，支持覆盖升级。
+- 仓库、下载、自动更新和展示页统一使用 `zotero-lexibridge`。
+- README 精简历史名称和内部标识，移除个人主页入口。
+- 支持覆盖升级，保留词典目录、资源配置、生词与查询设置。
+- 设置备份格式不变，导入错误提示使用当前产品名称。
+
+安装 `lexibridge-1.3.1.xpi`，如 Zotero 提示则重启。详见 [升级说明](docs/UPGRADE_1.3.1.md)。此前版本的安装包和校验和保持原样。
+
+## 1.3.0 · LexiBridge 词译桥
+
+**LexiBridge · 词译桥** 在 Zotero 中连接本地词典与在线翻译。保留插件 ID、词典路径、资源配置、生词记录和旧备份格式，支持覆盖升级。
 
 - 新增 Google、Microsoft Edge、有道网页体验与 MyMemory 四种实验性在线翻译。无需填写 API 密钥，默认关闭，按来源单独开启。
 - 统一排列本地词典与翻译引擎，支持当前来源、依次回退、联合查询；本地有界并行，分来源渐进显示。
@@ -8,7 +17,7 @@ Local Dictionary 更名为 **LexiBridge · 词译桥**，在 Zotero 中连接本
 - 弹窗标题栏空白处可拖动，历史、来源切换和异步更新保持位置。
 - 本地和在线成功结果隐藏诊断；未命中、错误、限流只显示对应来源。
 - 修复关闭阅读器后失效工具栏节点阻断后续界面更新。
-- 更新 README、封面、查词动图与展示页，旧首页跳转至 [词译桥](https://noahxie83.github.io/zotero-local-dictionary/lexibridge/)。
+- 更新 README、封面、查词动图与展示页，旧首页跳转至 [词译桥](https://noahxie83.github.io/zotero-lexibridge/lexibridge/)。
 
 安装 `lexibridge-1.3.0.xpi`；如果 Zotero 提示则重启。在线查询最多 256 字符、16 个词，MyMemory 固定英译简中。在线服务可能变化或限流，开启后查询文本发送给对应服务。插件不附带词典。
 
@@ -16,12 +25,12 @@ Local Dictionary 更名为 **LexiBridge · 词译桥**，在 Zotero 中连接本
 
 ## 1.2.2 · 仓库名称与地址迁移
 
-- GitHub 仓库更名为 `Noahxie83/zotero-local-dictionary`，与 Local Dictionary 及多格式支持一致。
+- GitHub 仓库更名为 `Noahxie83/zotero-local-dictionary`，同步多格式支持的说明。
 - 同步安装、自动更新、GitHub Pages、使用指南与历史版本入口。
 - 保留插件 ID、旧设置与生词数据，已有版本可覆盖升级。
 - 核对 zotero-addons-scraper 的收录和 XPI 解析要求，提供保留 `reader` 标签的上游条目改名补丁；上游收录更新需另行合并。
 
-安装 `local-dictionary-1.2.2.xpi` 覆盖旧版后重启 Zotero。新网站：[在线示例](https://noahxie83.github.io/zotero-local-dictionary/)。迁移与收录说明见 [仓库改名](docs/REPOSITORY_RENAME.md)。
+安装 `local-dictionary-1.2.2.xpi` 覆盖旧版后重启 Zotero。新网站：[在线示例](https://noahxie83.github.io/zotero-lexibridge/)。迁移与收录说明见 [仓库改名](docs/REPOSITORY_RENAME.md)。
 
 验证：78 项自动测试通过，插件与网站构建成功；改名后旧仓库 API、历史安装包下载和旧更新清单可访问。本版修改名称与地址，实际插件代码沿用 1.2.1。
 
@@ -38,10 +47,10 @@ Local Dictionary 更名为 **LexiBridge · 词译桥**，在 Zotero 中连接本
 
 验证：78 项自动测试与 33 项 Windows Zotero 10.0.6 隔离检查通过。展示页完成桌面、窄屏与深色检查；Lighthouse 手机模拟性能 99，其余三项 100。
 
-## 1.2.0 — Local Dictionary · 本地词典
+## 1.2.0 · 多格式本地词典
 
 - 支持 MDX、StarDict（`.ifo`）和 DSL（`.dsl`/`.dsl.dz`）；StarDict 同义词、压缩索引与 Dictzip 按块读取，DSL 常见标记、内部引用和外置图片/发音。
-- 产品由 Local MDX 更名为 Local Dictionary；保留插件 ID、更新地址和原设置，可覆盖升级。
+- 统一产品命名；保留插件 ID、更新地址和原设置，可覆盖升级。
 - 修复不可见字符取词、坏词典切换覆盖状态、MDD 缺失资源反复解压和依赖告警。
 - 增加词形还原、回退/联合查询、手动输入/快捷键、历史/固定、生词/笔记、CSV/Anki 导出、诊断、主题/尺寸/发音偏好、拼写/词目浏览、多目录/优先级和备份迁移。
 - 发布前按 Standards/Spec 两路审查并整改缓存竞态、坏生词备份、资源池、共享弹窗预算、选区/手动上下文、DSL 转义、根目录迁移和部分备份问题。
@@ -52,7 +61,7 @@ Local Dictionary 更名为 **LexiBridge · 词译桥**，在 Zotero 中连接本
 
 ## 1.1.3 — 插件图标
 
-- 将 Local MDX 的“书本＋放大镜”标识用于插件管理器和设置页。
+- 将“书本＋放大镜”标识用于插件管理器和设置页。
 - 使用可缩放 SVG，为不同显示尺寸提供同一图标。
 - 沿用 1.1.2 的查词、资源读取、批注与音频功能。
 

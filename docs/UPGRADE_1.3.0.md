@@ -1,6 +1,6 @@
 # 1.3.0 · LexiBridge 词译桥
 
-本版从离线词典扩展为 Zotero 查词与翻译工具，原名 Local Dictionary / Local MDX。
+本版提供 Zotero 本地查词与在线翻译。
 
 ## 新增与修复
 
@@ -17,7 +17,7 @@
 
 安装 `lexibridge-1.3.0.xpi` 覆盖旧版；若 Zotero 提示则重启。设置页入口改为“词译桥”。原词典目录、资源配置和生词保留。在线服务不会因升级自动开启。
 
-新页面为 [词译桥展示页](https://noahxie83.github.io/zotero-local-dictionary/lexibridge/)，旧首页会跳转并保留 URL 片段。GitHub 仓库及更新地址不变。
+新页面为 [词译桥展示页](https://noahxie83.github.io/zotero-lexibridge/lexibridge/)，旧首页会跳转并保留 URL 片段。GitHub 仓库及更新地址不变。
 
 ## 使用边界
 

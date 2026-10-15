@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-16",
+  "repository": "Noahxie83/zotero-lexibridge",
+  "repositoryId": 1397312412,
+  "homepage": "https://noahxie83.github.io/zotero-lexibridge/lexibridge/",
+  "version": "1.3.1",
+  "artifact": "dist/lexibridge-1.3.1.xpi",
+  "sha256": "43ca6fa90d8ade44643983f569e9da36abc9961d459a50c29a3fd97f30af7483",
+  "size": 323324,
+  "checks": {
+    "productTests": {
+      "passed": 144,
+      "failed": 0
+    },
+    "addonIdentityPreserved": true,
+    "packagedRuntimeMatchesBuild": true,
+    "canonicalUpdateURL": "https://raw.githubusercontent.com/Noahxie83/zotero-lexibridge/main/updates.json",
+    "READMEHasNoPersonalProfileOrInternalIdOrFormerName": true,
+    "oldReleaseArtifactsOverwritten": false,
+    "legacyPagesRedirectRepositoryCreated": false,
+    "browser": {
+      "marketingHasOnlyCurrentName": true,
+      "desktopAndMobileSnapshotsDecoded": true,
+      "themeToggle": true,
+      "localDemoQuery": true,
+      "mobileOverflow": false,
+      "relativeEntryRedirectPreservesQueryAndHash": true,
+      "uncaughtErrors": []
+    }
+  },
+  "upstream": {
+    "entry": "addons/Noahxie83@zotero-lexibridge",
+    "tags": [
+      "reader"
+    ],
+    "pullRequest": "https://github.com/syt2/zotero-addons-scraper/pull/274",
+    "status": "OPEN; awaiting upstream maintainer review"
+  },
+  "fork": {
+    "repository": "Noahxie83/zotero-addons-scraper",
+    "purpose": "Head branch for the upstream entry-rename pull request",
+    "retained": true
+  },
+  "limitations": [
+    "No new live translation or Zotero-host verification was run.",
+    "Historical release archives retain their original filenames and contents."
+  ]
+}

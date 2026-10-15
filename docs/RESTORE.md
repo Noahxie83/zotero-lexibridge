@@ -45,12 +45,10 @@
 
 1.1.2 中新目录读取失败会保留上一份有效选择；成功选择空目录则列表为空，可重新选择原目录恢复。
 
-## 备份、迁移与新名称
+## 备份与迁移
 
-1.3.0 更名为 **LexiBridge · 词译桥**，设置入口为“词译桥”。仍使用原插件 ID、备份格式和设置前缀，可覆盖升级，在线来源默认关闭。
+在“词译桥”设置中管理备份与迁移。支持覆盖升级，词典配置和生词记录保留，在线来源默认关闭。
 
-
-1.2.0 更名为 **Local Dictionary · 本地词典**，设置入口为“本地词典”，旧插件 ID 和词典偏好保留。新包 `local-dictionary-1.2.0.xpi` 可覆盖旧版，不需要卸载后重新选择词典。
 
 在设置中“备份设置与生词…”保存 JSON。迁移后“导入备份…”；原目录不存在时选择新位置，验证成功后应用。取消或坏词典不会覆盖当前设置。备份包含生词和文献上下文，请按需保管；词典、资源和 PDF 文件需要另行复制。
 
@@ -62,17 +60,17 @@
 
 ## 回退到历史插件版本
 
-1. 从 [所有 Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载目标版本的 **`.xpi`**，不要把源码 ZIP 当安装包。
+1. 从 [所有 Releases](https://github.com/Noahxie83/zotero-lexibridge/releases) 下载目标版本的 **`.xpi`**，不要把源码 ZIP 当安装包。
 2. 工具 → 插件 → 齿轮 → 从文件安装插件，选择旧 XPI。若 Zotero 拒绝覆盖低版本，先卸载本插件，重启后安装目标 XPI。
 3. 重启 Zotero并重新打开 PDF，核对版本和词典选择。
 4. 如果旧版自动更新到较新版本，在插件管理器为该扩展关闭自动更新；重新使用最新版本时恢复自动更新。
 
 | 想回到的功能范围 | 历史版本 |
 | --- | --- |
-| 最初的本地点击查询/词典切换 | [0.1.0](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v0.1.0) |
-| 文字排版优化 | [0.1.2](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v0.1.2) |
-| 原有 CSS/MDD 资源与编号修复，尚无划选 | [0.2.1](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v0.2.1) |
-| 划选与断行候选，尚无合并批注菜单/内置 Speex | [1.0.0](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.0.0) |
+| 最初的本地点击查询/词典切换 | [0.1.0](https://github.com/Noahxie83/zotero-lexibridge/releases/tag/v0.1.0) |
+| 文字排版优化 | [0.1.2](https://github.com/Noahxie83/zotero-lexibridge/releases/tag/v0.1.2) |
+| 原有 CSS/MDD 资源与编号修复，尚无划选 | [0.2.1](https://github.com/Noahxie83/zotero-lexibridge/releases/tag/v0.2.1) |
+| 划选与断行候选，尚无合并批注菜单/内置 Speex | [1.0.0](https://github.com/Noahxie83/zotero-lexibridge/releases/tag/v1.0.0) |
 
 历史版本保留各自实现和已知问题，**推荐使用稳定版 1.2.0**。1.1.0 存在批注颜色传递问题，1.1.1 尚未包含 1.1.2 的五项修复；可先调整上述设置恢复所需操作。
 

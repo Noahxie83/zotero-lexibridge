@@ -1,6 +1,6 @@
 # LexiBridge 词译桥使用指南
 
-> 1.3.0 起产品名为 LexiBridge · 词译桥。旧设置兼容，详见 [升级说明](UPGRADE_1.3.0.md)。
+> 当前维护版为 1.3.1，支持覆盖升级。详见 [升级说明](UPGRADE_1.3.1.md)。
 
 ## 查询来源与独立触发开关
 
@@ -10,9 +10,9 @@
 
 “当前来源”只查询所选来源；回退按用户顺序依次查询，命中即停止；联合查询按用户顺序逐项显示结果。内部词条链接只查原词典，保留全局顺序。拖动标题空白区可移动弹窗；拖动与固定独立，慢结果、手动输入、历史与内部跳转保留位置，窗口缩放只将弹窗夹紧至可见范围。
 
-在 Zotero 10.0 系列 PDF 阅读器中点击、划选或输入文字，查询本地 MDX、StarDict 和 DSL 词典。原名 Local Dictionary / Local MDX；插件标识与旧设置保持兼容。
+在 Zotero 10.0 系列 PDF 阅读器中点击、划选或输入文字，查询本地 MDX、StarDict 和 DSL 词典。覆盖升级保留原有设置。
 
-从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 获取安装包；1.3.0 本地构建文件为 `dist/lexibridge-1.3.0.xpi`。新版变化与验证见 [1.3.0 升级说明](UPGRADE_1.3.0.md)。
+从 [GitHub Releases](https://github.com/Noahxie83/zotero-lexibridge/releases) 获取安装包；1.3.1 本地构建文件为 `dist/lexibridge-1.3.1.xpi`。新版变化与验证见 [1.3.0 升级说明](UPGRADE_1.3.0.md)。
 
 ## 新增的查询与阅读操作
 
@@ -122,7 +122,7 @@ SPX 输入限额 8 MB，整个文件的累计音频最长 30 秒（包括连接�
 
 ## 下载与发布
 
-从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载 `.xpi` 安装包、源码 ZIP 和校验和。词典需另行准备，可在 [PDAWiki · MDict 专区](https://www.pdawiki.com/forum/forum.php?gid=7) 搜索，并按作者授权获取文件。安装后选择词典目录即可使用。
+从 [GitHub Releases](https://github.com/Noahxie83/zotero-lexibridge/releases) 下载 `.xpi` 安装包、源码 ZIP 和校验和。词典需另行准备，可在 [PDAWiki · MDict 专区](https://www.pdawiki.com/forum/forum.php?gid=7) 搜索，并按作者授权获取文件。安装后选择词典目录即可使用。
 
 历史版本保留对应安装包、源码和说明。新版本继续使用原插件 ID，1.2.2 起使用新仓库的更新地址；覆盖升级保留设置。详情见 [版本变更](CHANGES.md) 和 [仓库改名](REPOSITORY_RENAME.md)。HTML 演示使用自制 MDX，覆盖部分功能。
 
