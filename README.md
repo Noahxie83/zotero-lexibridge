@@ -1,211 +1,161 @@
+<p align="right"><a href="https://github.com/Noahxie83"><sub>Noah Xie · Personal profile</sub></a></p>
+
+<p align="center"><img src="docs/assets/cover.jpg" alt="LexiBridge 词译桥：查一个词，读懂下一句。在 Zotero 中连接本地词典与在线翻译。" width="100%"></p>
+
+<h1 align="center">LexiBridge · 词译桥</h1>
+<p align="center"><b>Zotero 查词与翻译插件</b><br>本地词典的深度，在线翻译的广度。查词、译句、批注，留在阅读里。</p>
 <p align="center">
-  <img src="docs/assets/cover.jpg" alt="Local Dictionary：本地词典，跟着论文走。支持 MDX、StarDict 和 DSL。" width="100%">
-</p>
-
-<h1 align="center">Local Dictionary · 本地词典</h1>
-
-<p align="center"><b>Zotero 本地词典插件 · 点击与划选查词</b></p>
-<p align="center">在文献阅读中查询单词与词组，使用本地词典的释义、排版和发音。</p>
-
-<p align="center">
-  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.2"><img alt="版本 1.2.2" src="https://img.shields.io/badge/version-1.2.2-087bd0"></a>
-  <img alt="支持 Zotero 10.0 系列" src="https://img.shields.io/badge/Zotero-10.0-102b46">
+  <a href="RELEASE_NOTES.md"><img alt="版本 1.3.0" src="https://img.shields.io/badge/1.3.0-词译桥-246a96?style=flat-square"></a>
+  <img alt="支持 Zotero 10.0 系列" src="https://img.shields.io/badge/Zotero-10.0-536575?style=flat-square">
   <a href="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml"><img alt="构建状态" src="https://github.com/Noahxie83/zotero-local-dictionary/actions/workflows/build.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="GPL 3.0 or later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-586d7f"></a>
+  <a href="LICENSE"><img alt="GPL 3.0 or later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-536575?style=flat-square"></a>
 </p>
-
 <p align="center">
-  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-1.2.2.xpi"><b>下载安装包</b></a> ·
-  <a href="https://noahxie83.github.io/zotero-local-dictionary/"><b>体验交互示例</b></a> ·
-  <a href="docs/USER_GUIDE.md">使用指南</a> ·
-  <a href="docs/RESTORE.md">设置恢复</a> ·
-  <a href="docs/CHANGES.md">版本变更</a>
+  <a href="https://github.com/Noahxie83/zotero-local-dictionary/releases"><img alt="下载安装包" src="docs/assets/button-download.svg" height="40"></a>
+  <a href="https://noahxie83.github.io/zotero-local-dictionary/lexibridge/"><img alt="体验交互示例" src="docs/assets/button-demo.svg" height="40"></a>
+  <a href="docs/USER_GUIDE.md"><img alt="阅读使用指南" src="docs/assets/button-guide.svg" height="40"></a>
 </p>
 
----
+**LexiBridge（词译桥）** 原名 Local Dictionary / Local MDX。在 Zotero PDF 阅读器中查询 MDX、StarDict、DSL 本地词典，也可按需开启在线翻译。插件 ID 与设置命名空间保留，支持覆盖升级，原有词典路径、生词和资源配置继续使用。
 
-**Local Dictionary** 原名 Local MDX，在 Zotero PDF 阅读器中提供 MDX、StarDict 和 DSL 离线词典查询。插件标识和已有设置保持兼容，支持覆盖升级。
+## 1.3.0 有什么新变化
 
-**1.2.2 将 GitHub 仓库更名为 `zotero-local-dictionary`，同步安装、更新与展示页地址。** 运行 `npm run build` 可生成 `dist/local-dictionary-1.2.2.xpi`。支持范围见 [格式支持](docs/FORMAT_SUPPORT.md)。
+- **查词与翻译，共用一组来源。** 加入 Google、Microsoft Edge、有道和 MyMemory，无需填写 API 密钥。在线服务默认关闭，逐项开启。
+- **按你的顺序查询。** 本地词典与翻译引擎统一排序；可查当前来源、依次回退，或联合显示多个来源。
+- **更快看到首个结果。** 联合查询采用有界并发，先完成的来源先呈现，结果仍按设置顺序排列。
+- **点击、划选分别控制。** 可只点击、只划选、同时开启，或关闭两种自动触发后手动输入。
+- **弹窗可以拖动。** 拖动标题栏空白处调整位置；历史、切换来源和慢结果更新保持位置。固定与拖动独立。
+- **成功结果更干净。** 本地与在线来源成功时不显示诊断区域；未命中、出错或限流时只显示对应来源的诊断。
+- **关闭阅读器后仍可继续使用。** 修复失效工具栏节点阻断后续界面更新的问题。
 
-[仓库改名与插件收录](docs/REPOSITORY_RENAME.md) · [1.2.0 新功能与验证](docs/UPGRADE_1.2.0.md) · [词典格式支持](docs/FORMAT_SUPPORT.md)。工具栏“查询”或 Ctrl/⌘+Alt+D 打开手动查询，词形还原、多词典联合查询、生词与笔记已加入。
+详见 [完整版本变更](docs/CHANGES.md) 与 [升级说明](docs/UPGRADE_1.3.0.md)。
 
-**使用流程：** 选择词典目录 → 打开 PDF → 点击或划选文字 → 查看释义与发音
+## 看看实际操作
 
-## 功能亮点
+<p align="center"><img src="docs/assets/lookup-demo.gif" alt="网页示例：点击 network 查询本地词典，切换词典排版，再查看词组与批注工具" width="960"></p>
 
-| 功能 | 说明 |
-| --- | --- |
-| **点击与划选查词** | 在阅读器内查询单词或词组；划选后可同时使用高亮、下划线和颜色选择。 |
-| **断行单词识别** | 对 `transfor-` 换行 `mation`，分别查询 `transfor-mation` 与 `transformation`，合并相同词条；复合词保留连字符候选。 |
-| **多格式与多目录** | 识别 MDX、StarDict .ifo、DSL/.dsl.dz；管理多个目录，可选递归扫描及查询顺序。 |
-| **词形与多词典查询** | 原词未命中时尝试常见英语词形；支持单词典、未命中回退和联合查询，释义标注来源。 |
-| **手动查询与历史** | 输入框、Ctrl/⌘+Alt+D、返回/前进、固定弹窗、分页词目浏览与拼写建议。 |
-| **生词与文献上下文** | 主动收藏单词、释义、原句和页码；写入 Zotero 笔记，导出 CSV/Anki TSV。 |
-| **阅读与迁移** | 字号/尺寸/主题、英美发音偏好和重播、展开诊断、MDD 顺序管理、设置备份与路径重新定位。 |
-| **MDD 分卷与配套资源** | 自动关联同名 MDD 和数字分卷，按引用读取 CSS、图片、图标、字体与音频；支持手动关联资源包和外置资源目录。 |
-| **词典原有排版** | 加载词条引用的 HTML/CSS 和本地资源，呈现各词典的样式；可切换为简洁文字排版。 |
-| **内置离线发音解码** | 标准 Ogg/SPX 音频通过内置 Speex 解码器转换为 WAV，无需安装额外解码程序。 |
+动图录自网页中的**实际插件解析与排版组件**，使用项目原创词条；不代表真实在线请求或 Zotero 宿主录像。可 [打开交互示例](https://noahxie83.github.io/zotero-local-dictionary/lexibridge/) 自己操作，也可 [预览完整弹窗与设置页](https://noahxie83.github.io/zotero-local-dictionary/interface-preview.html)。网页批注只演示反馈，音频为提示音，不会写入文献库或调用翻译服务。
 
-查词与批注使用同一划选弹窗，提供 **8 色、高亮和下划线**。需要原有操作方式时，可在设置中恢复 Zotero 自带菜单。
+<details>
+<summary>查看静态图与深色效果</summary>
 
-## 交互演示
+![本地查词示例](docs/assets/lookup-preview.jpg)
+![深色展示页](docs/assets/site-dark.jpg)
 
-**[打开在线示例 →](https://noahxie83.github.io/zotero-local-dictionary/)** · [下载单文件 HTML](https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-demo-1.2.2.html)
+</details>
 
-| 场景 | 示例操作 |
-| --- | --- |
-| **单词查询** · `network` | 点击阅读区词语，切换“研究英语”与“简明双语”示例词典，体验不同排版和分卷图片资源。 |
-| **断行查询** · `transfor-` / `mation` | 划选跨行的两部分文字，查看保留连字符与拼接后的查询候选。 |
-| **词组与批注** · `neural network` | 查询完整词组，体验颜色、高亮和下划线按钮。 |
+## 三种查询方式
 
-演示使用项目自制的 MDX/MDD 数据和插件的解析、排版组件。网页批注按钮仅展示操作反馈；音频为提示音。实际词典查询、单词发音和文献批注需在 Zotero 中使用插件。
+| 方式 | 行为 | 适合 |
+| --- | --- | --- |
+| 当前来源 | 只查当前选中的词典或引擎 | 专注一份释义 |
+| 依次回退 | 按启用来源的顺序逐个查询，首个命中后停止 | 先词典，找不到再翻译 |
+| 联合查询 | 查询所有启用来源，分来源渐进呈现 | 对照多部词典和译文 |
 
-[查看新版弹窗与设置页](https://noahxie83.github.io/zotero-local-dictionary/interface-preview.html) · [封面与展示页设计](docs/SITE_DESIGN.md)
+来源顺序与启用状态在 **设置 → 词译桥 → 查询来源** 中调整。本地联合查询最多并发 2 个任务，在线请求全局最多并发 1 个；这会限制请求数量，不承诺所有引擎同时返回。
+
+## 在线翻译
+
+| 服务 | 用法 | 说明 |
+| --- | --- | --- |
+| Google 翻译 | 自动识别 → 简体中文 | 实验性接口；可用性与网络、服务限流有关 |
+| Microsoft 翻译（Edge） | 自动识别 → 简体中文 | 使用 Microsoft 服务，身份与 Google 独立 |
+| 有道网页体验 | 自动识别 → 中文 | 网页体验接口，可能变化或限流 |
+| MyMemory | 英语 → 简体中文 | 固定语言方向，受服务配额限制 |
+
+- 所有在线来源**默认关闭**。开启后，查询文本会发送给对应提供方；本地词典内容不随查询上传。
+- 查询最多 **256 字符、16 个词**，适合单词、词组和短句，保留原标点；不提供整篇文献翻译。
+- 在线结果以纯文本显示，可复制译文。词典发音、浏览词目、生词收藏和笔记等本地能力不会伪装为在线服务能力。
+- 超时、错误和限流会明确呈现；限流按引擎冷却，不自动反复重试或偷偷切换提供方。使用“依次回退”时，才按你设置的来源顺序继续。
+- 四种服务均有真实 Zotero 成功记录；Google 曾出现限流，后在当时网络环境恢复。一次成功不代表长期可用。[验证范围](docs/UPGRADE_1.3.0.md#验证范围)
 
 ## 快速开始
 
-### 1. 安装插件
+**安装插件。** 从 [GitHub Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载对应版本的 XPI。在 Zotero 中选择 **工具 → 插件 → 齿轮 → 从文件安装插件**，选择安装包。若提示重启，重启 Zotero。本地构建的 1.3.0 成品位于 `dist/lexibridge-1.3.0.xpi`；公开可下载版本以 Releases 为准。
 
-从 [1.2.2 Release](https://github.com/Noahxie83/zotero-local-dictionary/releases/tag/v1.2.2) 下载 `local-dictionary-1.2.2.xpi`，在 Zotero 中依次选择：
+**准备来源。** 打开 **设置 → 词译桥**，添加词典目录或入口文件，开启需要的来源并调整顺序。只用在线翻译时无需添加本地词典。插件不附带商业词典。
 
-**工具 → 插件 → 齿轮 → 从文件安装插件**
+**选择查词方式。** 在“查询方式”中分别设置点击与划选开关。打开有文字层的 PDF，点击单词或划选词组。工具栏“查询”或 **Ctrl/⌘+Alt+D** 可手动输入。
 
-选择 `.xpi` 安装包，安装后重启 Zotero。已有版本可覆盖安装，词典路径与资源设置会保留。
+**放好弹窗。** 拖动标题栏的空白区域移动；需要保留时点“固定”。使用 × 或 Esc 关闭。成功查询不显示诊断；失败后可展开查看原因。
 
-### 2. 添加词典
+## 本地能力继续保留
 
-打开 **设置 → 本地词典**，选择词典目录或 `.mdx`、`.ifo`、`.dsl`、`.dsl.dz` 入口文件，从下拉框选择当前词典。StarDict 需保留同名索引与数据文件；详情见 [格式支持](docs/FORMAT_SUPPORT.md)。默认采用“词典原有排版”；也可切换为文字模式。
-
-### 3. 开始查询
-
-打开有文字层的 PDF，用普通指针单击英文单词，或拖选完整单词/词组后松开鼠标。可在弹窗或 PDF 工具栏切换词典。
-
-- 点击词条发音图标播放本地音频，点击内部词条链接继续查询。
-- 划选后选择颜色，再点击高亮或下划线保存批注。
-- 使用 ×、Esc 关闭弹窗；未固定时点击外部或滚动 PDF 也会关闭。
-- 工具栏“本地词典 ✓”可切换启用状态；安装前已打开的 PDF 可重新打开标签。
-
-更多设置见 [完整使用指南](docs/USER_GUIDE.md)。
+| 能力 | 支持 |
+| --- | --- |
+| 三种词典格式 | MDX/MDD、StarDict（.ifo）、DSL（.dsl / .dsl.dz） |
+| 原有排版与发音 | 本地 HTML/CSS、图片、字体和音频；内置标准 Ogg/SPX Speex 解码 |
+| 词组、断行与词形 | 连字符候选、重复词条合并、有限英语词形规则 |
+| 阅读记录 | 会话历史、分页词目、拼写建议、手动输入 |
+| 生词与笔记 | 收藏词条及可用的文献上下文，主动写入 Zotero 笔记，导出 CSV / Anki TSV |
+| 设置与迁移 | 浅色/深色/系统主题、字号尺寸、资源分卷顺序、设置备份与路径迁移 |
+| 查词与批注 | 插件划选菜单中的 8 色、高亮、下划线；也可恢复 Zotero 自带菜单 |
 
 ## 词典与资源
 
-### 获取词典
+本地词典需自行准备，可在 [PDAWiki · MDict 专区](https://www.pdawiki.com/forum/forum.php?gid=7) 查找，并按作者授权使用。保留配套资源目录结构。
 
-可在 **[PDAWiki · MDict 专区](https://www.pdawiki.com/forum/forum.php?gid=7)** 搜索 MDX 词典及配套资源，按帖子与词典作者的授权说明获取文件。安装包不附带词典，词典需单独准备。
-
-下载后保留 MDD 分卷、CSS、图片、图标和字体的目录结构。完整资源有助于呈现词典排版、插图与发音。
-
-| 格式 | 在插件中选择 | 需要保留的配套文件 |
+| 格式 | 选择入口 | 保留的文件 |
 | --- | --- | --- |
-| **MDX** | `.mdx` | 同名 `.mdd`、数字分卷及外置资源（如有） |
-| **StarDict** | `.ifo` | 同名 `.idx` / `.idx.gz` 和 `.dict` / `.dict.dz`；可选 `.syn` 同义词文件 |
-| **DSL** | `.dsl` / `.dsl.dz` | 同目录或 `词典.dsl.files/` 中的图片和发音（如有）；`.files.zip` 需先解压 |
+| MDX | `.mdx` | 同名 `.mdd`、数字分卷及外置资源 |
+| StarDict | `.ifo` | `.idx` / `.idx.gz` 与 `.dict` / `.dict.dz`；可选 `.syn` |
+| DSL | `.dsl` / `.dsl.dz` | 同目录或 `词典.dsl.files/` 中的资源；ZIP 需先解压 |
 
-各格式的编码、压缩与排版支持范围见 [词典格式说明](docs/FORMAT_SUPPORT.md)。
+[格式支持范围](docs/FORMAT_SUPPORT.md) · [资源支持](docs/RESOURCE_SUPPORT.md) · [Speex 说明](docs/SPEEX_AUDIO.md)
 
-### 目录示例
-
-```text
-Dictionaries/
-  DictionaryA.mdx
-  DictionaryA.mdd
-  DictionaryA.1.mdd
-  DictionaryA.2.mdd
-  DictionaryA.10.mdd
-  DictionaryB.ifo
-  DictionaryB.idx
-  DictionaryB.dict.dz
-  DictionaryB.syn
-  DictionaryC.dsl
-  DictionaryC.dsl.files/
-    images/
-    sounds/
-  style.css
-  images/
-  fonts/
-```
-
-以上名称仅为示例，可使用任意词典名称和目录。插件识别三类词典入口，可添加多个目录、开启递归扫描并调整查询顺序。默认查询当前词典，也可设置为“未命中回退”或“联合查询”；释义会标明来源。MDX 的数字分卷按编号排序，名称不同或位于其他目录的 MDD 可手动添加。
-
-## 设置与恢复
-
-| 需求 | 设置方式 |
-| --- | --- |
-| **恢复 Zotero 自带划选菜单** | 划选菜单 → **Zotero 自带菜单**。此模式暂停划选自动查询，保留单击查词。 |
-| **关闭划选自动查询** | 取消“划选单词或词组后自动查询”；插件批注工具仍可使用。 |
-| **暂停全部插件功能** | 关闭“启用本地查词”或使用工具栏开关；也可在插件管理器停用。 |
-| **切换词条显示方式** | 显示方式 → **简洁文字排版** / **词典原有排版**。 |
-| **恢复自动资源关联** | 选择当前词典 → **恢复自动关联**，清除该词典的手动资源配置。 |
-| **更新词典文件** | 增加、替换或删除文件后，点击“刷新词典列表”。 |
-| **回退插件版本** | 从 [Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases) 下载目标 XPI，按 [回退教程](docs/RESTORE.md#回退到历史插件版本) 安装。 |
-
-停用或卸载后，阅读器菜单恢复原有行为，已保存的批注和词典文件保留。所有设置的具体影响见 **[恢复设置与回退教程](docs/RESTORE.md)**；完整功能及历史变更见 **[版本变更](docs/CHANGES.md)**。
-
-## 兼容性
-
-| 项目 | 支持范围 |
-| --- | --- |
-| 阅读器 | Zotero **10.0 系列** PDF 阅读器；扫描文献需要 OCR 文字层 |
-| MDX / MDD | 1.x、2.x；raw/zlib/LZO；2.x `Encrypted=2` 索引混淆 |
-| StarDict | 2.4.2、3.0.0；32/64 位偏移、压缩索引、Dictzip 与同义词 |
-| DSL | `.dsl` / `.dsl.dz`；UTF-8、UTF-16、常见标记、内部链接与外置资源 |
-| 查询 | MDX、StarDict、DSL；大小写、内部链接、英语词形、单词典/回退/联合查询 |
-| 划选 | 规范化后最多 256 字符、16 个词；最多 3 个连字符候选 |
-| 资源 | 本地 HTML/CSS、导入样式、图片、字体、背景与音频 |
-| Speex | 标准 Ogg/SPX；单/双声道、多帧；单文件累计最多 30 秒，输入限额 8 MB |
+## 常见问题
 
 <details>
-<summary><b>格式限制与使用说明</b></summary>
+<summary>升级或改名会丢失设置吗？</summary>
 
-- 词组查询需要词典收录对应词目或跳转项；长句翻译不属于当前功能。
-- 断行单词需要划选完整的两部分；普通单击取词不跨行扩展。
-- 词典 JavaScript 与远程资源不运行或加载，依赖脚本的折叠、统计和特殊控件可能无法呈现。
-- 暂不支持 MDX/MDD 3、密码解密、StyleSheet 反引号宏、StarDict res.rdic 资源数据库和 DSL .files.zip/.lsd。词形还原使用有限英语规则。
-- 音频播放受文件格式与 Zotero/系统解码能力影响，第三方私有格式的兼容性需按实际文件确认。
+插件仍使用原 ID `local-mdx-click@noahx.local`，保留原偏好命名空间和备份格式。覆盖升级保留原设置；升级前仍可主动导出设置备份。仓库地址保持稳定，原展示页首页跳转至新页面。
 
-编码、资源查找顺序和读取限额见 [使用指南](docs/USER_GUIDE.md)、[资源支持](docs/RESOURCE_SUPPORT.md)、[Speex 说明](docs/SPEEX_AUDIO.md)。
+</details>
+<details>
+<summary>能完全离线使用吗？</summary>
+
+可以。本地词典与本地发音在设备上处理。保持所有在线来源关闭即可。
+
+</details>
+<details>
+<summary>如何只点击、不划选，或反过来？</summary>
+
+保持总开关开启，分别设置“点击单词后自动查询”与“划选单词或词组后自动查询”。两项均关闭时仍可手动查询。选择 Zotero 自带划选菜单会暂停划选自动查询，点击按自身开关运行。
+
+</details>
+<details>
+<summary>Google 网页可用，插件为什么仍失败？</summary>
+
+网页和插件使用的请求端点与会话不同。查看失败诊断，区分网络错误与 HTTP 限流。不要连续重试；可关闭该来源，选择其他已启用服务。
+
+</details>
+<details>
+<summary>词典有释义，却缺少样式、图片或发音？</summary>
+
+确认配套 MDD 和外置资源完整。名称不同的资源包需手动关联；失败诊断可帮助查找缺失资源。词典自带 JavaScript 不执行。
 
 </details>
 
-<details>
-<summary><b>常见问题</b></summary>
+[完整使用指南](docs/USER_GUIDE.md) · [设置恢复与回退](docs/RESTORE.md) · [发布说明](RELEASE_NOTES.md)
 
-**有释义，但缺少样式、图片或发音？** 先确认配套 MDD 与外置资源完整。名称不同的 MDD 需手动关联；资源提示可悬停查看具体缺失项，补齐后刷新词典列表。
+## 兼容范围
 
-**划选后出现多个弹窗？** 在设置中选择合适的划选菜单模式。若同时使用其他查词扩展，可在其中一个扩展中关闭重叠的触发方式。
-
-**可以离线使用吗？** 查询本地词典和播放本地发音均在设备上完成，无需翻译账号。词典文件需预先准备。
-
-</details>
+支持 **Zotero 10.0 系列**，宿主实测为 Windows Zotero 10.0.6。PDF 需要文字层，扫描件需先 OCR。其他平台和 Zotero 版本、大型真实词典集合与长时间内存表现尚未完成本轮验收。性能测量使用合成小词典，不将其数值作为生产环境承诺。
 
 ## 开发与构建
 
-开发需要 Node.js；插件运行无需 Node.js 或 Python。
+插件运行无需 Node.js 或 Python；开发需要 Node.js。
 
 ```sh
 npm ci --ignore-scripts
 npm test
 npm run build
+npm run build:site
 npm run pack:source
 ```
 
-生成独立 HTML 示例：
-
-```sh
-node scripts/build-showcase.mjs
-```
-
-预览查词弹窗与设置页的新界面（浅色、深色和查询状态，使用实际插件组件）：
-
-```sh
-npm run preview:ui
-```
-
-生成项目上级目录中的 `本地词典-界面预览.html`、线上使用的 `docs/interface-preview.html` 和 `dist` 中的离线预览，可离线打开。设计规则与验证记录见 [界面设计](docs/UI_DESIGN.md)。
-
-源码结构与预览命令见 [开发指南](docs/USER_GUIDE.md#开发)。各版本安装包、源码快照与校验和见 [Releases](https://github.com/Noahxie83/zotero-local-dictionary/releases)；历史记录见 [版本变更](docs/CHANGES.md) 和 [发布说明](RELEASE_NOTES.md)。
+安装包、源码快照和离线网页生成于 `dist/`。网页源文件位于 `examples/`，线上展示页为 `docs/lexibridge/index.html`，旧首页保留跳转。品牌、设计与生成素材说明见 [展示页设计](docs/SITE_DESIGN.md)。
 
 ## 开源许可
 
-项目采用 **[GPL-3.0-or-later](LICENSE)**，第三方依赖许可见 [THIRD_PARTY.md](THIRD_PARTY.md)。Local Dictionary 是独立开发的 Zotero 插件，非 Zotero 官方产品。词典内容与资源的使用权限以各自作者的授权为准。
+采用 **[GPL-3.0-or-later](LICENSE)**，依赖许可见 [THIRD_PARTY.md](THIRD_PARTY.md)。LexiBridge 是独立 Zotero 插件，非 Zotero 官方产品。词典内容与资源以各自作者授权为准。

@@ -1,10 +1,10 @@
 <vbox onload="Zotero.LocalDictionary.mountPreferences(window)">
   <html:div class="dictionary-settings">
-    <html:h2>Local Dictionary · 本地词典</html:h2>
+    <html:h2>LexiBridge · 词译桥</html:h2>
     <html:p class="settings-intro">添加本地词典，在阅读中查询、听发音和记录生词；也可选择开启实验性在线翻译。</html:p>
     <html:section class="settings-section">
       <html:h3>查词方式</html:h3>
-      <html:label class="settings-toggle"><html:input id="local-mdx-enabled" type="checkbox"/>启用查词</html:label>
+      <html:label class="settings-toggle"><html:input id="local-mdx-enabled" type="checkbox"/>启用查词与翻译（总开关）</html:label>
       <html:label class="settings-toggle"><html:input id="local-mdx-click-enabled" type="checkbox"/>点击单词后自动查询</html:label>
       <html:label class="settings-toggle"><html:input id="local-mdx-selection-enabled" type="checkbox"/>划选单词或词组后自动查询</html:label>
       <html:label class="settings-field">划选菜单<html:select id="local-mdx-selection-menu"><html:option value="integrated">插件查词与批注菜单</html:option><html:option value="native">Zotero 自带菜单</html:option></html:select></html:label>
@@ -12,7 +12,7 @@
         <html:summary>划选与批注说明</html:summary>
         <html:p>插件菜单提供查词、8 色选择、高亮和下划线。关闭划选自动查词后，批注工具仍可使用。获得本地释义后可主动收藏生词或写入文献笔记。</html:p>
         <html:p>选择 Zotero 自带菜单时暂停划选自动查词；点击取词由上方开关单独控制。两个自动查询开关均关闭时，仍可手动输入查询。</html:p>
-        <html:p>用普通指针拖选完整词或词组，松开鼠标查询。遇到 transfor- 换行 mation，请选中两部分；保留连字符和拼接写法都会查询。最多 256 字符、16 个词，按本地词目查询。</html:p>
+        <html:p>用普通指针拖选完整词或词组，松开鼠标查询。遇到 transfor- 换行 mation，请选中两部分；保留连字符和拼接写法都会查询。最多 256 字符、16 个词；本地来源查询词目，开启在线来源后可翻译短句。</html:p>
         <html:p>如同时启用 Hover Translate Eudic 的点击取词，建议在其设置中关闭点击取词，避免两个弹窗同时出现。</html:p>
       </html:details>
     </html:section>

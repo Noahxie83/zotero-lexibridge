@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-15",
+  "browser": "Chromium 1223 / local HTTP",
+  "checks": [
+    "Old homepage preserves query and anchor",
+    "Live component demo loads",
+    "Two local demo dictionaries",
+    "Dictionary switch retained",
+    "Selection annotation controls visible",
+    "Annotation demo reports no persistence",
+    "Hyphen candidates visible",
+    "Dark page theme",
+    "Demo follows dark mode",
+    "No overflow at 320",
+    "No overflow at 375",
+    "No overflow at 768",
+    "No overflow at 1440",
+    "Engine disclosure: Google",
+    "Engine disclosure: Microsoft",
+    "Engine disclosure: 有道",
+    "Engine disclosure: MyMemory",
+    "Independent click switch present",
+    "Independent selection switch present",
+    "Online sources default disabled",
+    "Source enable callback works in preview",
+    "Success diagnostics hidden",
+    "Failure diagnostics visible",
+    "Diagnostics hide after recovery",
+    "Self-contained offline HTML demo works",
+    "Hero entrance reaches visible state",
+    "Scroll reveal reaches visible state",
+    "Reduced motion disables hero animation",
+    "Demo load failure offers retry",
+    "Demo retry recovers"
+  ],
+  "lighthouse": {
+    "performance": 99,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "agentic-browsing": 100
+  },
+  "lcp": 1876.073,
+  "cls": 0,
+  "notes": [
+    "Local laboratory result; does not predict field performance.",
+    "No live translation request was made."
+  ]
+}

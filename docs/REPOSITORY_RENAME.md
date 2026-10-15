@@ -2,6 +2,8 @@
 
 GitHub 仓库由 `Noahxie83/zotero-local-mdx-click` 更名为 **`Noahxie83/zotero-local-dictionary`**，与 MDX、StarDict、DSL 多格式支持及 Local Dictionary 产品名称一致。
 
+> 2026-10-15 补记：产品已更名为 LexiBridge · 词译桥，仓库地址保持不变。下方是 1.2.2 迁移的历史记录。现有上游条目已可通过重定向抓取当前仓库，无需重复收录；本次检查见 [1.3.0 交付](DELIVERY_1.3.0.md)。新展示页为 [/lexibridge/](https://noahxie83.github.io/zotero-local-dictionary/lexibridge/)。
+
 ## 当前入口
 
 - [GitHub 仓库](https://github.com/Noahxie83/zotero-local-dictionary)

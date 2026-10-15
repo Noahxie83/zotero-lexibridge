@@ -14,10 +14,9 @@ const bundle = await build({ entryPoints: [path.join(root, 'examples/interface-p
 const html = template.replace('<!-- PREFERENCES -->', preferences)
   .replace('<!-- SCRIPT -->', '<script>' + bundle.outputFiles[0].text.replace(/<\/script/gi, '<\\/script') + '</script>');
 // This preview contains only original fixtures and browser-only mock callbacks.
-const output = path.resolve(root, '../本地词典-界面预览.html');
-await writeFile(output, html);
+const output = path.join(root, 'docs/interface-preview.html');
 await writeFile(path.join(root, 'docs/interface-preview.html'), html);
 await mkdir(path.join(root, 'dist'), { recursive: true });
 const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
-await writeFile(path.join(root, `dist/local-dictionary-ui-${version}.html`), html);
+await writeFile(path.join(root, `dist/lexibridge-ui-${version}.html`), html);
 console.log(output);

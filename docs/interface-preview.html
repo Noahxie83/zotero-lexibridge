@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>本地词典 · 界面预览</title>
+  <title>词译桥 · 界面预览</title>
   <style>
     :root{color-scheme:light;--bg:#eef2f5;--fg:#26343e;--sub:#536572;--line:#c8d2da;--panel:#fbfcfd}
     :root[data-theme="dark"]{color-scheme:dark;--bg:#171e25;--fg:#e5ecf1;--sub:#adbdc9;--line:#465764;--panel:#222d36}
@@ -23,7 +23,7 @@
 </head>
 <body>
   <div class="preview-top">
-    <div><h1>本地词典 · 界面预览</h1><p>使用插件的实际组件，自制示例词条。预览操作只影响此页面。</p></div>
+    <div><h1>词译桥 · 界面预览</h1><p>使用插件的实际组件，自制示例词条。预览操作只影响此页面。</p></div>
     <div class="preview-controls">
       <label>界面<select id="preview-view"><option value="popup">查词弹窗</option><option value="settings">设置页</option></select></label>
       <label>主题<select id="preview-theme"><option value="light">浅色</option><option value="dark">深色</option><option value="original">跟随系统</option></select></label>
@@ -35,17 +35,19 @@
     <div id="popup-preview"></div>
     <div id="settings-preview" hidden><vbox>
   <div class="dictionary-settings">
-    <h2>Local Dictionary · 本地词典</h2>
-    <p class="settings-intro">添加本地词典，在阅读中查询、听发音和记录生词。</p>
+    <h2>LexiBridge · 词译桥</h2>
+    <p class="settings-intro">添加本地词典，在阅读中查询、听发音和记录生词；也可选择开启实验性在线翻译。</p>
     <section class="settings-section">
       <h3>查词方式</h3>
-      <label class="settings-toggle"><input id="local-mdx-enabled" type="checkbox"/>启用本地查词（点击 / 划选）</label>
+      <label class="settings-toggle"><input id="local-mdx-enabled" type="checkbox"/>启用查词与翻译（总开关）</label>
+      <label class="settings-toggle"><input id="local-mdx-click-enabled" type="checkbox"/>点击单词后自动查询</label>
       <label class="settings-toggle"><input id="local-mdx-selection-enabled" type="checkbox"/>划选单词或词组后自动查询</label>
       <label class="settings-field">划选菜单<select id="local-mdx-selection-menu"><option value="integrated">插件查词与批注菜单</option><option value="native">Zotero 自带菜单</option></select></label>
       <details class="settings-help">
         <summary>划选与批注说明</summary>
-        <p>插件菜单提供查词、8 色选择、高亮和下划线。获得释义后可主动收藏生词或写入文献笔记。选择自带菜单时暂停划选自动查词，单击查词继续保留。</p>
-        <p>用普通指针拖选完整词或词组，松开鼠标查询。遇到 transfor- 换行 mation，请选中两部分；保留连字符和拼接写法都会查询。最多 256 字符、16 个词，按本地词目查询。</p>
+        <p>插件菜单提供查词、8 色选择、高亮和下划线。关闭划选自动查词后，批注工具仍可使用。获得本地释义后可主动收藏生词或写入文献笔记。</p>
+        <p>选择 Zotero 自带菜单时暂停划选自动查词；点击取词由上方开关单独控制。两个自动查询开关均关闭时，仍可手动输入查询。</p>
+        <p>用普通指针拖选完整词或词组，松开鼠标查询。遇到 transfor- 换行 mation，请选中两部分；保留连字符和拼接写法都会查询。最多 256 字符、16 个词；本地来源查询词目，开启在线来源后可翻译短句。</p>
         <p>如同时启用 Hover Translate Eudic 的点击取词，建议在其设置中关闭点击取词，避免两个弹窗同时出现。</p>
       </details>
     </section>
@@ -58,20 +60,20 @@
         <button id="local-mdx-refresh" type="button">刷新词典列表</button>
       </div>
       <p id="local-mdx-folder" class="settings-path"></p>
-      <label class="settings-field">当前查询词典<select id="local-mdx-select"></select></label>
+      <label class="settings-field">当前查询来源<select id="local-mdx-select"></select></label>
       <p id="local-mdx-path" class="settings-path"></p>
       <p id="local-mdx-status" role="status"></p>
       <details class="settings-help">
         <summary>支持的格式与索引</summary>
         <p>支持 MDX、StarDict（选择 .ifo）和 DSL（.dsl / .dsl.dz）。默认扫描当前层；下方可开启子目录扫描。加入新词典后刷新全部目录。</p>
-        <p>按查询需要建立词目索引，最近三部词典保留在内存中。词典只在本机读取，无需翻译账号。</p>
+        <p>按查询需要建立词目索引，最多保留六部空闲词典的索引，使用中的索引另行保护。本地词典只在本机读取；在线翻译需单独启用。</p>
       </details>
     </section>
     <section class="settings-section">
       <h3>查询与显示</h3>
       <label class="settings-toggle"><input id="local-mdx-word-forms" type="checkbox"/>原词未命中时尝试词形还原</label>
       <div class="settings-grid">
-        <label class="settings-field">查询范围<select id="local-mdx-query-mode"><option value="single">当前词典</option><option value="fallback">未命中时按顺序查其他词典</option><option value="all">联合查询所有词典</option></select></label>
+        <label class="settings-field">查询范围<select id="local-mdx-query-mode"><option value="single">当前来源</option><option value="fallback">未命中时按顺序查其他来源</option><option value="all">联合查询所有已启用来源</option></select></label>
         <label class="settings-field">显示方式<select id="local-mdx-mode"><option value="original">词典原有排版（样式、图片、字体与发音）</option><option value="text">简洁文字排版</option></select></label>
       </div>
     </section>
@@ -95,6 +97,51 @@
     <p class="preview-note" id="preview-notice">可查询 research、network 或 neural network，体验历史、固定和收藏。发音使用自制提示音。</p>
   </main>
   <script>(() => {
+  // src/online-engine-catalog.js
+  var definitions = {
+    google: {
+      engineId: "google",
+      sourceId: "online:google",
+      name: "Google \u7FFB\u8BD1\uFF08\u5B9E\u9A8C\u6027\uFF09",
+      recipient: "Google",
+      disclosure: "\u5F00\u542F\u540E\uFF0C\u67E5\u8BE2\u6587\u672C\u4F1A\u53D1\u9001\u7ED9 Google\uFF08\u6700\u591A 256 \u5B57\u7B26\u300116 \u4E2A\u8BCD\uFF09\uFF1B\u5B9E\u9A8C\u6027\u670D\u52A1\u53EF\u80FD\u4E0D\u53EF\u7528\u6216\u9650\u6D41\u3002"
+    },
+    bing: {
+      engineId: "bing",
+      sourceId: "online:bing",
+      name: "Microsoft \u7FFB\u8BD1\uFF08Edge\uFF0C\u5B9E\u9A8C\u6027\uFF09",
+      recipient: "Microsoft",
+      disclosure: "\u5F00\u542F\u540E\uFF0C\u67E5\u8BE2\u6587\u672C\u4F1A\u53D1\u9001\u7ED9 Microsoft \u7FFB\u8BD1\u670D\u52A1\uFF08\u6700\u591A 256 \u5B57\u7B26\u300116 \u4E2A\u8BCD\uFF09\uFF1B\u5B9E\u9A8C\u6027\u670D\u52A1\u53EF\u80FD\u4E0D\u53EF\u7528\u6216\u9650\u6D41\u3002"
+    },
+    youdao: {
+      engineId: "youdao",
+      sourceId: "online:youdao",
+      name: "\u6709\u9053\u7FFB\u8BD1\uFF08\u7F51\u9875\u4F53\u9A8C\uFF0C\u5B9E\u9A8C\u6027\uFF09",
+      recipient: "\u6709\u9053",
+      disclosure: "\u5F00\u542F\u540E\uFF0C\u67E5\u8BE2\u6587\u672C\u4F1A\u53D1\u9001\u7ED9\u6709\u9053\u7FFB\u8BD1\u7F51\u9875\u4F53\u9A8C\u670D\u52A1\uFF08\u6700\u591A 256 \u5B57\u7B26\u300116 \u4E2A\u8BCD\uFF09\uFF1B\u8FD9\u662F\u4F53\u9A8C\u63A5\u53E3\uFF0C\u53EF\u80FD\u53D8\u5316\u6216\u9650\u6D41\u3002"
+    },
+    mymemory: {
+      engineId: "mymemory",
+      sourceId: "online:mymemory",
+      name: "MyMemory \u7FFB\u8BD1\uFF08\u82F1\u2192\u7B80\u4E2D\uFF0C\u5B9E\u9A8C\u6027\uFF09",
+      recipient: "MyMemory",
+      disclosure: "\u5F00\u542F\u540E\uFF0C\u82F1\u6587\u67E5\u8BE2\u6587\u672C\u4F1A\u53D1\u9001\u7ED9 MyMemory\uFF0C\u56FA\u5B9A\u6309\u82F1\u2192\u7B80\u4E2D\u67E5\u8BE2\uFF08\u6700\u591A 256 \u5B57\u7B26\u300116 \u4E2A\u8BCD\uFF09\uFF1B\u4E0D\u53D1\u9001\u90AE\u7BB1\u3002"
+    }
+  };
+  var ONLINE_ENGINE_CATALOG = Object.freeze(Object.fromEntries(
+    Object.entries(definitions).map(([id, item]) => [id, Object.freeze(item)])
+  ));
+  var ONLINE_ENGINE_IDS = Object.freeze(Object.keys(ONLINE_ENGINE_CATALOG));
+  var MAX_QUERY_SOURCES = 5e3 + ONLINE_ENGINE_IDS.length;
+  function onlineEngine(engineId) {
+    return ONLINE_ENGINE_CATALOG[engineId];
+  }
+  function defaultOnlineSource(engineId) {
+    const definition = onlineEngine(engineId);
+    if (!definition) throw new Error("\u672A\u77E5\u5728\u7EBF\u7FFB\u8BD1\u5F15\u64CE\u3002");
+    return { id: definition.sourceId, kind: "online", engineId, name: definition.name, enabled: false };
+  }
+
   // node_modules/parse5/dist/common/unicode.js
   var UNDEFINED_CODE_POINTS = /* @__PURE__ */ new Set([
     65534,
@@ -8003,7 +8050,7 @@
     min-height:36px; padding:6px 12px 4px 20px;
   }
   header h2 {
-    flex:1; min-width:0; margin:0; color:var(--ink);
+    flex:0 1 auto; min-width:0; margin:0; color:var(--ink);
     font-size:13px; font-weight:600; line-height:1.4;
     overflow-wrap: anywhere;
   }
@@ -8018,7 +8065,11 @@
   button:disabled { color:var(--disabled); background:var(--chrome); cursor:default; }
   button[aria-pressed="true"] { background:var(--accent-soft); border-color:var(--blue); color:var(--blue); }
   button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
-  header button { width:28px; min-height:28px; padding:0; border-color:transparent; background:transparent; color:var(--muted); font-size:22px; }
+  header button { margin-left:auto; width:28px; min-height:28px; padding:0; border-color:transparent; background:transparent; color:var(--muted); font-size:22px; }
+  .query-source { border-bottom:1px solid var(--border); padding-block:8px; }
+  .query-source h3 { font-size:13px; margin:0; }
+  .source-status, .source-footer { font-size:12px; color:var(--muted); }
+  .source-diagnostic { font:11px/1.5 monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
   .query-form { display:flex; gap:8px; align-items:flex-end; padding:2px 20px 10px; flex:0 0 auto; }
   .query-field { display:flex; flex-direction:column; gap:6px; min-width:0; flex:1; }
   .query-label { color:var(--muted); font-size:12px; line-height:1.4; }
@@ -8223,6 +8274,122 @@
   @media (prefers-reduced-motion:reduce) { button { transition:none; } button:active:not(:disabled) { transform:none; } }
 `;
 
+  // src/popup-position.js
+  function createPopupPosition({ host, header, win, x, y, state }) {
+    const finite = (value, fallback) => Number.isFinite(value) ? value : fallback;
+    const anchorX = finite(state?.x, finite(x, 0));
+    const anchorY = finite(state?.y, finite(y, 0));
+    const restored = (state?.mode === "manual" || state?.mode === "auto") && Number.isFinite(state.left) && Number.isFinite(state.top);
+    let mode = state?.mode === "manual" && Number.isFinite(state.left) && Number.isFinite(state.top) ? "manual" : "auto";
+    let left = finite(state?.left, anchorX + 12);
+    let top = finite(state?.top, anchorY + 18);
+    let positioned = restored;
+    let disposed = false;
+    let drag;
+    const doc = host.ownerDocument || win.document;
+    const clamp = () => {
+      const rect = host.getBoundingClientRect();
+      left = Math.max(8, Math.min(left, win.innerWidth - rect.width - 8));
+      top = Math.max(8, Math.min(top, win.innerHeight - rect.height - 8));
+      host.style.left = left + "px";
+      host.style.top = top + "px";
+    };
+    const position = ({ clampOnly = false } = {}) => {
+      if (disposed) return;
+      if (!positioned && mode === "auto" && !clampOnly) {
+        const rect = host.getBoundingClientRect();
+        left = anchorX + 12;
+        top = anchorY + 18 + rect.height <= win.innerHeight - 8 ? anchorY + 18 : anchorY - rect.height - 12;
+      }
+      clamp();
+      positioned = true;
+    };
+    const suppress = (event) => {
+      event.preventDefault?.();
+      event.stopPropagation?.();
+    };
+    const preventSelection = (event) => {
+      if (drag) event.preventDefault?.();
+    };
+    const end = (event) => {
+      if (!drag || event?.pointerId != null && event.pointerId !== drag.pointerId) return;
+      const finished = drag;
+      drag = void 0;
+      win.removeEventListener("pointermove", move, true);
+      win.removeEventListener("pointerup", end, true);
+      win.removeEventListener("pointercancel", end, true);
+      win.removeEventListener("blur", end, true);
+      win.removeEventListener("selectstart", preventSelection, true);
+      if (finished.selectionStyle) {
+        const { selectionStyle, selectionValue, selectionPriority } = finished;
+        if (selectionStyle.setProperty) {
+          if (selectionValue) selectionStyle.setProperty("user-select", selectionValue, selectionPriority);
+          else selectionStyle.removeProperty("user-select");
+        } else selectionStyle.userSelect = selectionValue;
+      }
+      try {
+        header.releasePointerCapture?.(finished.pointerId);
+      } catch (_) {
+      }
+      if (event?.type === "pointerup" || event?.type === "pointercancel") suppress(event);
+    };
+    const move = (event) => {
+      if (!drag || event.pointerId !== drag.pointerId || !Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return;
+      left = drag.left + event.clientX - drag.x;
+      top = drag.top + event.clientY - drag.y;
+      mode = "manual";
+      clamp();
+      suppress(event);
+    };
+    const start = (event) => {
+      if (disposed || drag || event.target !== header || event.button !== 0 || event.isPrimary === false || !Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return;
+      const selectionStyle = doc?.documentElement?.style;
+      drag = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        left,
+        top,
+        selectionStyle,
+        selectionValue: selectionStyle?.getPropertyValue ? selectionStyle.getPropertyValue("user-select") : selectionStyle?.userSelect,
+        selectionPriority: selectionStyle?.getPropertyPriority?.("user-select") || ""
+      };
+      if (selectionStyle?.setProperty) selectionStyle.setProperty("user-select", "none", "important");
+      else if (selectionStyle) selectionStyle.userSelect = "none";
+      win.addEventListener("pointermove", move, true);
+      win.addEventListener("pointerup", end, true);
+      win.addEventListener("pointercancel", end, true);
+      win.addEventListener("blur", end, true);
+      win.addEventListener("selectstart", preventSelection, true);
+      try {
+        header.setPointerCapture?.(event.pointerId);
+      } catch (_) {
+      }
+      suppress(event);
+    };
+    const resize = () => position({ clampOnly: true });
+    const cleanup = () => {
+      if (disposed) return;
+      disposed = true;
+      end();
+      header.removeEventListener("pointerdown", start);
+      header.removeEventListener("lostpointercapture", end);
+      win.removeEventListener("resize", resize);
+      win.removeEventListener("unload", cleanup);
+    };
+    header.addEventListener("pointerdown", start);
+    header.addEventListener("lostpointercapture", end);
+    win.addEventListener("resize", resize);
+    win.addEventListener("unload", cleanup);
+    try {
+      position();
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
+    return { position, snapshot: () => ({ mode, left, top, x: anchorX, y: anchorY }), cleanup };
+  }
+
   // src/render.js
   var HTML = "http://www.w3.org/1999/xhtml";
   var skip = new Set("script style link meta base iframe frame frameset object embed applet template svg math audio video source track img input button select textarea form noscript audio-wr audio-gbs-liju audio-uss-liju audio-brs-liju audio-br-liju audio-gb-liju audio-ams-liju audio-us-liju audio-n_am-liju".split(" "));
@@ -8306,7 +8473,7 @@
     }
     return fragment;
   }
-  function createCard(doc, x, y, word, close) {
+  function createCard(doc, x, y, word, close, { positionState } = {}) {
     const win = doc.defaultView;
     const host = element(doc, "div");
     host.setAttribute("data-local-mdx-popup", "true");
@@ -8317,15 +8484,15 @@
     const card = element(doc, "div");
     card.className = "card";
     card.setAttribute("role", "dialog");
-    card.setAttribute("aria-label", "\u672C\u5730\u8BCD\u5178\uFF1A" + word);
+    card.setAttribute("aria-label", "\u8BCD\u8BD1\u6865\uFF1A" + word);
     const header = element(doc, "header");
-    header.append(element(doc, "h2", "\u672C\u5730\u8BCD\u5178"));
+    header.append(element(doc, "h2", "\u8BCD\u8BD1\u6865"));
     const button = element(doc, "button", "\xD7");
     button.type = "button";
     button.setAttribute("aria-label", "\u5173\u95ED\u91CA\u4E49");
     button.addEventListener("click", close);
     header.append(button);
-    const body = element(doc, "div", "\u6B63\u5728\u67E5\u8BE2\u672C\u5730\u8BCD\u5178\u2026");
+    const body = element(doc, "div", "\u6B63\u5728\u67E5\u8BE2\u6765\u6E90\u2026");
     body.className = "body";
     body.setAttribute("aria-live", "polite");
     const setState = (state) => {
@@ -8333,14 +8500,14 @@
       body.setAttribute("aria-busy", String(state === "loading"));
     };
     setState("loading");
-    const footer = element(doc, "div", "Local Dictionary");
+    const footer = element(doc, "div", "LexiBridge");
     footer.className = "source";
     footer.setAttribute("role", "status");
     const choice = element(doc, "div");
     choice.className = "dictionary-choice";
     const selector = element(doc, "select");
-    selector.setAttribute("aria-label", "\u9009\u62E9\u67E5\u8BE2\u8BCD\u5178");
-    const choiceLabel = element(doc, "span", "\u8BCD\u5178");
+    selector.setAttribute("aria-label", "\u9009\u62E9\u67E5\u8BE2\u6765\u6E90");
+    const choiceLabel = element(doc, "span", "\u6765\u6E90");
     choiceLabel.className = "dictionary-label";
     choice.append(choiceLabel, selector);
     const queries = element(doc, "div");
@@ -8352,25 +8519,58 @@
     card.append(header, selectionTools, choice, queries, body, footer);
     root.append(style, card);
     doc.body.append(host);
-    const position = () => {
-      const rect = host.getBoundingClientRect();
-      const left = Math.max(8, Math.min(x + 12, win.innerWidth - rect.width - 8));
-      const top = y + 18 + rect.height <= win.innerHeight - 8 ? y + 18 : Math.max(8, y - rect.height - 12);
-      host.style.left = left + "px";
-      host.style.top = top + "px";
+    const placement = createPopupPosition({ host, header, win, x, y, state: positionState });
+    let cleaned = false;
+    const cleanups = /* @__PURE__ */ new Set();
+    const runCleanup = (fn) => {
+      try {
+        fn();
+      } catch (_) {
+      }
     };
-    position();
-    return { host, body, footer, selector, choice, queries, selectionTools, position, close, setState };
+    const addCleanup = (fn) => {
+      if (typeof fn !== "function") return;
+      if (cleaned) runCleanup(fn);
+      else cleanups.add(fn);
+    };
+    const cleanup = () => {
+      if (cleaned) return;
+      cleaned = true;
+      for (const fn of cleanups) runCleanup(fn);
+      cleanups.clear();
+    };
+    addCleanup(placement.cleanup);
+    addCleanup(() => button.removeEventListener("click", close));
+    win.addEventListener("unload", cleanup);
+    addCleanup(() => win.removeEventListener("unload", cleanup));
+    return {
+      host,
+      body,
+      footer,
+      selector,
+      choice,
+      queries,
+      selectionTools,
+      position: placement.position,
+      positionState: placement.snapshot,
+      close,
+      setState,
+      addCleanup,
+      cleanup
+    };
   }
 
   // src/query-controls.js
+  function shouldShowQueryDiagnostics(group) {
+    return !!group && ["empty", "error", "cooldown"].includes(group.status);
+  }
   function queryControls(doc, current2, { query, history: history2, onQuery, onHistory, onPin, onCollect, onNote, onBrowse }) {
     const root = current2.host.shadowRoot, card = root.querySelector(".card");
     const form = element(doc, "form");
     form.className = "query-form";
     const input = element(doc, "input");
     input.type = "search";
-    input.value = query.candidates.length ? query.text : "";
+    input.value = query.candidates.length ? query.translationText ?? query.text : "";
     input.maxLength = 256;
     input.placeholder = "\u8F93\u5165\u5355\u8BCD\u6216\u8BCD\u7EC4";
     input.setAttribute("aria-label", "\u67E5\u8BE2\u5355\u8BCD\u6216\u8BCD\u7EC4");
@@ -8421,12 +8621,16 @@
     current2.replayButton = action(audio, "\u91CD\u64AD", () => current2.replay?.(), true);
     const details = element(doc, "details");
     details.className = "query-diagnostics";
+    details.hidden = true;
     const summary = element(doc, "summary", "\u67E5\u8BE2\u4E0E\u8D44\u6E90\u8BCA\u65AD");
     const diagnosticText = element(doc, "pre");
     details.append(summary, diagnosticText);
-    current2.setDiagnostics = (issues, groups = [], sources = []) => {
-      summary.textContent = issues.length ? `\u67E5\u8BE2\u4E0E\u8D44\u6E90\u8BCA\u65AD\uFF08${issues.length} \u9879\u63D0\u793A\uFF09` : "\u67E5\u8BE2\u4E0E\u8D44\u6E90\u8BCA\u65AD";
-      diagnosticText.textContent = groups.map((group) => group.name + "\uFF1A" + (group.stats?.format || "MDX") + "\uFF0C" + (group.stats?.entries || 0) + " \u4E2A\u8BCD\u76EE\uFF0C" + group.results.length + " \u6761\u547D\u4E2D\uFF0C\u7D22\u5F15 " + (group.stats?.indexMs ?? "\u672A\u77E5") + " ms").concat(sources, issues.length ? issues : ["\u6682\u65E0\u8BFB\u53D6\u9519\u8BEF\u3002"]).join("\n");
+    current2.setDiagnostics = (failures) => {
+      const entries2 = (failures || []).filter((item) => shouldShowQueryDiagnostics(item.group));
+      details.hidden = entries2.length === 0;
+      summary.textContent = `\u67E5\u8BE2\u4E0E\u8D44\u6E90\u8BCA\u65AD\uFF08${entries2.length} \u4E2A\u5931\u8D25\u6765\u6E90\uFF09`;
+      diagnosticText.textContent = entries2.map(({ name, group, text }) => `${name} \xB7 ${group.status}
+${text || (group.status === "empty" ? "\u672A\u627E\u5230\u7ED3\u679C\u3002" : "\u67E5\u8BE2\u672A\u80FD\u5B8C\u6210\u3002")}`).join("\n\n");
     };
     card.insertBefore(form, current2.selectionTools);
     card.insertBefore(navigation, current2.selectionTools);
@@ -8443,9 +8647,11 @@
   }
   function queryFromText(value, source = "click") {
     if (typeof value !== "string" || value.length > 4096) return null;
+    const translationText = value.normalize("NFC").replace(/[\u00ad\u200b\ufeff]/g, "").replace(/\s+/g, " ").trim();
+    if (!translationText || translationText.length > MAX_TEXT || translationText.split(/\s+/).length > MAX_WORDS) return null;
     if (source === "entry") {
       const text = value.normalize("NFC").trim();
-      return text && text.length <= MAX_TEXT ? { text, candidates: [text], source } : null;
+      return text && text.length <= MAX_TEXT ? { text, candidates: [text], translationText, source } : null;
     }
     const raw = value.normalize("NFKC").replace(/[\u2010\u2011]/g, "-").replace(/([\p{L}\p{M}\p{N}])[\t ]*\r?\n[\t ]*-\s*(?=[\p{L}\p{M}\p{N}])/gu, "$1-\n");
     const preserved = tidy(raw.replace(/\u00ad/g, "-").replace(/([\p{L}\p{M}\p{N}])-\s+(?=[\p{L}\p{M}\p{N}])/gu, "$1-"));
@@ -8453,7 +8659,7 @@
     const lineJoined = tidy(raw.replace(/\u00ad\s*/g, "").replace(/([\p{L}\p{M}\p{N}])-\s+(?=[\p{L}\p{M}\p{N}])/gu, "$1"));
     const joined = preserved.replace(/([\p{L}\p{M}\p{N}])-(?=[\p{L}\p{M}\p{N}])/gu, "$1");
     const candidates = [...new Set([preserved, lineJoined, joined].filter(Boolean))];
-    return { text: preserved, candidates, source };
+    return { text: preserved, candidates, translationText, source };
   }
 
   // src/appearance-settings.js
@@ -8516,8 +8722,30 @@
   @media(prefers-reduced-motion:reduce) { .dictionary-settings button { transition:none; } .dictionary-settings button:active:not(:disabled) { transform:none; } }
 `;
 
+  // src/source-settings.js
+  var validPath = (value) => typeof value === "string" && value.length > 0 && value.length <= 2048 && !/[\0\r\n]/.test(value);
+  var validID = (value) => typeof value === "string" && value.trim().length > 0 && value.length <= 2200;
+  function validateSources(value) {
+    if (!Array.isArray(value) || value.length > MAX_QUERY_SOURCES) throw new Error("\u67E5\u8BE2\u6765\u6E90\u5217\u8868\u65E0\u6548\u3002");
+    const ids = /* @__PURE__ */ new Set(), paths = /* @__PURE__ */ new Set(), engines = /* @__PURE__ */ new Set();
+    return Array.from(value, (source) => {
+      if (!source || typeof source !== "object" || Array.isArray(source) || !validID(source.id) || ids.has(source.id) || typeof source.name !== "string" || typeof source.enabled !== "boolean") throw new Error("\u67E5\u8BE2\u6765\u6E90\u8BBE\u7F6E\u65E0\u6548\u3002");
+      const keys = source.kind === "local" ? ["id", "kind", "path", "name", "enabled"] : ["id", "kind", "engineId", "name", "enabled"];
+      if (Object.keys(source).length !== keys.length || keys.some((key) => !Object.hasOwn(source, key)) || Object.keys(source).some((key) => !keys.includes(key))) throw new Error("\u67E5\u8BE2\u6765\u6E90\u5B57\u6BB5\u65E0\u6548\u3002");
+      ids.add(source.id);
+      if (source.kind === "local") {
+        if (!validPath(source.path) || paths.has(source.path)) throw new Error("\u672C\u5730\u67E5\u8BE2\u6765\u6E90\u8DEF\u5F84\u65E0\u6548\u6216\u91CD\u590D\u3002");
+        paths.add(source.path);
+        return { id: source.id, kind: "local", path: source.path, name: source.name, enabled: source.enabled };
+      }
+      if (source.kind !== "online" || !ONLINE_ENGINE_IDS.includes(source.engineId) || engines.has(source.engineId)) throw new Error("\u5728\u7EBF\u67E5\u8BE2\u5F15\u64CE\u672A\u77E5\u6216\u91CD\u590D\u3002");
+      engines.add(source.engineId);
+      return { id: source.id, kind: "online", engineId: source.engineId, name: source.name, enabled: source.enabled };
+    });
+  }
+
   // src/preferences-panel.js
-  function mountEnhancements(win, { get, set, vocabulary, onExport, onBackup, onImport, onResourceOrder, dictionaries: dictionaries2, onOrder, onFolders, onRemoveFolder, folders: folders2, onRefresh }) {
+  function mountEnhancements(win, { get, set, vocabulary, onExport, onBackup, onImport, onResourceOrder, dictionaries: dictionaries2, onOrder, onFolders, onRemoveFolder, folders: folders2, onRefresh, sources, onSources }) {
     const doc = win.document, host = doc.getElementById("local-mdx-enhancements");
     if (!host) return () => {
     };
@@ -8615,6 +8843,13 @@
     const resourcesSection = section("\u5F53\u524D\u8BCD\u5178\u7684\u624B\u52A8 MDD \u987A\u5E8F", true);
     const resources = element(doc, "div");
     resourcesSection.append(resources);
+    const sourceSection = sources && onSources ? section("\u67E5\u8BE2\u6765\u6E90\u4E0E\u987A\u5E8F") : null;
+    const sourceList = sourceSection ? element(doc, "div") : null;
+    if (sourceSection) {
+      const sourceHelp = element(doc, "p", "\u52FE\u9009\u9700\u8981\u7684\u67E5\u8BE2\u6765\u6E90\uFF0C\u5E76\u7528\u4E0A\u4E0B\u7BAD\u5934\u8C03\u6574\u56DE\u9000\u4E0E\u8054\u5408\u67E5\u8BE2\u987A\u5E8F\u3002\u5F53\u524D\u6765\u6E90\u53EF\u5728\u4E0A\u65B9\u9009\u62E9\u3002");
+      sourceHelp.className = "settings-help";
+      sourceSection.append(sourceHelp, sourceList);
+    }
     const dictionarySection = section("\u8BCD\u5178\u67E5\u8BE2\u987A\u5E8F", true);
     const dictionaryList = element(doc, "div");
     dictionarySection.append(dictionaryList);
@@ -8669,6 +8904,13 @@
     const refresh = () => {
       for (const [key, { input, fallback }] of fields) if (doc.activeElement !== input) input.value = String(get(key) ?? fallback);
       const dicts = dictionaries2(), directories = folders2(), config = get("resources") || "{}";
+      let sourceRows = [];
+      if (sourceList) try {
+        sourceRows = validateSources(sources());
+      } catch (error) {
+        status.className = "settings-danger";
+        status.textContent = error.message;
+      }
       let rows;
       try {
         rows = vocabulary.list();
@@ -8677,7 +8919,7 @@
         rows = [];
       }
       offset = Math.max(0, Math.min(offset, Math.max(0, Math.ceil(rows.length / 20) - 1) * 20));
-      const next = JSON.stringify([dicts, directories, config, get("path"), rows, offset]);
+      const next = JSON.stringify([dicts, directories, config, get("path"), sourceRows, rows, offset]);
       if (next === signature) return;
       signature = next;
       resources.replaceChildren();
@@ -8695,6 +8937,52 @@
         button(actions, "\u79FB\u9664", () => onResourceOrder(index, 0));
       }
       if (!archives.length) empty(resources, "\u672A\u624B\u52A8\u6DFB\u52A0 MDD\u3002\u81EA\u52A8\u5173\u8054\u7684\u5206\u5377\u6309\u7F16\u53F7\u6392\u5E8F\u3002");
+      if (sourceList) {
+        sourceList.replaceChildren();
+        sourceRows.forEach((source, index) => {
+          const name = source.name;
+          const { main, actions } = listRow(sourceList, "");
+          if (source.kind === "local") main.title = source.path;
+          const label = element(doc, "label");
+          label.className = "settings-toggle";
+          const checkbox = element(doc, "input");
+          checkbox.type = "checkbox";
+          checkbox.checked = source.enabled;
+          checkbox.dataset.sourceId = source.id;
+          label.append(checkbox, element(doc, "span", "\u542F\u7528 " + name));
+          if (source.kind === "online") {
+            const disclosure = element(doc, "small", onlineEngine(source.engineId)?.disclosure || "\u5F00\u542F\u540E\uFF0C\u67E5\u8BE2\u6587\u672C\u4F1A\u53D1\u9001\u7ED9\u6B64\u5728\u7EBF\u7FFB\u8BD1\u670D\u52A1\u3002");
+            disclosure.className = "settings-help";
+            disclosure.id = "local-mdx-" + source.engineId + "-disclosure";
+            checkbox.setAttribute("aria-describedby", disclosure.id);
+            label.append(disclosure);
+          }
+          main.replaceChildren(label);
+          checkbox.addEventListener("change", async () => {
+            checkbox.disabled = true;
+            try {
+              const next2 = validateSources(sources()).map((item) => item.id === source.id ? { ...item, enabled: checkbox.checked } : item);
+              await onSources(next2);
+              status.className = "";
+              status.textContent = "\u67E5\u8BE2\u6765\u6E90\u5DF2\u66F4\u65B0\u3002";
+              refresh();
+            } catch (error) {
+              checkbox.checked = source.enabled;
+              status.className = "settings-danger";
+              status.textContent = error.message;
+            } finally {
+              checkbox.disabled = false;
+            }
+          });
+          ordering(actions, name, index, sourceRows.length, async (_index, delta) => {
+            const next2 = validateSources(sources()), current2 = next2.findIndex((item) => item.id === source.id), target = current2 + delta;
+            if (current2 < 0 || target < 0 || target >= next2.length) return;
+            [next2[current2], next2[target]] = [next2[target], next2[current2]];
+            await onSources(next2);
+          });
+        });
+        if (!sourceRows.length) empty(sourceList, "\u8FD8\u6CA1\u6709\u53EF\u7528\u67E5\u8BE2\u6765\u6E90\u3002\u8BF7\u5237\u65B0\u8BCD\u5178\u5217\u8868\u3002");
+      }
       dictionaryList.replaceChildren();
       dicts.forEach((dictionary, index) => {
         const { main, actions } = listRow(dictionaryList, dictionary.name);
@@ -8813,6 +9101,7 @@
     { name: "\u82F1\u6C49\u7B80\u660E\u8BCD\u5178", path: "/dictionaries/Chinese.ifo" },
     { name: "Academic English", path: "/dictionaries/Academic.dsl" }
   ];
+  var previewSources = [...dictionaries.map((d, i) => ({ id: "local:preview:" + i, kind: "local", path: d.path, name: d.name, enabled: true })), ...ONLINE_ENGINE_IDS.map(defaultOnlineSource)];
   var folders = ["/dictionaries"];
   var records = [{ id: "sample", word: "network", definition: "\u7F51\u7EDC\uFF1B\u76F8\u4E92\u8FDE\u63A5\u7684\u7CFB\u7EDF", context: { title: "\u9605\u8BFB\u793A\u4F8B", pageIndex: 3 } }];
   var entries = {
@@ -8936,10 +9225,7 @@
     });
     card.footer.textContent = "English Learner \xB7 \u81EA\u5236\u793A\u4F8B\u8BCD\u6761";
     const ready = (state === "ready" || state === "selection") && !!entries[word];
-    card.setDiagnostics(
-      state === "error" ? ["\u793A\u4F8B\uFF1A\u8BCD\u5178\u6587\u4EF6\u8BFB\u53D6\u5931\u8D25\u3002"] : [],
-      [{ name: "English Learner", stats: { format: "MDX", entries: 3 }, results: ready ? [{}] : [] }]
-    );
+    card.setDiagnostics(state === "error" || state === "empty" ? [{ name: "English Learner", group: { status: state === "error" ? "error" : "empty" }, text: state === "error" ? "\u793A\u4F8B\uFF1A\u8BCD\u5178\u6587\u4EF6\u8BFB\u53D6\u5931\u8D25\u3002" : "\u793A\u4F8B\uFF1A\u672A\u627E\u5230\u8BCD\u6761\u3002" }] : []);
   }
   refreshSettings = mountEnhancements(window, {
     get: (key) => preferences.get(key),
@@ -8952,6 +9238,11 @@
       const index = records.findIndex((record) => record.id === id);
       if (index >= 0) records.splice(index, 1);
     } },
+    sources: () => previewSources,
+    onSources: (next) => {
+      previewSources = next;
+      refreshSettings();
+    },
     dictionaries: () => dictionaries.slice(),
     folders: () => folders.slice(),
     onFolders: () => {
@@ -8980,6 +9271,7 @@
   }
   for (const [id, text] of [["local-mdx-folder", "\u8BCD\u5178\u76EE\u5F55\uFF1A/dictionaries"], ["local-mdx-path", "\u5F53\u524D\u6587\u4EF6\uFF1A/dictionaries/English.mdx"], ["local-mdx-status", "\u5DF2\u627E\u5230 3 \u90E8\u793A\u4F8B\u8BCD\u5178\u3002"]]) document.getElementById(id).textContent = text;
   document.getElementById("local-mdx-enabled").checked = true;
+  document.getElementById("local-mdx-click-enabled").checked = true;
   document.getElementById("local-mdx-selection-enabled").checked = true;
   for (const dictionary of dictionaries) {
     const option = element(document, "option", dictionary.name);

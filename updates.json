@@ -3,6 +3,17 @@
     "local-mdx-click@noahx.local": {
       "updates": [
         {
+          "version": "1.3.0",
+          "update_link": "https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.3.0/lexibridge-1.3.0.xpi",
+          "update_hash": "sha256:7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "10.0",
+              "strict_max_version": "10.0.*"
+            }
+          }
+        },
+        {
           "version": "1.2.2",
           "update_link": "https://github.com/Noahxie83/zotero-local-dictionary/releases/download/v1.2.2/local-dictionary-1.2.2.xpi",
           "update_hash": "sha256:838fa95df1ab1d0d181977f78fbeb6cf61e09f19fab885af4d62fbba875f996a",

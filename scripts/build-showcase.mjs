@@ -32,21 +32,24 @@ for (const [index, item] of dictionaries.entries()) {
 }
 const bundle = await build({ entryPoints:[path.join(root,'examples/showcase.js')],outfile:path.join(root,'docs/assets/showcase.js'),sourcemap:'linked',bundle:true,platform:'browser',format:'iife',target:'es2022',minify:true,write:false,loader:{'.wasm':'binary'},legalComments:'none' });
 const esc = text => text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-let licenses = 'Local Dictionary - GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
+let licenses = 'LexiBridge - GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
 for(const name of await readdir(path.join(root,'addon/licenses'))) licenses += '\n\n--- '+name+' ---\n'+await readFile(path.join(root,'addon/licenses',name),'utf8');
 const logo = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'docs/assets/wordmark.svg'))).toString('base64');
 const icon = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'addon/icons/local-mdx.svg'))).toString('base64');
 const hero = 'data:image/webp;base64,'+(await readFile(path.join(root,'docs/assets/reading-desk.webp'))).toString('base64');
 const manifest = JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
 const template = await readFile(path.join(root,'examples/template.html'),'utf8');
+const siteCSS = await readFile(path.join(root,'examples/site.css'),'utf8');
 const pageScript = await readFile(path.join(root,'examples/page.js'),'utf8');
-const base = template.replace('__WORDMARK__',()=>logo).replace('__ICON__',()=>icon).replaceAll('__VERSION__',manifest.version).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__PAGE_SCRIPT__',()=>pageScript);
+const base = template.replace('__SITE_CSS__',()=>siteCSS).replace('__WORDMARK__',()=>logo).replace('__ICON__',()=>icon).replaceAll('__VERSION__',manifest.version).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__PAGE_SCRIPT__',()=>pageScript);
 const script = bundle.outputFiles.find(file => file.path.endsWith('.js')).text;
 const html = base.replace('__HERO_IMAGE__',()=>hero).replace('__BUNDLE__',()=>script.replace(/\/\/# sourceMappingURL=[^\n]+/g,'').replace(/\/\/#sourceMappingURL=[^\n]+/g,'').replace(/<\/script/gi,'<\\/script'));
 // Pages loads the demo when it is visible or clicked; images are cached separately.
 // The downloaded HTML keeps every resource inline so it still opens offline.
-const online = base.replace('src="__HERO_IMAGE__"', 'src="assets/reading-desk.webp" srcset="assets/reading-desk-768.webp 768w, assets/reading-desk.webp 1536w" sizes="(max-width:767px) calc(100vw - 40px), (max-width:1264px) 44vw, 550px"')
-  .replace('<script>__BUNDLE__</script>', '<script id="demo-loader" data-src="assets/showcase.js"></script>');
+const online = base.replace('src="__HERO_IMAGE__"', 'src="../assets/reading-desk.webp" srcset="../assets/reading-desk-768.webp 768w, ../assets/reading-desk.webp 1536w" sizes="(max-width:767px) calc(100vw - 40px), (max-width:1264px) 44vw, 550px"')
+  .replace('<script>__BUNDLE__</script>', '<script id="demo-loader" data-src="../assets/showcase.js"></script>');
 for (const file of bundle.outputFiles) await writeFile(file.path, file.contents);
-await writeFile(path.join(root,'docs/index.html'),online);await writeFile(path.join(root,'docs/.nojekyll'),'');await mkdir(path.join(root,'dist'),{recursive:true});
-await writeFile(path.join(root,`dist/local-dictionary-demo-${manifest.version}.html`),html);console.log('Built standalone showcase: '+Buffer.byteLength(html)+' bytes');
+await mkdir(path.join(root,'docs/lexibridge'),{recursive:true});
+await writeFile(path.join(root,'docs/lexibridge/index.html'),online);
+await writeFile(path.join(root,'docs/index.html'), `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=./lexibridge/"><link rel="canonical" href="https://noahxie83.github.io/zotero-local-dictionary/lexibridge/"><title>LexiBridge 词译桥</title><script>location.replace('./lexibridge/'+location.search+location.hash)</script><p>Local Dictionary 已更名为词译桥。<a href="./lexibridge/">打开新展示页</a></p></html>`);await writeFile(path.join(root,'docs/.nojekyll'),'');await mkdir(path.join(root,'dist'),{recursive:true});
+await writeFile(path.join(root,`dist/lexibridge-demo-${manifest.version}.html`),html);console.log('Built standalone showcase: '+Buffer.byteLength(html)+' bytes');

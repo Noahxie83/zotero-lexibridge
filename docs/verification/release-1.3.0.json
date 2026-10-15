@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-15",
+  "name": "LexiBridge · 词译桥",
+  "version": "1.3.0",
+  "addonId": "local-mdx-click@noahx.local",
+  "sha256": "7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7",
+  "size": 323338,
+  "checks": [
+    "root manifest parsed",
+    "existing ID retained",
+    "runtime bundle byte-identical",
+    "repeat builds byte-reproducible",
+    "updates.json hash matches artifact"
+  ],
+  "productTests": {
+    "passed": 144,
+    "failed": 0
+  },
+  "siteChecks": 30,
+  "installation": "Not performed at user request"
+}

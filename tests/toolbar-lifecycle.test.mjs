@@ -48,7 +48,7 @@ for (const property of ['isConnected', 'disabled']) {
       prefs.set('localMDXClick.enabled', false);
       await assert.doesNotReject(app.scanLibrary(['/dict']));
       assert.equal(live.query.disabled, true, 'A later query button must still update');
-      assert.equal(live.master.textContent, '本地词典', 'Subsequent toolbar collections must also update');
+      assert.equal(live.master.textContent, '词译桥', 'Subsequent toolbar collections must also update');
       assert.equal(failures, 1, 'Throwing node must be evicted, not retried by each updateUI call');
       assert.equal(disconnectedReads, 1, 'Disconnected node must also be removed');
 
@@ -57,7 +57,7 @@ for (const property of ['isConnected', 'disabled']) {
       assert.equal(await app.selectSource(next.id), true);
       await assert.doesNotReject(app.scanLibrary(['/dict']));
       assert.equal(live.query.disabled, false);
-      assert.equal(live.master.textContent, '本地词典 ✓');
+      assert.equal(live.master.textContent, '词译桥 ✓');
       assert.equal(failures, 1, 'Later source changes must not revisit a dead node');
       assert.equal(disconnectedReads, 1);
       const reopened = render();

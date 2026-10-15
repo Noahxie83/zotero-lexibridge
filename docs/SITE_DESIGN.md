@@ -1,40 +1,35 @@
-# 展示页与封面设计
+# 词译桥展示页与封面
 
-## 设计判断
+## 设计方向
 
-使用用户指定的 `design-taste-frontend` 技能，把展示页和 README 封面设计为面向论文阅读者的简洁出版物风格。
-参数：`DESIGN_VARIANCE: 6`、`MOTION_INTENSITY: 2`、`VISUAL_DENSITY: 3`。使用项目现有的原生 HTML/CSS；这是一种视觉方向，不宣称采用任何官方设计系统。
+使用用户指定的 design-taste-frontend 与 imagegen。对原站做保留品牌的更新：沿用蓝色与书本放大镜图形，名称改为 LexiBridge，面向论文阅读者，采用清爽、克制的原生 HTML/CSS 展示页。
 
-旧页面标题、说明和示例区的权重相近；旧封面包含装饰网格、多个标签和示意弹窗。
-新设计保留蓝色品牌、既有词典示例、交互标识、主导航入口和法律说明，增加阅读场景图片与清晰的文字层次。
+参数：DESIGN_VARIANCE 6、MOTION_INTENSITY 4、VISUAL_DENSITY 3。字体以系统无衬线为主，原创论文示例保留 Georgia。背景、文字、强调色分别为 #fbfcfd、#253440、#246a96；深色使用同一冷灰与蓝色体系。大区域 16px、阅读面板 12px、按钮 8px 圆角。
 
-## 源文件与生成
+首屏用左右布局呈现用途与阅读场景；新版变化采用两列内容，交互示例采用阅读/词条双栏，来源策略使用折叠列表，格式使用小表格。手机改为单列。进入与滚动出现动画只服务于内容层次，减少动态效果偏好下全部取消。
 
-- `examples/template.html` 是 GitHub Pages 首页模板；`examples/showcase.js` 使用插件实际解析器与排版组件。
-- `examples/page.js` 处理主题切换与示例按需加载；加载失败显示重试按钮，首次点击等待加载后执行原操作。
-- `examples/cover.html` 是可编辑封面源文件，浏览器导出范围为 1600×700，结果为 `docs/assets/cover.jpg`。原品牌图形使用既有 `wordmark.svg`。
-- `docs/assets/reading-desk.webp` 是通过内置 imagegen 生成的阅读场景，768px 版本用于响应式图片。图片经 WebP 编码以减少下载量，不使用外部图片地址。
-- `npm run build:site` 生成 `docs/index.html`、完整界面预览、演示脚本及 source map，并生成 `dist` 中可离线打开的版本化 HTML。线上图片与演示脚本独立缓存；离线 HTML 保持资源内嵌。
+## 源文件与产物
 
-生成模式为全新图片，未使用输入图片。生成提示词：
+- `examples/template.html`、`site.css`、`page.js`：新版展示页及主题、按需加载和内容出现动画。
+- `examples/showcase.js`：使用插件真实 MDX/MDD 解析及排版组件的原创离线示例。
+- `examples/cover.html`：1600×720 封面源文件。
+- `examples/interface-preview.*`：实际弹窗和设置组件预览，含四个在线来源；所有回调只影响浏览器页面。
+- `docs/lexibridge/index.html`：新展示页；原 `docs/index.html` 跳转并保留查询参数和片段。
+- `docs/assets/cover.jpg`、`lookup-demo.gif`、`lookup-preview.jpg`：README 封面、动图和静态替代。
+- README 三个 SVG 文字按钮链接到 Releases、交互示例、使用指南。GitHub README 不执行页面脚本，动效以 GIF 实现。
 
-> Authentic editorial desk photograph with an open scholarly book, printed research pages, a slate-blue linen reference dictionary and a graphite pencil. Cool off-white and grey palette, soft directional daylight, realistic paper texture. Objects centred and toward the right. No people, screens, UI, logos, captions, promotional text, decoration or glowing gradients. Landscape 1536×1024; coherent when cropped to a near-square website panel.
+构建命令 `npm run build:site` 生成 Pages 与离线自包含 HTML。仓库地址保持稳定，因此自动更新、旧 Release 与收录入口继续兼容。网站素材在仓库内保存，不依赖外部图片主机或字体服务。
 
-图片里的文字与图表仅为生成的阅读场景纹理，不作为真实论文资料使用。词典示例仍为项目自行编写的 MDX/MDD 数据。
+## 图片来源
 
-## 设计规则
+新阅读场景由内置 image_gen 生成，未使用外部参考图片。保留最终 WebP 及 768px 响应式版本；无商业词典截图。图片中的印刷纹理不作为真实论文内容。
 
-- 浅色配色与插件一致：背景 `#fbfcfd`、文字 `#253440`、辅助文字 `#536575`、强调色 `#246a96`；深色使用同一套冷灰与蓝色层次。
-- 页面跟随系统主题，也可手动切换；切换后示例弹窗与词条内容一起更新。深色下仅通过 CSS 将现有标识显示为浅色，原品牌文件未修改。
-- 页面标题、说明使用系统无衬线字体。英文示例正文保留 Georgia，以对应论文阅读场景；词典自身字体继续由示例词典提供。
-- 图片和阅读面板圆角 12px、控件 8px、正文标记 4px。首屏没有版本标签、虚构产品截图或图片覆盖标签。
-- 手机改为单列；保留可见焦点、跳到示例入口、语义化格式表、加载与错误反馈，以及减少动态效果规则。
+生成提示词：
 
-## 验证（2026-10-10）
+> Use case: ads-marketing. Asset type: hero photograph for Local Dictionary, a Zotero plugin used by academic paper readers. Primary request: a refined, believable still-life photograph communicating reading and a bridge between a local dictionary and translation. Scene: close view of an open reference dictionary and a few neatly arranged research pages on a cool pale grey desk, a single muted cobalt blue linen bookmark gently curves across the open page. One closed deep-blue linen reference book behind. Real paper edges and subtle ink textures, precise daylight from a window, slight soft shadow, unhurried academic atmosphere. Composition: landscape 3:2, sculptural books and bookmark mostly in the right two-thirds, left has calm negative space; tight art-directed crop suitable for a website hero and cover. Color palette: cool silver grey, paper white, graphite and one medium cobalt blue accent. Style: premium editorial product photography, tactile materials, realistic studio quality. Constraints: no screens, no floating UI, no logos, no watermarks, no readable words or fake diagrams, no neon, no gradients, no extra objects, no people. The page should have subtle indistinct print texture only. This is an atmospheric illustration, not a product screenshot.
 
-- 浏览器检查桌面、375px 和 320px 窄屏，未发现页面横向溢出；手机导航保持单行。
-- 检查浅色、深色、首次点击按需加载、断行候选合并、词组与批注反馈、词典切换和原有词条资源渲染。
-- Lighthouse 默认手机模拟、本地 HTTP：性能 99，无障碍 100，最佳实践 100，SEO 100；LCP 约 1.9 秒，CLS 0，阻塞时间 0ms。这是实验室结果，实际网络与设备表现会变化。
-- 插件 78 项自动测试通过；Zotero 10.0.6 的 1.2.1 隔离配置中 33 项检查通过。
+品牌图形保留原有书本与放大镜，仅更新文字与颜色。GIF 由真实浏览器中的原创示例录制，展示点击、词典切换、词组批注与断行候选，没有联网请求。图片转换和 GIF 编码只用于文件格式与输出尺寸处理。
 
-1.2.1 发布时，GitHub Pages 沿用 `main` 分支的 `/docs` 目录与当时首页 URL。1.2.2 仓库更名后，目录配置保留，首页迁移至 [zotero-local-dictionary](https://noahxie83.github.io/zotero-local-dictionary/)，安装入口和更新地址同步迁移，见 [仓库改名说明](REPOSITORY_RENAME.md)。
+## 检查范围
+
+桌面、375px/320px 窄屏、浅色/深色、减少动态效果、示例加载、词典切换、三个示例、错误重试、原入口跳转、设置页来源列表均作为交付检查项。当前结果与限制见 [交付记录](DELIVERY_1.3.0.md)；历史 1.2.1 的 Lighthouse 分数不代表本版结果。

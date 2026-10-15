@@ -89,7 +89,7 @@ export function createApp(env, pluginID) {
     for (const button of toolbarButtons) {
       try {
         if (!button.isConnected) { toolbarButtons.delete(button); continue; }
-        button.textContent = enabled() ? '本地词典 ✓' : '本地词典';
+        button.textContent = enabled() ? '词译桥 ✓' : '词译桥';
         button.setAttribute('aria-pressed', String(enabled()));
         button.title = getSources().some(source => source.enabled) ? '单击切换查询总开关；右键添加本地词典目录' : '选择本地词典文件夹；在线翻译可在设置中启用';
       } catch { toolbarButtons.delete(button); }
@@ -156,7 +156,7 @@ export function createApp(env, pluginID) {
 
   async function loadDictionary() {
     const path = getPath();
-    if (!path) throw new Error('请先在“设置 → 本地词典”选择词典文件夹。');
+    if (!path) throw new Error('请先在“设置 → 词译桥”选择词典文件夹。');
     if (dictionaryPromise && dictionaryPath === path) return dictionaryPromise;
     dictionaryPath = path;
     const token = generation;
@@ -260,7 +260,7 @@ export function createApp(env, pluginID) {
     picker.init(parent || Zotero.getMainWindow(), '选择词典文件夹', picker.modeGetFolder);
     if (await picker.show() !== picker.returnOK || stopped) return;
     try { await scanLibrary([...new Set([...getFolders(), picker.file])]); setEnabled(true); }
-    catch (e) { log(e); env.Services.prompt.alert(parent, '本地词典', errorText(e)); }
+    catch (e) { log(e); env.Services.prompt.alert(parent, '词译桥', errorText(e)); }
   }
 
   async function chooseFile(parent) {
@@ -273,7 +273,7 @@ export function createApp(env, pluginID) {
     if (!dictionaryFormat(path)) throw new Error('请选择 .mdx、.ifo、.dsl 或 .dsl.dz。');
     const folder = dirname(path);
     try { await scanLibrary([...new Set([...getFolders(), folder])], path); }
-    catch (e) { log(e); env.Services.prompt.alert(parent, '本地词典', errorText(e)); }
+    catch (e) { log(e); env.Services.prompt.alert(parent, '词译桥', errorText(e)); }
   }
 
   async function chooseResources(parent, type) {
@@ -310,7 +310,7 @@ export function createApp(env, pluginID) {
     const path = await pick(parent, '备份设置与生词', 'json'); if (path && !stopped) await IOUtils.writeUTF8(path, settingsBackup(key => Zotero.Prefs.get(pref + key)));
   }
   async function importSettings(parent) {
-    const path = await pick(parent, '导入 Local Dictionary 备份', 'json', false); if (!path || stopped) return;
+    const path = await pick(parent, '导入词译桥备份', 'json', false); if (!path || stopped) return;
     if ((await IOUtils.stat(path)).size > 4 * 1024 * 1024) throw new Error('备份文件超过 4 MB。');
     let settings = validateSettings(JSON.parse(await IOUtils.readUTF8(path)));
     const libraryKeys = ['path', 'folder', 'directories', 'dictionaryOrder', 'recursive'];
@@ -676,7 +676,7 @@ export function createApp(env, pluginID) {
           if (!enabled()) dismissAll();
         }));
       }
-      await Zotero.PreferencePanes.register({ pluginID, id: 'local-mdx-click-preferences', label: '本地词典', src: 'content/preferences.xhtml' });
+      await Zotero.PreferencePanes.register({ pluginID, id: 'local-mdx-click-preferences', label: '词译桥', src: 'content/preferences.xhtml' });
       Zotero.Reader.registerEventListener('renderToolbar', toolbar, pluginID);
       timer = env.setInterval(scanReaders, 1000);
       scanReaders();

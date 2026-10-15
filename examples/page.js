@@ -16,6 +16,13 @@
   window.addEventListener('pagehide', () => systemDark.removeEventListener('change', followSystem));
   updateTheme();
 
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    const reveal = new IntersectionObserver(entries => {
+      for (const entry of entries) if (entry.isIntersecting) {entry.target.classList.remove('pending');reveal.unobserve(entry.target);}
+    },{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(section=>{section.classList.add('pending');reveal.observe(section)});
+    window.addEventListener('pagehide',()=>reveal.disconnect());
+  }
   const loader = document.getElementById('demo-loader');
   if (!loader) return; // Offline HTML already contains the complete demo.
   const target = document.getElementById('result');

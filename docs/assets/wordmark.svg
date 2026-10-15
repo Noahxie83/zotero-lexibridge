@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="290" height="48" viewBox="0 0 290 48" role="img" aria-labelledby="title">
-<title id="title">Local Dictionary 项目文字标识</title>
-<g fill="none" stroke="#087bd0" stroke-width="3"><path d="M5 9v26l12-5 12 5V9l-12 5zM17 14v16"/><circle cx="29" cy="28" r="8" fill="#fcfcf9"/><path d="m35 34 7 7"/></g>
-<text x="54" y="32" font-family="Segoe UI,sans-serif" font-weight="700" font-size="25" fill="#102b46">Local Dictionary</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="245" height="48" viewBox="0 0 245 48" role="img" aria-labelledby="title"><title id="title">LexiBridge 词译桥</title><g fill="none" stroke="#246a96" stroke-width="3"><path d="M5 9v26l12-5 12 5V9l-12 5zM17 14v16"/><circle cx="29" cy="28" r="8" fill="#fbfcfd"/><path d="m35 34 7 7"/></g><text x="54" y="32" font-family="Segoe UI,sans-serif" font-weight="650" font-size="28" fill="#246a96">LexiBridge</text></svg>

@@ -37,11 +37,14 @@ for (const [src, dest] of [
   ['src/vendor/speex/WASI-CLOUDLIBC-LICENSE', 'licenses/WASI-CLOUDLIBC-LICENSE.txt'],
 ]) await cp(path.join(root, src), path.join(root, 'addon', dest));
 const files = {};
+// A fixed timestamp keeps the archive byte-reproducible so updates.json hashes stay valid.
+const FIXED_MTIME = Date.UTC(2026, 0, 1);
 async function walk(dir, prefix = '') {
-  for (const ent of await readdir(dir, { withFileTypes: true })) {
+  const entries = (await readdir(dir, { withFileTypes: true })).sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  for (const ent of entries) {
     const name = prefix + ent.name;
     if (ent.isDirectory()) await walk(path.join(dir, ent.name), name + '/');
-    else files[name] = new Uint8Array(await readFile(path.join(dir, ent.name)));
+    else files[name] = [new Uint8Array(await readFile(path.join(dir, ent.name))), { mtime: FIXED_MTIME }];
   }
 }
 await walk(path.join(root, 'addon'));
@@ -51,7 +54,7 @@ const suffixIndex = process.argv.indexOf('--suffix');
 const suffix = suffixIndex < 0 ? '' : process.argv[suffixIndex + 1];
 if (suffixIndex >= 0 && (!suffix || !/^[a-z0-9-]{1,40}$/i.test(suffix))) throw new Error('Pass a safe --suffix for a separately named local test package.');
 const artifactTag = suffix ? `-${suffix}` : '';
-const name = `local-dictionary-${manifest.version}${artifactTag}.xpi`;
+const name = `lexibridge-${manifest.version}${artifactTag}.xpi`;
 const out = path.join(root, 'dist', name);
 const xpi = zipSync(files, { level: 6 });
 await writeFile(out, xpi);

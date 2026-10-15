@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Local Dictionary · 本地词典",
-  "version": "1.2.2",
-  "description": "Zotero 离线词典：MDX、StarDict 和 DSL，点击、划选与手动查询，词形还原、生词上下文、笔记与导出、本地发音。",
+  "name": "LexiBridge · 词译桥",
+  "version": "1.3.0",
+  "description": "Zotero 查词与翻译：MDX、StarDict、DSL 本地词典，四种实验性在线翻译，多来源查询与排序，独立点击/划选开关，可拖动弹窗。",
   "author": "Noahxie83",
   "icons": {
     "16": "icons/local-mdx.svg",

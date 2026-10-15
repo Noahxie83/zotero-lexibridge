@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
+import { defaultOnlineSource, ONLINE_ENGINE_IDS } from '../src/online-engine-catalog.js';
 import { createCard, renderDefinition, element } from '../src/render.js';
 import { queryControls } from '../src/query-controls.js';
 import { queryFromText } from '../src/selection-query.js';
@@ -9,6 +10,7 @@ import { renderSelectionTools } from '../src/selection-menu.js';
 const preferences = new Map([['theme', 'light'], ['path', '/dictionaries/English.mdx'], ['resources', '{}']]);
 const dictionaries = [{ name: 'English Learner', path: '/dictionaries/English.mdx' },
   { name: '英汉简明词典', path: '/dictionaries/Chinese.ifo' }, { name: 'Academic English', path: '/dictionaries/Academic.dsl' }];
+let previewSources = [...dictionaries.map((d,i)=>({id:'local:preview:'+i,kind:'local',path:d.path,name:d.name,enabled:true})), ...ONLINE_ENGINE_IDS.map(defaultOnlineSource)];
 const folders = ['/dictionaries'];
 const records = [{ id: 'sample', word: 'network', definition: '网络；相互连接的系统', context: { title: '阅读示例', pageIndex: 3 } }];
 const entries = {
@@ -70,12 +72,12 @@ function show(word = history[cursor], add = false) {
     add: async () => {}, onStatus: text => { card.footer.textContent = text + '（预览）'; } });
   card.footer.textContent = 'English Learner · 自制示例词条';
   const ready = (state === 'ready' || state === 'selection') && !!entries[word];
-  card.setDiagnostics(state === 'error' ? ['示例：词典文件读取失败。'] : [],
-    [{ name: 'English Learner', stats: { format: 'MDX', entries: 3 }, results: ready ? [{}] : [] }]);
+  card.setDiagnostics(state === 'error' || state === 'empty' ? [{name:'English Learner',group:{status:state === 'error'?'error':'empty'},text:state === 'error'?'示例：词典文件读取失败。':'示例：未找到词条。'}] : []);
 }
 refreshSettings = mountEnhancements(window, {
   get: key => preferences.get(key), set: (key, value) => { preferences.set(key, value); if (key === 'theme') setTheme(value); else show(); },
   vocabulary: { list: () => records, remove: id => { const index = records.findIndex(record => record.id === id); if (index >= 0) records.splice(index, 1); } },
+  sources:()=>previewSources, onSources: next=>{previewSources=next;refreshSettings();},
   dictionaries: () => dictionaries.slice(), folders: () => folders.slice(),
   onFolders: () => { if (!folders.includes('/additional-dictionaries')) folders.push('/additional-dictionaries'); },
   onRemoveFolder: path => { folders.splice(folders.indexOf(path), 1); }, onRefresh: () => notice('预览目录列表已刷新。'),
@@ -90,6 +92,7 @@ function setTheme(theme) {
 }
 for (const [id, text] of [['local-mdx-folder', '词典目录：/dictionaries'], ['local-mdx-path', '当前文件：/dictionaries/English.mdx'], ['local-mdx-status', '已找到 3 部示例词典。']]) document.getElementById(id).textContent = text;
 document.getElementById('local-mdx-enabled').checked = true;
+document.getElementById('local-mdx-click-enabled').checked = true;
 document.getElementById('local-mdx-selection-enabled').checked = true;
 for (const dictionary of dictionaries) { const option = element(document, 'option', dictionary.name); option.value = dictionary.path; document.getElementById('local-mdx-select').append(option); }
 document.getElementById('local-mdx-select').onchange = event => { preferences.set('path', event.target.value); refreshSettings(); show(); };
