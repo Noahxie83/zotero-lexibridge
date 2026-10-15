@@ -48,3 +48,13 @@
 > Use case: lighting-weather / precise-object-edit. Input image is the EDIT TARGET for the photographic half of the LexiBridge academic reading plugin cover. Refine this existing still-life into an exquisite, art-directed editorial photograph, retaining its recognizable scene and cool blue-grey identity. Preserve: open dictionary, single muted blue linen bookmark, closed blue reference book behind, research pages, no extra props. Improve light into soft diffused silver daylight; preserve realistic paper detail without overly sharpened tiny pseudo-print; lower the harsh contrast of window patches; sculpt elegant clean shadows with richer but subtle blue linen texture. Composition: landscape 3:2, main open book and blue ribbon clearly visible toward the right, generous calm cool pale grey table toward the left for a clean transition into a separate white typography panel. A slightly wider and calmer camera framing than the reference, carefully balanced objects, quiet intellectual atmosphere, excellent tactile photography. No readable words, no logo, no text overlay, no UI, no watermark, no person, no gradients or glowing effects. Do not invent additional bookmarks. This is a background photographic asset; all typography will be rendered separately with real fonts. Return the refined photograph only.
 
 本轮范围与结果见 [封面精修验收记录](verification/cover-refinement-20261016.json)。性能分数为本地 Lighthouse 模拟结果，未重新进行真实联网翻译或 Zotero 宿主验收；既有 1.3.0 安装包继续使用。
+
+## 最终字体确认
+
+维护者确认三款字体预览中的 C 方案，采用 **霞鹜臻楷 Slab GB Regular v0.827**。封面左侧的中文品牌名、主标题和说明使用同一字体，英文品牌和 Zotero 字样保留无衬线排版；图片、布局、颜色和文案不变。网页首屏中文同步该字体，正文和操作控件保留原有界面字体。
+
+字体以本地 WOFF2 提供，覆盖封面及网页首屏所需的 47 个中文字和标点，共 15,960 字节。字体子集及完整授权位于 `docs/assets/fonts/`；未将原始的 17MB TTF 放进仓库。离线演示内嵌字体，线上页面使用同源字体并预加载，无需依赖第三方字体服务。
+
+调整首屏中文文案后，可安装 `fonttools[woff]`，再运行 `python scripts/subset-cover-font.py 原始字体.ttf` 更新字形子集。随后运行 `npm run build:site`。封面源文件通过浏览器加载字体、等待图片解码后，以 1600×720 画布、2 倍像素密度导出 3200×1440 JPEG。
+
+本次字体确认检查记录见 [最终字体验收](verification/selected-cover-font-20261016.json)。

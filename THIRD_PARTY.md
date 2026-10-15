@@ -45,6 +45,15 @@ https://github.com/llvm/llvm-project.
 
 No user dictionary audio is distributed with this decoder.
 
+## Website display font
+
+- LXGW ZhenKai Slab GB Regular v0.827 — SIL Open Font License 1.1.
+- Upstream: https://github.com/lxgw/LxgwZhenKai/releases/tag/v0.827
+- The cover and website hero use a WOFF2 subset of 47 Chinese characters (15,960 bytes).
+- Font copyright, reserved-name terms and license: `docs/assets/fonts/OFL-ZhenKai.txt`.
+- The font is used in website assets only; it is not a plugin runtime dependency.
+- Rebuild the subset with `python scripts/subset-cover-font.py /path/to/LXGWZhenKaiSlabGB-Regular.ttf` after installing `fonttools[woff]`.
+
 ## Build dependencies
 
 - esbuild 0.25.10 — MIT, https://github.com/evanw/esbuild

@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-16",
+  "selection": "C",
+  "font": "LXGW ZhenKai Slab GB Regular",
+  "sourceVersion": "v0.827",
+  "woff2Bytes": 15960,
+  "subsetChineseCharacters": 47,
+  "coverDimensions": [
+    3200,
+    1440
+  ],
+  "checks": {
+    "actualCoverFont": [
+      {
+        "familyName": "LXGW ZhenKai Slab GB",
+        "postScriptName": "LXGWZhenKaiSlabGB-Regular",
+        "isCustomFont": true,
+        "glyphCount": 5
+      }
+    ],
+    "actualWebsiteFont": [
+      {
+        "familyName": "LXGW ZhenKai Slab GB",
+        "postScriptName": "LXGWZhenKaiSlabGB-Regular",
+        "isCustomFont": true,
+        "glyphCount": 5
+      }
+    ],
+    "layouts": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "titleFits": true
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "titleFits": true
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "titleFits": true
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "titleFits": true
+      }
+    ],
+    "themeCycle": true,
+    "demoLookup": true,
+    "offlineFontEmbedded": true,
+    "pageErrors": []
+  },
+  "scope": "Typography, cover and showcase only. Plugin runtime and released XPI unchanged.",
+  "coverMatchesApprovedCImage": true,
+  "coverSha256": "a5fd85c17408b06cdd2e473ac42f64dc5292f1424272c98cbdb8fa4d23a4ca42",
+  "pluginArtifactSha256": "43ca6fa90d8ade44643983f569e9da36abc9961d459a50c29a3fd97f30af7483",
+  "lighthouse": {
+    "scores": {
+      "performance": 99,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "agentic-browsing": 100
+    },
+    "lcpMilliseconds": 2101.202,
+    "cls": 0
+  }
+}

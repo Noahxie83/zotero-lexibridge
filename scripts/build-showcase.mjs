@@ -36,6 +36,8 @@ const bundle = await build({ entryPoints:[path.join(root,'examples/showcase.js')
 const esc = text => text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 let licenses = 'LexiBridge - GPL-3.0-or-later\n'+await readFile(path.join(root,'LICENSE'),'utf8');
 for(const name of await readdir(path.join(root,'addon/licenses'))) licenses += '\n\n--- '+name+' ---\n'+await readFile(path.join(root,'addon/licenses',name),'utf8');
+licenses += '\n\n--- LXGW ZhenKai Slab GB (website display font) ---\n'+(await readFile(path.join(root,'docs/assets/fonts/OFL-ZhenKai.txt'),'utf8')).replace(/[ \t]+$/gm,'');
+const displayFont = 'data:font/woff2;base64,'+(await readFile(path.join(root,'docs/assets/fonts/lxgw-zhenkai-cover.woff2'))).toString('base64');
 const logo = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'docs/assets/wordmark.svg'))).toString('base64');
 const icon = 'data:image/svg+xml;base64,'+(await readFile(path.join(root,'addon/icons/local-mdx.svg'))).toString('base64');
 const hero = 'data:image/webp;base64,'+(await readFile(path.join(root,'docs/assets/reading-desk.webp'))).toString('base64');
@@ -45,10 +47,12 @@ const siteCSS = await readFile(path.join(root,'examples/site.css'),'utf8');
 const pageScript = await readFile(path.join(root,'examples/page.js'),'utf8');
 const base = template.replace('__SITE_CSS__',()=>siteCSS).replace('__WORDMARK__',()=>logo).replace('__ICON__',()=>icon).replaceAll('__VERSION__',manifest.version).replace('__LICENSES__',()=>esc(licenses)).replace('__DATA__',()=>JSON.stringify({dictionaries,files}).replace(/</g,'\\u003c')).replace('__PAGE_SCRIPT__',()=>pageScript);
 const script = bundle.outputFiles.find(file => file.path.endsWith('.js')).text;
-const html = base.replace('__HERO_IMAGE__',()=>hero).replace('__BUNDLE__',()=>script.replace(/\/\/# sourceMappingURL=[^\n]+/g,'').replace(/\/\/#sourceMappingURL=[^\n]+/g,'').replace(/<\/script/gi,'<\\/script'));
+const html = base.replace('__DISPLAY_FONT_PRELOAD__','').replaceAll('__DISPLAY_FONT__',()=>displayFont).replace('__HERO_IMAGE__',()=>hero).replace('__BUNDLE__',()=>script.replace(/\/\/# sourceMappingURL=[^\n]+/g,'').replace(/\/\/#sourceMappingURL=[^\n]+/g,'').replace(/<\/script/gi,'<\\/script'));
 // Pages loads the demo when it is visible or clicked; images are cached separately.
 // The downloaded HTML keeps every resource inline so it still opens offline.
 const online = base.replace('src="__HERO_IMAGE__"', 'src="../assets/reading-desk.webp" srcset="../assets/reading-desk-768.webp 768w, ../assets/reading-desk.webp 1536w" sizes="(max-width:767px) calc(100vw - 40px), (max-width:1264px) 44vw, 550px"')
+  .replace('__DISPLAY_FONT_PRELOAD__','<link rel="preload" href="../assets/fonts/lxgw-zhenkai-cover.woff2" as="font" type="font/woff2" crossorigin>')
+  .replaceAll('__DISPLAY_FONT__','../assets/fonts/lxgw-zhenkai-cover.woff2')
   .replace('<script>__BUNDLE__</script>', '<script id="demo-loader" data-src="../assets/showcase.js"></script>');
 for (const file of bundle.outputFiles) await writeFile(file.path, file.contents);
 await mkdir(path.join(root,'docs/lexibridge'),{recursive:true});
