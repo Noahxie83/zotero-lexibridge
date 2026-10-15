@@ -69,5 +69,6 @@
     "cls": 0,
     "warnings": []
   },
-  "installationPackageSha256": "7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7"
+  "installationPackageSha256": "7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7",
+  "screenshotCapture": "Final site snapshots await document.fonts.ready and image.decode() for every image before capture."
 }
