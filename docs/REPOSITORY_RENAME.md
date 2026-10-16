@@ -20,6 +20,6 @@ GitHub 不保证项目 Pages 网址随仓库改名跳转。按维护者选择，
 
 上游使用 `addons/{owner}@{repo}` 文件名确定抓取仓库。此次只把既有收录条目改为 `addons/Noahxie83@zotero-lexibridge`，保留 `reader` 标签，不重复新增插件。
 
-`Noahxie83/zotero-addons-scraper` 是提交上游贡献所用的 fork，不是本插件的独立抓取服务。本次条目改名需要通过该 fork 提交 PR；上游合并前保留，以维持审核分支。上游合并和下一次数据刷新是两个阶段，提交 PR 不代表公开列表已更新。
+上游 PR #274（commit `d5c13d6`）已于 2026-10-16 正式合并，且上游 publish 分支的 `addon_infos.json` 已完成抓取与发布。`Noahxie83/zotero-addons-scraper` 是提交上游贡献所用的 fork，不是本插件的独立抓取服务。
 
 迁移检查与上游 PR 链接记录在 `docs/verification/repository-migration-1.3.1.json`。

@@ -34,8 +34,9 @@
       "reader"
     ],
     "pullRequest": "https://github.com/syt2/zotero-addons-scraper/pull/274",
-    "status": "OPEN; awaiting upstream maintainer review",
-    "reviewCheck": "SUCCESS"
+    "status": "MERGED; upstream commit d5c13d656ebbca870c302e7539307f59b1769891",
+    "reviewCheck": "SUCCESS",
+    "propagated": true
   },
   "fork": {
     "repository": "Noahxie83/zotero-addons-scraper",

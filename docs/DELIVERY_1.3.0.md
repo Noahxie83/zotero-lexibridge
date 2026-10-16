@@ -19,7 +19,7 @@
 
 ## 收录同步检查
 
-上游 [现有 reader 条目](https://github.com/syt2/zotero-addons-scraper/blob/master/addons/Noahxie83@zotero-local-mdx-click) 仍以旧仓库名收录。实测该仓库 API 跟随 GitHub 重定向，返回当前仓库的 Release。
+上游 [现有 reader 条目](https://github.com/syt2/zotero-addons-scraper/blob/master/addons/Noahxie83@zotero-lexibridge) 原以旧仓库名收录，已通过 PR #274（commit `d5c13d6`）重命名为当前仓库名收录。
 
 上游 publish 分支的 addon_infos.json 已在相同条目下列出当前仓库的 1.2.2 安装包，证实重定向抓取工作正常。因此本轮不创建重复条目或重复 PR。新版公开 Release 后，等待上游下一次抓取；这不等于已确认上游列表显示 1.3.0。
 
@@ -37,5 +37,5 @@
 - 已推送 main：`defbd29`（含 `9355acc` 品牌与文档提交）。
 - 已创建公开 Release `v1.3.0`，上传 `lexibridge-1.3.0.xpi`、源码 ZIP、单文件演示、界面预览与 SHA256SUMS。
 - 线上 `updates.json` 已生效：版本 1.3.0，哈希 `sha256:7675a24d78bf8ed962f9a80d01dc5f97ee85ff9524af4984b3e0f0b21fbda3d7`，与 Release 资产一致。
-- 展示页 `https://noahxie83.github.io/zotero-local-dictionary/lexibridge/` 已上线，旧首页跳转正常。
+- 展示页 `https://noahxie83.github.io/zotero-lexibridge/lexibridge/` 已上线，旧首页跳转正常。
 - 为保证更新哈希长期有效，XPI 与源码 ZIP 的打包改为固定时间戳，重复构建字节一致。
